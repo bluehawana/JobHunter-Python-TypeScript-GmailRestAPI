@@ -1,5 +1,6 @@
 from typing import List, Optional
-from pydantic import BaseSettings, validator
+from pydantic_settings import BaseSettings
+from pydantic import field_validator
 import os
 
 class Settings(BaseSettings):
@@ -15,7 +16,8 @@ class Settings(BaseSettings):
         "https://localhost:8080",
     ]
     
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
+    @field_validator("BACKEND_CORS_ORIGINS", mode="before")
+    @classmethod
     def assemble_cors_origins(cls, v):
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
@@ -46,6 +48,13 @@ class Settings(BaseSettings):
     GMAIL_CLIENT_SECRET: Optional[str] = os.getenv("GMAIL_CLIENT_SECRET")
     LINKEDIN_CLIENT_ID: Optional[str] = os.getenv("LINKEDIN_CLIENT_ID")
     LINKEDIN_CLIENT_SECRET: Optional[str] = os.getenv("LINKEDIN_CLIENT_SECRET")
+    LINKEDIN_ACCESS_TOKEN: Optional[str] = os.getenv("LINKEDIN_ACCESS_TOKEN")
+    
+    # Job Search APIs
+    GOOGLE_CUSTOM_SEARCH_API_KEY: Optional[str] = os.getenv("GOOGLE_CUSTOM_SEARCH_API_KEY")
+    GOOGLE_CUSTOM_SEARCH_ENGINE_ID: Optional[str] = os.getenv("GOOGLE_CUSTOM_SEARCH_ENGINE_ID")
+    INDEED_PUBLISHER_ID: Optional[str] = os.getenv("INDEED_PUBLISHER_ID")
+    RAPIDAPI_KEY: Optional[str] = os.getenv("RAPIDAPI_KEY")  # For job search APIs
     
     # Redis settings for Celery
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379")
