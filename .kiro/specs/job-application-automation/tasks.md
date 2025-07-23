@@ -14,27 +14,27 @@
     - Configure CORS and middleware
     - _Requirements: 5.5_
 
-  - [ ] 1.3 Set up NoSQL database and connection
+  - [x] 1.3 Set up NoSQL database and connection
     - Create MongoDB Atlas account or local MongoDB instance
     - Define database connection utilities
     - Implement basic CRUD operations wrapper
     - Create database initialization script
     - _Requirements: 5.3_
 
-  - [ ] 1.4 Configure serverless deployment
+  - [x] 1.4 Configure serverless deployment
     - Set up Netlify configuration for frontend
     - Configure serverless functions for backend
     - Create deployment scripts and CI/CD pipeline
     - _Requirements: 5.1, 5.2_
 
 - [ ] 2. Implement user authentication system
-  - [ ] 2.1 Create user data models and validation
+  - [x] 2.1 Create user data models and validation
     - Implement user schema and model
     - Create validation functions for user data
     - Write unit tests for user model
     - _Requirements: 5.3, 5.4, 5.5_
 
-  - [ ] 2.2 Implement authentication API endpoints
+  - [x] 2.2 Implement authentication API endpoints
     - Create registration endpoint
     - Implement login functionality with JWT
     - Add password hashing and security measures

@@ -1,14 +1,25 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
 from app.api.v1.api import api_router
 from app.core.config import settings
+from app.core.database import connect_to_mongo, close_mongo_connection, check_database_health
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    await connect_to_mongo()
+    yield
+    # Shutdown
+    await close_mongo_connection()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     description="Job Application Automation API",
-    openapi_url=f"{settings.API_V1_STR}/openapi.json"
+    openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    lifespan=lifespan
 )
 
 # Set up CORS
@@ -36,11 +47,15 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
+    """Detailed health check endpoint"""
+    db_healthy = await check_database_health()
+    
     return JSONResponse(
         content={
-            "status": "healthy",
-            "service": "job-application-automation-api"
+            "status": "healthy" if db_healthy else "unhealthy",
+            "service": "job-application-automation-api",
+            "version": settings.VERSION,
+            "database": "connected" if db_healthy else "disconnected"
         }
     )
 
