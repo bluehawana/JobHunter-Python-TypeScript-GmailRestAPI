@@ -3,13 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
-import Register from './pages/Register';
 import JobSearch from './pages/JobSearch';
 import ApplicationManager from './pages/ApplicationManager';
 import DocumentGenerator from './pages/DocumentGenerator';
 import Layout from './components/Layout';
-import ProtectedRoute from './components/ProtectedRoute';
 import './styles/App.css';
 
 // Create a theme instance
@@ -48,29 +45,11 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/" element={<Layout />}>
-            <Route index element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="job-search" element={
-              <ProtectedRoute>
-                <JobSearch />
-              </ProtectedRoute>
-            } />
-            <Route path="applications" element={
-              <ProtectedRoute>
-                <ApplicationManager />
-              </ProtectedRoute>
-            } />
-            <Route path="documents" element={
-              <ProtectedRoute>
-                <DocumentGenerator />
-              </ProtectedRoute>
-            } />
+            <Route index element={<Dashboard />} />
+            <Route path="job-search" element={<JobSearch />} />
+            <Route path="applications" element={<ApplicationManager />} />
+            <Route path="documents" element={<DocumentGenerator />} />
           </Route>
         </Routes>
       </Router>

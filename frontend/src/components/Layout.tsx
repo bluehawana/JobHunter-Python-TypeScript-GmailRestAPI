@@ -44,7 +44,7 @@ const Layout: React.FC = () => {
     <div>
       <Toolbar>
         <Typography variant="h6" noWrap component="div">
-          Job Automation
+          JobHunter
         </Typography>
       </Toolbar>
       <Divider />
@@ -88,7 +88,7 @@ const Layout: React.FC = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Job Application Automation
+            JobHunter - Personal Job Automation
           </Typography>
         </Toolbar>
       </AppBar>

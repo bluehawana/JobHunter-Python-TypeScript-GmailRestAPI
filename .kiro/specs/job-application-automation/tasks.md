@@ -41,7 +41,7 @@
     - Write unit tests for authentication endpoints
     - _Requirements: 5.4, 5.5_
 
-  - [ ] 2.3 Develop frontend authentication components
+  - [x] 2.3 Develop frontend authentication components
     - Create login form component
     - Implement registration form
     - Add authentication state management
