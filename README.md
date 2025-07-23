@@ -1,15 +1,78 @@
 # JobHunter - Automated Job Application System
 
-A full-stack application that automates job application processes using Python FastAPI backend and TypeScript React frontend, integrated with Gmail REST API for email management.
+A full-stack application that automates job application processes using Python FastAPI backend and TypeScript React frontend, integrated with Gmail REST API for email management. The system intelligently fetches jobs, filters them based on your preferences, generates customized application documents, and automatically sends applications during working hours.
+
+## 🤖 Automated Job Application Process
+
+### Design Philosophy
+This product is designed around the principle of **intelligent automation** - minimizing manual effort while maximizing application quality and relevance. The system operates as your personal job application assistant, working autonomously during business hours to identify, customize, and submit applications for positions that match your criteria.
+
+### 🔍 Job Discovery & Fetching
+The system aggregates job opportunities from multiple sources:
+- **LinkedIn Jobs API**: Professional network opportunities
+- **Indeed Scraping**: Wide range of job postings
+- **Arbetsförmedlingen**: Swedish employment service integration
+- **Google Jobs**: Comprehensive job search results
+- **Company Career Pages**: Direct employer postings
+
+### 🎯 Intelligent Filtering System
+Jobs are filtered through multiple layers to ensure relevance:
+- **Skills Matching**: Compares job requirements with your skill profile
+- **Location Preferences**: Distance-based filtering for remote/hybrid/onsite roles
+- **Salary Range**: Filters based on your compensation expectations
+- **Experience Level**: Matches seniority requirements with your background
+- **Company Blacklist**: Excludes companies you've marked as undesirable
+- **Industry Focus**: Prioritizes specific sectors or technologies
+- **Job Type**: Full-time, contract, freelance preferences
+
+### ✨ Application Customization
+Each application is personalized using AI-powered customization:
+- **Resume Tailoring**: Highlights relevant experience for each role
+- **Cover Letter Generation**: Creates role-specific cover letters using LaTeX templates
+- **Skills Emphasis**: Adjusts skill presentation based on job requirements
+- **Achievement Matching**: Selects most relevant accomplishments
+- **Keyword Optimization**: Ensures ATS compatibility
+
+### 📄 PDF Document Generation
+The system uses LaTeX for professional document creation:
+- **Dynamic Resume Generation**: Creates tailored resumes for each application
+- **Cover Letter Templates**: Professional formatting with company-specific content
+- **Portfolio Integration**: Includes relevant project samples when applicable
+- **Multi-format Support**: PDF, DOCX, and plain text versions
+- **Version Control**: Tracks document versions for each application
+
+### 📧 Email Automation & Delivery
+Automated email system with intelligent scheduling:
+- **Gmail REST API Integration**: Secure email sending through your Gmail account
+- **Personalized Subject Lines**: Company and role-specific subjects
+- **Professional Templates**: Well-formatted HTML emails with attachments
+- **Email Content Includes**:
+  - Company name and personalized greeting
+  - Job title and application reference
+  - Direct link to job posting
+  - Brief introduction highlighting key qualifications
+  - Professional closing with contact information
+- **Delivery Tracking**: Monitors email delivery status and responses
+
+### ⏰ Working Hours Operation
+The automation system operates intelligently:
+- **Active Hours**: Monday-Friday, 6:00 AM - 6:00 PM (local time)
+- **Rate Limiting**: Respects platform limits to avoid being flagged
+- **Peak Time Optimization**: Sends applications during recruiter active hours
+- **Weekend Pause**: No automated applications on weekends
+- **Holiday Awareness**: Adjusts for local holidays and business calendars
+- **Batch Processing**: Groups applications to avoid spam detection
 
 ## 🚀 Features
 
-- **Automated Job Application Management**: Track and manage job applications efficiently
-- **Gmail Integration**: Automatically process job-related emails using Gmail REST API
-- **Document Management**: Upload and manage resumes, cover letters, and other documents
-- **Dashboard Analytics**: Visual insights into your job search progress
-- **User Authentication**: Secure login and user management
-- **RESTful API**: Clean, documented API endpoints
+- **Automated Job Application Management**: End-to-end automation from job discovery to application submission
+- **Gmail Integration**: Seamless email management using Gmail REST API
+- **Document Management**: Dynamic PDF generation with LaTeX templates
+- **Dashboard Analytics**: Real-time insights into application success rates
+- **User Authentication**: Secure OAuth-based login system
+- **Multi-platform Job Aggregation**: Comprehensive job discovery across platforms
+- **AI-Powered Customization**: Intelligent resume and cover letter tailoring
+- **Working Hours Scheduling**: Professional timing for automated applications
 
 ## 🏗️ Architecture
 

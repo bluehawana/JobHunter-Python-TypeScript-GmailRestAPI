@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-// This is a placeholder for actual authentication logic
-// In a real app, you would implement proper JWT handling and API calls
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 interface User {
   id: string;
   email: string;
-  name: string;
+  first_name: string;
+  last_name: string;
+  is_active: boolean;
+  created_at: string;
 }
 
 interface AuthState {
@@ -23,61 +26,53 @@ export const useAuth = () => {
   });
 
   useEffect(() => {
-    // Check if user is logged in (e.g., by verifying JWT in localStorage)
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('auth_token');
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      
+      if (token) {
+        // Verify token with backend
+        const response = await axios.get(`${API_BASE_URL}/api/v1/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         
-        if (token) {
-          // In a real app, you would verify the token with your backend
-          // For now, we'll just assume it's valid if it exists
-          
-          // Mock user data
-          const user = {
-            id: '1',
-            email: 'user@example.com',
-            name: 'Test User',
-          };
-          
-          setAuthState({
-            isAuthenticated: true,
-            user,
-            loading: false,
-          });
-        } else {
-          setAuthState({
-            isAuthenticated: false,
-            user: null,
-            loading: false,
-          });
-        }
-      } catch (error) {
-        console.error('Authentication error:', error);
+        setAuthState({
+          isAuthenticated: true,
+          user: response.data,
+          loading: false,
+        });
+      } else {
         setAuthState({
           isAuthenticated: false,
           user: null,
           loading: false,
         });
       }
-    };
-    
-    checkAuth();
-  }, []);
+    } catch (error) {
+      console.error('Authentication error:', error);
+      localStorage.removeItem('auth_token');
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        loading: false,
+      });
+    }
+  };
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // In a real app, you would make an API call to your backend
-      // For now, we'll just simulate a successful login with any credentials
-      
-      // Mock successful login
-      const user = {
-        id: '1',
+      const response = await axios.post(`${API_BASE_URL}/api/v1/auth/login`, {
         email,
-        name: 'Test User',
-      };
+        password,
+      });
+      
+      const { access_token, user } = response.data;
       
       // Store token in localStorage
-      localStorage.setItem('auth_token', 'mock_jwt_token');
+      localStorage.setItem('auth_token', access_token);
       
       setAuthState({
         isAuthenticated: true,
@@ -92,20 +87,19 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (name: string, email: string, password: string): Promise<boolean> => {
+  const register = async (firstName: string, lastName: string, email: string, password: string): Promise<boolean> => {
     try {
-      // In a real app, you would make an API call to your backend
-      // For now, we'll just simulate a successful registration
-      
-      // Mock successful registration
-      const user = {
-        id: '1',
+      const response = await axios.post(`${API_BASE_URL}/api/v1/auth/register`, {
+        first_name: firstName,
+        last_name: lastName,
         email,
-        name,
-      };
+        password,
+      });
+      
+      const { access_token, user } = response.data;
       
       // Store token in localStorage
-      localStorage.setItem('auth_token', 'mock_jwt_token');
+      localStorage.setItem('auth_token', access_token);
       
       setAuthState({
         isAuthenticated: true,

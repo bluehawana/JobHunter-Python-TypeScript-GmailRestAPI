@@ -23,7 +23,7 @@ Set these in Vercel dashboard:
 ```
 MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/job_automation
 SECRET_KEY=your-long-random-secret-key
-GMAIL_CLIENT_ID=131220645434-hij337noernr886afobfoor25rbccdat.apps.googleusercontent.com
+GMAIL_CLIENT_ID=your-gmail-client-id-here
 GMAIL_CLIENT_SECRET=your-gmail-client-secret
 LINKEDIN_CLIENT_ID=your-linkedin-client-id
 LINKEDIN_CLIENT_SECRET=your-linkedin-client-secret
@@ -60,7 +60,7 @@ Update `frontend/.env.production`:
 ```
 REACT_APP_API_URL=https://your-backend.vercel.app
 REACT_APP_ENVIRONMENT=production
-REACT_APP_GOOGLE_CLIENT_ID=131220645434-hij337noernr886afobfoor25rbccdat.apps.googleusercontent.com
+REACT_APP_GOOGLE_CLIENT_ID=your-gmail-client-id-here
 ```
 
 ### 2. Deploy to Netlify

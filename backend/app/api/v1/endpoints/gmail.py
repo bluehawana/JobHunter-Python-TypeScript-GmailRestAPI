@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 # Gmail OAuth Configuration
 GMAIL_SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
-GMAIL_CLIENT_ID = "126140999463-llvuijb64539veav9i80la40kt3oom62.apps.googleusercontent.com"
+GMAIL_CLIENT_ID = os.getenv("GMAIL_CLIENT_ID")
 
 @router.get("/connect")
 async def initiate_gmail_oauth(
