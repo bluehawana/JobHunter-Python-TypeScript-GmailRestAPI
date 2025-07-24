@@ -25,9 +25,10 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
     
-    # Database settings
-    MONGODB_URL: str = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
-    DATABASE_NAME: str = os.getenv("DATABASE_NAME", "job_automation")
+    # Database settings - Supabase PostgreSQL
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://localhost/jobhunter")
+    SUPABASE_URL: Optional[str] = os.getenv("SUPABASE_URL")
+    SUPABASE_ANON_KEY: Optional[str] = os.getenv("SUPABASE_ANON_KEY")
     
     # JWT settings
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
@@ -55,9 +56,6 @@ class Settings(BaseSettings):
     GOOGLE_CUSTOM_SEARCH_ENGINE_ID: Optional[str] = os.getenv("GOOGLE_CUSTOM_SEARCH_ENGINE_ID")
     INDEED_PUBLISHER_ID: Optional[str] = os.getenv("INDEED_PUBLISHER_ID")
     RAPIDAPI_KEY: Optional[str] = os.getenv("RAPIDAPI_KEY")  # For job search APIs
-    
-    # Redis settings for Celery
-    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379")
     
     # Environment
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")

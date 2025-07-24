@@ -13,7 +13,7 @@ class LaTeXResumeService:
     
     def __init__(self):
         # Your base CV template
-        self.cv_template = r"""\documentclass[11pt,a4paper]{article}
+        self.cv_template = r"""\documentclass[11pt,a4paper]{{article}}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
 \usepackage{enumitem}
