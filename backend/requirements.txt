@@ -8,8 +8,6 @@ passlib[bcrypt]==1.7.4
 python-decouple==3.8
 httpx==0.25.2
 aiofiles==23.2.1
-celery==5.3.4
-redis==5.0.1
 pytest==7.4.3
 pytest-asyncio==0.21.1
 pytest-mock==3.12.0
@@ -18,9 +16,8 @@ isort==5.12.0
 flake8==6.1.0
 mypy==1.7.1
 
-# SQL Database (MySQL/PostgreSQL for Heroku)
+# PostgreSQL for Supabase
 sqlalchemy==2.0.25
-pymysql==1.1.0
 psycopg2-binary==2.9.9
 alembic==1.13.1
 
@@ -33,11 +30,16 @@ google-api-python-client==2.110.0
 beautifulsoup4==4.12.2
 lxml==4.9.3
 
-# LaTeX and PDF processing (optional - can use cloud services)
+# LaTeX and PDF processing
 Pillow==10.1.0
 
-# Email sending
+# Email sending and reading
 secure-smtplib==0.1.1
+imapclient==2.3.1
+email-validator==2.1.0
 
 # Heroku deployment
 gunicorn==21.2.0
+
+# Supabase client (optional)
+supabase==2.0.0

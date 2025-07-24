@@ -1,3 +1,1 @@
-web: gunicorn app.main:app -w 2 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
-worker: celery -A app.tasks.job_automation_tasks worker --loglevel=info
-beat: celery -A app.tasks.job_automation_tasks beat --loglevel=info
+web: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
