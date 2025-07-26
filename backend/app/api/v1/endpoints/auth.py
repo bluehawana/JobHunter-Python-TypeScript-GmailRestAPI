@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional
-import jwt
+from jose import jwt
 from datetime import datetime, timedelta
 from app.core.config import settings
 from app.core.security import create_access_token, verify_token
