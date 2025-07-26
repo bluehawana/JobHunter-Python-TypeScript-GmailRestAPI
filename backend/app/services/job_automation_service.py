@@ -8,7 +8,7 @@ import re
 from app.services.job_aggregation_service import JobAggregationService, JobSearchRequest
 from app.services.latex_resume_service import LaTeXResumeService
 from app.services.email_automation_service import EmailAutomationService
-from app.core.database import get_database
+from app.core.database import get_async_session
 
 logger = logging.getLogger(__name__)
 

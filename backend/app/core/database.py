@@ -32,7 +32,7 @@ def get_database_url():
         if settings.DB_TYPE == "mysql":
             return f"mysql+pymysql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
         else:  # PostgreSQL
-            return f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
+            return f"postgresql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
 
 def get_async_database_url():
     """Get async database URL"""
@@ -40,7 +40,7 @@ def get_async_database_url():
     if "mysql" in url:
         return url.replace("mysql+pymysql://", "mysql+aiomysql://")
     else:
-        return url.replace("postgresql+psycopg2://", "postgresql+asyncpg://")
+        return url.replace("postgresql://", "postgresql+asyncpg://")
 
 async def connect_to_database():
     """Create database connection"""

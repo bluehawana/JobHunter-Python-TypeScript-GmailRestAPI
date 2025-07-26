@@ -57,6 +57,9 @@ class Settings(BaseSettings):
     INDEED_PUBLISHER_ID: Optional[str] = os.getenv("INDEED_PUBLISHER_ID")
     RAPIDAPI_KEY: Optional[str] = os.getenv("RAPIDAPI_KEY")  # For job search APIs
     
+    # Redis/Celery
+    REDIS_URL: Optional[str] = os.getenv("REDIS_URL", "redis://localhost:6379")
+    
     # Environment
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     

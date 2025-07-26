@@ -113,7 +113,7 @@ def send_daily_summary_task(self, user_id: str):
         logger.info("Sending daily summary for user: %s", user_id)
         
         from app.services.email_automation_service import EmailAutomationService
-        from app.core.database import get_database
+        from app.core.database import get_async_session
         
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -171,7 +171,7 @@ def cleanup_old_jobs_task():
     try:
         logger.info("Starting weekly cleanup of old jobs")
         
-        from app.core.database import get_database
+        from app.core.database import get_async_session
         from datetime import timedelta
         
         loop = asyncio.new_event_loop()

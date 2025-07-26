@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, jobs, applications, documents, dashboard, gmail, automation, job_fetcher
+from app.api.v1.endpoints import auth, jobs, applications, documents, dashboard, gmail, automation, job_fetcher, job_aggregator
 
 api_router = APIRouter()
 
@@ -12,3 +12,4 @@ api_router.include_router(dashboard.router, prefix="/dashboard", tags=["dashboar
 api_router.include_router(gmail.router, prefix="/gmail", tags=["gmail"])
 api_router.include_router(automation.router, prefix="/automation", tags=["automation"])
 api_router.include_router(job_fetcher.router, prefix="/job-fetcher", tags=["job-fetcher"])
+api_router.include_router(job_aggregator.router, prefix="/job-aggregator", tags=["job-aggregator"])

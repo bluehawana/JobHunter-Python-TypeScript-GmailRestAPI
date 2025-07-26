@@ -12,7 +12,7 @@ from app.tasks.job_automation_tasks import (
     test_email_task,
     run_daily_job_automation_task
 )
-from app.core.database import get_database
+from app.core.database import get_async_session
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
