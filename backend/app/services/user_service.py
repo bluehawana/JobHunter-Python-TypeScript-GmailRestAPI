@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from bson import ObjectId
 from app.models.user import UserCreate, UserInDB, User, UserUpdate, UserProfile, UserPreferences
 from app.core.security import get_password_hash, verify_password
-from app.core.database import get_database
+from app.core.database import get_async_session
 from app.utils.crud import CRUDBase
 import logging
 

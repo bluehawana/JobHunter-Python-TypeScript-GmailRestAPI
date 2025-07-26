@@ -4,15 +4,15 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from app.api.v1.api import api_router
 from app.core.config import settings
-from app.core.database import connect_to_mongo, close_mongo_connection, check_database_health
+from app.core.database import connect_to_database, close_database_connection, check_database_health
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    await connect_to_mongo()
+    await connect_to_database()
     yield
     # Shutdown
-    await close_mongo_connection()
+    await close_database_connection()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

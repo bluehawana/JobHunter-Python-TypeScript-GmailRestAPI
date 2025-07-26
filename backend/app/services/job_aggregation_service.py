@@ -9,7 +9,7 @@ from app.services.indeed_service import IndeedService
 from app.services.gmail_service import GmailService
 from app.services.arbetsformedlingen_service import ArbetsformedlingenService
 from app.services.linkedin_service import LinkedInService
-from app.core.database import get_database
+from app.core.database import get_async_session
 from app.models.job import JobPosting, JobCreate
 import re
 

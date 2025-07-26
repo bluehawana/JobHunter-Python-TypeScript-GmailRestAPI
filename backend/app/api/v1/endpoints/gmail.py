@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from typing import Dict
 import logging
 from app.api.v1.endpoints.auth import get_current_user
-from app.core.database import get_database
+from app.core.database import get_async_session
 from app.core.config import settings
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
