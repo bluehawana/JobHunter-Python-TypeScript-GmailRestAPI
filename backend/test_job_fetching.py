@@ -167,12 +167,17 @@ async def main():
     print("=" * 60)
     
     # Check environment variables
-    if not os.getenv("SUPABASE_URL") or not os.getenv("SUPABASE_ANON_KEY"):
-        print("❌ Missing environment variables!")
-        print("Please set SUPABASE_URL and SUPABASE_ANON_KEY")
-        print("\nExample:")
-        print('export SUPABASE_URL="https://your-project.supabase.co"')
-        print('export SUPABASE_ANON_KEY="your-anon-key"')
+    required_vars = ['SUPABASE_URL', 'SUPABASE_ANON_KEY']
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    
+    if missing_vars:
+        print(f"❌ Missing required environment variables: {', '.join(missing_vars)}")
+        print("Please set the following environment variables:")
+        for var in missing_vars:
+            if var == 'SUPABASE_URL':
+                print(f"  export {var}='https://your-project.supabase.co'")
+            elif var == 'SUPABASE_ANON_KEY':
+                print(f"  export {var}='your-anon-key'")
         return
     
     print("✅ Environment variables found")
@@ -195,11 +200,18 @@ async def main():
     await demo_job_management()
 
 if __name__ == "__main__":
-    # Set up environment variables if not already set
-    if not os.getenv("SUPABASE_URL"):
-        print("⚠️  Setting example environment variables...")
-        print("Please replace these with your actual Supabase credentials!")
-        os.environ["SUPABASE_URL"] = "https://chcdebpjwallysedcfsq.supabase.co"
-        os.environ["SUPABASE_ANON_KEY"] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoY2RlYnBqd2FsbHlzZWRjZnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzNTU5OTUsImV4cCI6MjA2ODkzMTk5NX0.YXdUPS9q1O1SF0aRwYD-qG8NfUQrGD4U4MJSOwp4IrM"
+    # Check for required environment variables
+    required_vars = ['SUPABASE_URL', 'SUPABASE_ANON_KEY']
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    
+    if missing_vars:
+        print(f"❌ Missing required environment variables: {', '.join(missing_vars)}")
+        print("Please set the following environment variables:")
+        for var in missing_vars:
+            if var == 'SUPABASE_URL':
+                print(f"  export {var}='https://your-project.supabase.co'")
+            elif var == 'SUPABASE_ANON_KEY':
+                print(f"  export {var}='your-anon-key'")
+        sys.exit(1)
     
     asyncio.run(main())

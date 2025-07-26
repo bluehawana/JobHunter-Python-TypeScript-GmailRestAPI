@@ -124,22 +124,20 @@ async def process_jobs():
 def setup_environment():
     """Set up environment variables"""
     
-    # Set your Supabase credentials (you provided these earlier)
-    if not os.getenv("SUPABASE_URL"):
-        os.environ["SUPABASE_URL"] = "https://chcdebpjwallysedcfsq.supabase.co"
+    # Check required environment variables
+    required_vars = [
+        "SUPABASE_URL",
+        "SUPABASE_ANON_KEY", 
+        "LINKEDIN_ACCESS_TOKEN",
+        "LINKEDIN_CLIENT_ID",
+        "LINKEDIN_CLIENT_SECRET"
+    ]
     
-    if not os.getenv("SUPABASE_ANON_KEY"):
-        os.environ["SUPABASE_ANON_KEY"] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoY2RlYnBqd2FsbHlzZWRjZnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzNTU5OTUsImV4cCI6MjA2ODkzMTk5NX0.YXdUPS9q1O1SF0aRwYD-qG8NfUQrGD4U4MJSOwp4IrM"
-    
-    # LinkedIn credentials (from your existing config)
-    if not os.getenv("LINKEDIN_ACCESS_TOKEN"):
-        os.environ["LINKEDIN_ACCESS_TOKEN"] = "AQUpeVun7rV5mxXjIEgIy1PC7H4tHEcNZz9A03H2OFCfg1Nd7mHu7BxWZvC3uY1v_fZZjWSVVbsnaB4HiqDi7zhmZdywj6VtExEt-GvCg4Vs8agrPWBwHMPDJyB1X5NbI35U98lEjI5eSAzh4njG05Vbk1SWl5Er4O_SY2We-D6NWloGZHmHJa_N3bm3OTzXNOoG6WSSXC1jsmHEMaeWUwaWbM7yrSAcZnbZMCHGd-9F1j0n-NiAnBW_UPWN689h4N2vfkQiIN2c-ccLzCOXacnQgFh0lb5NVFUN9kdZrDeS8_XCV12risfNaEALOV2-olZfdGOIO3HKt_bW6ShFLsGGpCbzFA"
-    
-    if not os.getenv("LINKEDIN_CLIENT_ID"):
-        os.environ["LINKEDIN_CLIENT_ID"] = "77duha47hcbh8o"
-    
-    if not os.getenv("LINKEDIN_CLIENT_SECRET"):
-        os.environ["LINKEDIN_CLIENT_SECRET"] = "WPL_AP1.KCsCGIG1HHXfY8LV.1OEJWQ=="
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    if missing_vars:
+        print(f"❌ Missing required environment variables: {', '.join(missing_vars)}")
+        print("Please set these environment variables before running the script.")
+        sys.exit(1)
     
     # Gmail app password (you'll need to set this up)
     if not os.getenv("GMAIL_APP_PASSWORD"):

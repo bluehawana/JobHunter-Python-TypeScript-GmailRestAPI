@@ -10,9 +10,20 @@ from pathlib import Path
 # Add the app directory to the path
 sys.path.append(str(Path(__file__).parent))
 
-# Set environment variables for testing
-os.environ['SMTP_USER'] = 'bluehawana@gmail.com'
-os.environ['SMTP_PASSWORD'] = 'irlgwloknosqdut'
+# Set environment variables for testing - check for required credentials
+# Required environment variables (must be set by user)
+required_vars = ['SMTP_USER', 'SMTP_PASSWORD']
+missing_vars = [var for var in required_vars if not os.getenv(var)]
+
+if missing_vars:
+    print(f"❌ Missing required environment variables: {', '.join(missing_vars)}")
+    print("Please set the following environment variables:")
+    for var in missing_vars:
+        if var == 'SMTP_USER':
+            print(f"  export {var}='your-email@gmail.com'")
+        elif var == 'SMTP_PASSWORD':
+            print(f"  export {var}='your-app-password'")
+    sys.exit(1)
 
 from app.services.email_scanner_service import EmailScannerService
 import logging

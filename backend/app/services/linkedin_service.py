@@ -16,8 +16,8 @@ class LinkedInService:
         self.base_url = "https://api.linkedin.com/v2"
         # LinkedIn API credentials - these should be stored in environment variables
         self.client_id = os.getenv("LINKEDIN_CLIENT_ID", "77duha47hcbh8o")
-        self.client_secret = os.getenv("LINKEDIN_CLIENT_SECRET", "WPL_AP1.KCsCGIG1HHXfY8LV.1OEJWQ==")
-        self.access_token = os.getenv("LINKEDIN_ACCESS_TOKEN", "AQUpeVun7rV5mxXjIEgIy1PC7H4tHEcNZz9A03H2OFCfg1Nd7mHu7BxWZvC3uY1v_fZZjWSVVbsnaB4HiqDi7zhmZdywj6VtExEt-GvCg4Vs8agrPWBwHMPDJyB1X5NbI35U98lEjI5eSAzh4njG05Vbk1SWl5Er4O_SY2We-D6NWloGZHmHJa_N3bm3OTzXNOoG6WSSXC1jsmHEMaeWUwaWbM7yrSAcZnbZMCHGd-9F1j0n-NiAnBW_UPWN689h4N2vfkQiIN2c-ccLzCOXacnQgFh0lb5NVFUN9kdZrDeS8_XCV12risfNaEALOV2-olZfdGOIO3HKt_bW6ShFLsGGpCbzFA")
+        self.client_secret = os.getenv("LINKEDIN_CLIENT_SECRET", "your-linkedin-client-secret")
+        self.access_token = os.getenv("LINKEDIN_ACCESS_TOKEN", "your-linkedin-access-token")
         
     async def search_jobs(
         self, 

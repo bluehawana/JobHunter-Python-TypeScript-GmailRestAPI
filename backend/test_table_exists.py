@@ -31,9 +31,19 @@ async def test_table():
         return False
 
 if __name__ == "__main__":
-    # Set up environment
-    os.environ["SUPABASE_URL"] = "https://chcdebpjwallysedcfsq.supabase.co"
-    os.environ["SUPABASE_ANON_KEY"] = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoY2RlYnBqd2FsbHlzZWRjZnNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzNTU5OTUsImV4cCI6MjA2ODkzMTk5NX0.YXdUPS9q1O1SF0aRwYD-qG8NfUQrGD4U4MJSOwp4IrM"
+    # Check for required environment variables
+    required_vars = ['SUPABASE_URL', 'SUPABASE_ANON_KEY']
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    
+    if missing_vars:
+        print(f"❌ Missing required environment variables: {', '.join(missing_vars)}")
+        print("Please set the following environment variables:")
+        for var in missing_vars:
+            if var == 'SUPABASE_URL':
+                print(f"  export {var}='https://your-project.supabase.co'")
+            elif var == 'SUPABASE_ANON_KEY':
+                print(f"  export {var}='your-anon-key'")
+        sys.exit(1)
     
     result = asyncio.run(test_table())
     

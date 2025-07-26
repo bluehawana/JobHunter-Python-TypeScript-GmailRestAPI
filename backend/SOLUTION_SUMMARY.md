@@ -14,7 +14,7 @@ I've successfully created a comprehensive job application automation system for 
 
 ### 2. **Job Fetching System** ✅
 - **LinkedIn Integration** (`app/services/linkedin_service.py`)
-  - Uses your LinkedIn credentials: `AQUpeVun7rV5mxXjIEgIy1PC7H4tHEcNZz9A03H2OFCfg1Nd7mHu7BxWZvC3uY1v_fZZjWSVVbsnaB4HiqDi7zhmZdywj6VtExEt-GvCg4Vs8agrPWBwHMPDJyB1X5NbI35U98lEjI5eSAzh4njG05Vbk1SWl5Er4O_SY2We-D6NWloGZHmHJa_N3bm3OTzXNOoG6WSSXC1jsmHEMaeWUwaWbM7yrSAcZnbZMCHGd-9F1j0n-NiAnBW_UPWN689h4N2vfkQiIN2c-ccLzCOXacnQgFh0lb5NVFUN9kdZrDeS8_XCV12risfNaEALOV2-olZfdGOIO3HKt_bW6ShFLsGGpCbzFA`
+  - Uses your LinkedIn credentials: `[REDACTED - Configure in environment variables]`
   - Extracts job ID: `4266325638` from your LinkedIn URL
   
 - **Gmail Integration** (`app/services/gmail_service.py`)
