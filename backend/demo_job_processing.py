@@ -205,9 +205,19 @@ This role was shared via LinkedIn Jobs email notification. Great opportunity to 
 def setup_environment():
     """Set up environment variables"""
     
-    # Supabase credentials
-    os.environ["SUPABASE_URL"] = "https://chcdebpjwallysedcfsq.supabase.co"
-    os.environ["SUPABASE_ANON_KEY"] = "REMOVED_SECRET"
+    # Check for required environment variables
+    required_vars = ['SUPABASE_URL', 'SUPABASE_ANON_KEY']
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+    
+    if missing_vars:
+        print(f"❌ Missing required environment variables: {', '.join(missing_vars)}")
+        print("Please set the following environment variables:")
+        for var in missing_vars:
+            if var == 'SUPABASE_URL':
+                print(f"  export {var}='https://your-project.supabase.co'")
+            elif var == 'SUPABASE_ANON_KEY':
+                print(f"  export {var}='your-anon-key'")
+        raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}")
     
     print("✅ Environment configured")
 

@@ -15,13 +15,25 @@ from email.mime.application import MIMEApplication
 # Add the app directory to the path
 sys.path.append(str(Path(__file__).parent))
 
-# Configure email settings
-os.environ['SMTP_USER'] = 'bluehawana@gmail.com'
-os.environ['SMTP_PASSWORD'] = 'irlgwloknosqdut'
-os.environ['SMTP_HOST'] = 'smtp.gmail.com'
-os.environ['SMTP_PORT'] = '587'
-os.environ['EMAILS_FROM_EMAIL'] = 'bluehawana@gmail.com'
-os.environ['EMAILS_FROM_NAME'] = 'JobHunter Bot'
+# Configure email settings - load from environment variables
+required_smtp_vars = ['SMTP_USER', 'SMTP_PASSWORD']
+missing_smtp_vars = [var for var in required_smtp_vars if not os.getenv(var)]
+if missing_smtp_vars:
+    print(f"❌ Missing required SMTP environment variables: {', '.join(missing_smtp_vars)}")
+    print("Please set the following environment variables:")
+    for var in missing_smtp_vars:
+        if var == 'SMTP_USER':
+            print(f"  export {var}='your-email@gmail.com'")
+        elif var == 'SMTP_PASSWORD':
+            print(f"  export {var}='your-app-password'")
+    print("⚠️ Continuing with limited functionality...")
+
+# Set defaults for non-sensitive configuration
+os.environ.setdefault('SMTP_HOST', 'smtp.gmail.com')
+os.environ.setdefault('SMTP_PORT', '587')
+os.environ.setdefault('EMAILS_FROM_EMAIL', os.getenv('SMTP_USER', 'noreply@example.com'))
+os.environ.setdefault('EMAILS_FROM_NAME', 'JobHunter Bot')
+os.environ.setdefault('TARGET_EMAIL', 'recipient@example.com')
 
 from app.services.job_application_processor import JobApplicationProcessor
 from app.services.simple_latex_service import SimpleLaTeXService
@@ -48,7 +60,7 @@ async def send_template_email(job_results):
         # Create message
         msg = MIMEMultipart()
         msg['From'] = f"JobHunter Bot <{sender_email}>"
-        msg['To'] = "leeharvad@gmail.com"
+        msg['To'] = os.getenv('TARGET_EMAIL', 'recipient@example.com')
         msg['Subject'] = "🎯 JobHunter Application Templates - Ready for Your Review"
         
         # Create email body with job templates
@@ -166,7 +178,7 @@ async def send_template_email(job_results):
             server.login(sender_email, sender_password)
             server.send_message(msg)
             
-        logger.info("✅ Template email sent successfully to leeharvad@gmail.com")
+        logger.info(f"✅ Template email sent successfully to {os.getenv('TARGET_EMAIL', 'recipient@example.com')}")
         return True
         
     except Exception as e:
@@ -196,12 +208,12 @@ async def test_complete_workflow():
         
         if successful_results:
             # Step 4: Send template email with all applications
-            logger.info("📤 Step 4: Sending application templates to leeharvad@gmail.com...")
+            logger.info(f"📤 Step 4: Sending application templates to {os.getenv('TARGET_EMAIL', 'recipient@example.com')}...")
             email_sent = await send_template_email(successful_results)
             
             if email_sent:
                 logger.info("🎉 === Workflow Test Complete! ===")
-                logger.info("📧 Check leeharvad@gmail.com for:")
+                logger.info(f"📧 Check {os.getenv('TARGET_EMAIL', 'recipient@example.com')} for:")
                 logger.info("   • Detailed job analysis")
                 logger.info("   • Customized CV/Resume PDFs")
                 logger.info("   • Personalized cover letter PDFs")

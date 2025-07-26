@@ -11,13 +11,26 @@ from pathlib import Path
 # Add the app directory to the path
 sys.path.append(str(Path(__file__).parent))
 
-# Set environment variables for testing
-os.environ['SMTP_USER'] = 'bluehawana@gmail.com'
-os.environ['SMTP_PASSWORD'] = 'irlgwloknosqdut'
-os.environ['SMTP_HOST'] = 'smtp.gmail.com'
-os.environ['SMTP_PORT'] = '587'  
-os.environ['EMAILS_FROM_EMAIL'] = 'bluehawana@gmail.com'
-os.environ['EMAILS_FROM_NAME'] = 'JobHunter Bot'
+# Set environment variables for testing - check for required credentials
+# Required environment variables (must be set by user)
+required_vars = ['SMTP_USER', 'SMTP_PASSWORD']
+missing_vars = [var for var in required_vars if not os.getenv(var)]
+
+if missing_vars:
+    print(f"❌ Missing required environment variables: {', '.join(missing_vars)}")
+    print("Please set the following environment variables:")
+    for var in missing_vars:
+        if var == 'SMTP_USER':
+            print(f"  export {var}='your-email@gmail.com'")
+        elif var == 'SMTP_PASSWORD':
+            print(f"  export {var}='your-app-password'")
+    sys.exit(1)
+
+# Set defaults for non-sensitive configuration
+os.environ.setdefault('SMTP_HOST', 'smtp.gmail.com')
+os.environ.setdefault('SMTP_PORT', '587')
+os.environ.setdefault('EMAILS_FROM_EMAIL', os.getenv('SMTP_USER', ''))
+os.environ.setdefault('EMAILS_FROM_NAME', 'JobHunter Bot')
 
 from app.services.job_application_processor import JobApplicationProcessor
 from app.services.simple_latex_service import SimpleLaTeXService

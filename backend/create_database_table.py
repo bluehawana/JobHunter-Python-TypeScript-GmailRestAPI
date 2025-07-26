@@ -9,9 +9,14 @@ import asyncio
 import os
 from supabase import create_client, Client
 
-# Supabase configuration
-SUPABASE_URL = "https://chcdebpjwallysedcfsq.supabase.co"
-SUPABASE_ANON_KEY = "REMOVED_SECRET"
+# Supabase configuration - load from environment variables
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+
+if not SUPABASE_URL or not SUPABASE_ANON_KEY:
+    print("❌ Missing required environment variables: SUPABASE_URL and SUPABASE_ANON_KEY")
+    print("Please set these environment variables before running the script.")
+    exit(1)
 
 def create_table():
     """Create the job_applications table"""

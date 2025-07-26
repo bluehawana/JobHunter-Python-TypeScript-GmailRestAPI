@@ -7,8 +7,8 @@ This document describes the email scanning functionality that monitors your Gmai
 The email scanner uses the following environment variables from `.env`:
 
 ```
-SMTP_USER=bluehawana@gmail.com
-SMTP_PASSWORD=irlg wlok nosq dut
+SMTP_USER=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
 ```
 
 ## Features
