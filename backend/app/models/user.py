@@ -1,12 +1,17 @@
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from datetime import datetime
 from bson import ObjectId
 
 class PyObjectId(ObjectId):
     @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
+    def __get_pydantic_core_schema__(cls, source_type, handler):
+        from pydantic_core import core_schema
+        return core_schema.no_info_after_validator_function(
+            cls.validate,
+            core_schema.str_schema(),
+            serialization=core_schema.to_string_ser_schema(),
+        )
 
     @classmethod
     def validate(cls, v):
@@ -14,19 +19,16 @@ class PyObjectId(ObjectId):
             raise ValueError("Invalid objectid")
         return ObjectId(v)
 
-    @classmethod
-    def __modify_schema__(cls, field_schema):
-        field_schema.update(type="string")
-
 class SalaryRange(BaseModel):
     min: Optional[int] = Field(None, ge=0, description="Minimum salary")
     max: Optional[int] = Field(None, ge=0, description="Maximum salary")
     currency: str = Field("USD", description="Currency code")
     
-    @validator('max')
-    def validate_salary_range(cls, v, values):
-        if v is not None and 'min' in values and values['min'] is not None:
-            if v < values['min']:
+    @field_validator('max')
+    @classmethod
+    def validate_salary_range(cls, v, info):
+        if v is not None and 'min' in info.data and info.data['min'] is not None:
+            if v < info.data['min']:
                 raise ValueError('Maximum salary must be greater than minimum salary')
         return v
 
@@ -46,13 +48,15 @@ class UserPreferences(BaseModel):
     resume_template: str = Field("default", description="Resume template to use")
     cover_letter_template: str = Field("default", description="Cover letter template to use")
     
-    @validator('keywords')
+    @field_validator('keywords')
+    @classmethod
     def validate_keywords(cls, v):
         if len(v) > 50:
             raise ValueError('Maximum 50 keywords allowed')
         return [keyword.strip().lower() for keyword in v if keyword.strip()]
     
-    @validator('job_types')
+    @field_validator('job_types')
+    @classmethod
     def validate_job_types(cls, v):
         valid_types = ['full-time', 'part-time', 'contract', 'freelance', 'internship', 'temporary']
         for job_type in v:
@@ -90,7 +94,7 @@ class UserProfile(BaseModel):
     # Personal information
     first_name: str = Field(..., min_length=1, max_length=50)
     last_name: str = Field(..., min_length=1, max_length=50)
-    phone: Optional[str] = Field(None, regex=r'^\+?[\d\s\-\(\)]+$')
+    phone: Optional[str] = Field(None, pattern=r'^\+?[\d\s\-\(\)]+$')
     location: Optional[str] = Field(None, max_length=100)
     
     # Professional information
@@ -101,10 +105,11 @@ class UserProfile(BaseModel):
     
     # Resume information
     summary: Optional[str] = Field(None, max_length=1000)
-    linkedin_url: Optional[str] = Field(None, regex=r'^https://www\.linkedin\.com/in/[\w\-]+/?$')
+    linkedin_url: Optional[str] = Field(None, pattern=r'^https://www\.linkedin\.com/in/[\w\-]+/?$')
     portfolio_url: Optional[str] = None
     
-    @validator('skills')
+    @field_validator('skills')
+    @classmethod
     def validate_skills(cls, v):
         if len(v) > 100:
             raise ValueError('Maximum 100 skills allowed')
@@ -122,7 +127,8 @@ class UserCreate(BaseModel):
     first_name: str = Field(..., min_length=1, max_length=50)
     last_name: str = Field(..., min_length=1, max_length=50)
     
-    @validator('password')
+    @field_validator('password')
+    @classmethod
     def validate_password(cls, v):
         if not any(c.isupper() for c in v):
             raise ValueError('Password must contain at least one uppercase letter')
@@ -155,9 +161,8 @@ class UserInDB(UserBase):
     total_documents_generated: int = 0
     
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
 
 class User(BaseModel):
     id: str
@@ -202,7 +207,8 @@ class PasswordResetConfirm(BaseModel):
     token: str
     new_password: str = Field(..., min_length=8, max_length=100)
     
-    @validator('new_password')
+    @field_validator('new_password')
+    @classmethod
     def validate_password(cls, v):
         if not any(c.isupper() for c in v):
             raise ValueError('Password must contain at least one uppercase letter')
