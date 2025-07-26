@@ -43,3 +43,17 @@ gunicorn==21.2.0
 
 # Supabase client (optional)
 supabase==2.0.0
+
+# MongoDB support (for mixed database usage)
+pymongo==4.13.2
+motor==3.7.1
+
+# Task queue support
+celery==5.5.3
+redis==6.2.0
+
+# Async PostgreSQL driver
+asyncpg==0.30.0
+
+# Required for SQLAlchemy async
+greenlet==3.2.3
