@@ -12,189 +12,146 @@ class LaTeXResumeService:
     """Service for generating customized LaTeX resumes and cover letters"""
     
     def __init__(self):
-        # Your base CV template
+        # Your base CV template - Modern format
         self.cv_template = r"""\documentclass[11pt,a4paper]{{article}}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\usepackage{enumitem}
-\usepackage{titlesec}
-\usepackage{xcolor}
-\usepackage{hyperref}
-\usepackage{fontawesome}
+\usepackage[utf8]{{inputenc}}
+\usepackage{{geometry}}
+\usepackage{{enumitem}}
+\usepackage{{titlesec}}
+\usepackage{{xcolor}}
+\usepackage{{hyperref}}
+\usepackage{{fontawesome}}
 
 % Page setup
-\geometry{margin=0.75in}
-\pagestyle{empty}
+\geometry{{margin=0.75in}}
+\pagestyle{{empty}}
 
 % Color definitions
-\definecolor{darkblue}{RGB}{0,51,102}
-\definecolor{lightgray}{RGB}{128,128,128}
+\definecolor{{darkblue}}{{RGB}}{{0,51,102}}
+\definecolor{{lightgray}}{{RGB}}{{128,128,128}}
 
 % Hyperlink setup
-\hypersetup{
+\hypersetup{{
     colorlinks=true,
     linkcolor=darkblue,
     urlcolor=darkblue,
     citecolor=darkblue
-}
+}}
 
 % Section formatting
-\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
-\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+\titleformat{{\section}}{{\Large\bfseries\color{{darkblue}}}}{{}}{{0em}}{{}}[\titlerule]
+\titleformat{{\subsection}}{{\large\bfseries}}{{}}{{0em}}{{}}
 
 % Custom commands
-\newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+\newcommand{{\contactitem}}[2]{{\textcolor{{darkblue}}{{#1}} #2}}
 
-\begin{document}
-\pagestyle{empty} % no page number
+\begin{{document}}
+\pagestyle{{empty}} % no page number
 
 % Name and contact details
-\begin{center}
-{\LARGE \textbf{Hongzhi Li}}\\[10pt]
-{\Large \textit{{{job_role}}}\\[10pt]
-\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
-\end{center}
+\begin{{center}}
+{{\LARGE \textbf{{Hongzhi Li}}}}\\[10pt]
+{{\Large \textit{{{job_role}}}}}\\[10pt]
+\textcolor{{darkblue}}{{\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \href{{tel:0728384299}}{{0728384299}} | \href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \href{{https://github.com/bluehawana}}{{GitHub}}}}
+\end{{center}}
 
-% Personal Profile
-\section*{Profile Summary}
-{customized_profile}
+% Professional Summary
+\section*{{Professional Summary}}
+{{customized_profile}}
 
-% Areas of Expertise
-\section*{Core Technical Skills}
-\begin{itemize}[noitemsep]
-{skills_content}
-\end{itemize}
+% Core Technical Skills
+\section*{{Core Technical Skills}}
+\begin{{itemize}}[noitemsep]
+{{skills_content}}
+\end{{itemize}}
 
-% Experience
-\section*{Professional Experience}
+% Professional Experience
+\section*{{Professional Experience}}
 
-\subsection*{ECARX | IT/Infrastructure Specialist}
-\textit{October 2024 - Present | Gothenburg, Sweden}
-\begin{itemize}[noitemsep]
+\subsection*{{ECARX | IT/Infrastructure Specialist}}
+\textit{{October 2024 - Present | Gothenburg, Sweden}}
+\begin{{itemize}}[noitemsep]
 \item Leading infrastructure optimization and system integration projects for automotive technology solutions
-\item Providing IT support and infrastructure support to development teams for enhanced productivity
-\item Implementing cost optimization project by migrating from AKS to local Kubernetes cluster, reducing operational expenses
-\item Implementing modern monitoring solutions using Grafana and advanced scripting for system reliability
-\item Managing complex network systems and providing technical solution design for enterprise-level applications
-\end{itemize}
+\item Implementing cost optimization by migrating from AKS to local Kubernetes cluster
+\item Managing complex network systems and providing technical solution design for enterprise applications
+\item Implementing monitoring solutions using Grafana and advanced scripting for system reliability
+\end{{itemize}}
 
-\subsection*{Synteda | Azure Fullstack Developer \& Integration Specialist (Freelance)}
-\textit{August 2023 - September 2024 | Gothenburg, Sweden}
-\begin{itemize}[noitemsep]
-\item Developed comprehensive talent management system using C\# and .NET Core with cloud-native architecture, serving multiple client organizations
-\item Built complete office management platform from scratch, architecting both frontend and backend components with scalable microservices design
-\item Participated in business negotiations and requirement gathering sessions, bridging the gap between technical solutions and business objectives
-\item Provided Azure cloud consulting services to cross-functional teams, resolving complex cloud infrastructure and integration challenges
-\item Implemented RESTful APIs and microservices for scalable application architecture with comprehensive monitoring and logging
-\item Integrated SQL and NoSQL databases with optimized query performance, data protection measures, and automated backup strategies
-\item Led technical consulting sessions with stakeholders to align cloud solutions with business requirements and cost optimization goals
-\item Mentored development teams on Azure best practices, cloud security, and modern development methodologies
-\end{itemize}
+\subsection*{{Synteda | Azure Fullstack Developer (Freelance)}}
+\textit{{August 2023 - September 2024 | Gothenburg, Sweden}}
+\begin{{itemize}}[noitemsep]
+\item Developed comprehensive talent management system using C\# and .NET Core with cloud-native architecture
+\item Built complete office management platform from scratch with both frontend and backend components
+\item Implemented RESTful APIs and microservices for scalable application architecture
+\item Integrated SQL and NoSQL databases with optimized query performance
+\end{{itemize}}
 
-\subsection*{IT-Högskolan | Cloud Developer (Part-time)}
-\textit{January 2023 - May 2023 | Gothenburg, Sweden}
-\begin{itemize}[noitemsep]
-\item Supported developer teams by migrating "Omstallningsstod.se" adult education platform to Azure cloud services
-\item Provided Azure cloud services integration and support for development teams using Spring Boot backend
-\item Implemented Azure Key Vault for secure credential management and cloud infrastructure optimization
-\item Established cloud-based development environment and Azure services configuration for team productivity
-\end{itemize}
+\subsection*{{IT-Högskolan | Backend Developer}}
+\textit{{January 2023 - May 2023 | Gothenburg, Sweden}}
+\begin{{itemize}}[noitemsep]
+\item Migrated "Omstallningsstod.se" adult education platform using Spring Boot backend services
+\item Developed RESTful APIs for frontend integration and implemented secure data handling
+\item Collaborated with UI/UX designers for seamless frontend-backend integration
+\item Implemented automated tests as part of delivery process
+\end{{itemize}}
 
-\subsection*{Senior Material (Europe) AB | Platform Architect \& Project Coordinator}
-\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
-\begin{itemize}[noitemsep]
-\item Led migration of business-critical applications with microservices architecture, serving as technical bridge between Swedish subsidiary and Senior Group in China
-\item Architected and implemented unified platform solutions meeting both Chinese group standards and Swedish local regulatory requirements
-\item Coordinated cross-cultural technical communications and facilitated knowledge transfer between international development teams
-\item Managed MS365 and SharePoint integration projects, ensuring seamless collaboration between European and Asian operations
-\item Designed and implemented networking infrastructure and security protocols compliant with both Chinese and Swedish standards
-\item Oversaw factory facilities IT setup and industrial system integrations for manufacturing operations
-\item Developed backend services with Spring Boot and designed RESTful APIs for frontend consumption across multiple regional platforms
-\item Led technical requirements analysis and solution design for complex international business scenarios
-\item Participated in Agile ceremonies and coordinated sprint planning across different time zones and cultural contexts
-\end{itemize}
-
-\subsection*{AddCell (CTH Startup) | DevOps Engineer}
-\textit{September 2022 - November 2022 | Gothenburg, Sweden}
-\begin{itemize}[noitemsep]
-\item Developed cloud-native applications using serverless computing architecture
-\item Implemented GraphQL APIs for efficient data fetching and frontend integration
-\item Worked with SQL and NoSQL databases for optimal data storage and retrieval
-\end{itemize}
-
-\subsection*{Pembio AB | Fullstack Developer}
-\textit{October 2020 - September 2021 | Lund, Sweden}
-\begin{itemize}[noitemsep]
+\subsection*{{Pembio AB | Fullstack Developer}}
+\textit{{October 2020 - September 2021 | Lund, Sweden}}
+\begin{{itemize}}[noitemsep]
 \item Developed Pembio.com platform backend with Java and Spring Boot in microservices architecture
 \item Built frontend features using Vue.js framework and integrated with backend APIs
 \item Developed RESTful APIs and implemented comprehensive database integration
 \item Participated in Agile development processes and collaborated with cross-functional teams
-\item Implemented automated testing strategies and ensured application security
-\end{itemize}
+\end{{itemize}}
 
-\section*{Hobby Projects}
+% Key Projects
+\section*{{Key Projects}}
 
-\subsection{Gothenburg TaxiCarPooling Web Application}
-\textit{May 2025 - Present}
-\begin{itemize}
-\item Developing intelligent carpooling platform using Spring Boot backend and Node.js microservices
-\item Cross-platform mobile application with React Native, integrating payment and geolocation services
-\item Implemented automated order matching algorithm and RESTful APIs for real-time data processing
-\item Designed system with PostgreSQL database integration and optimized for scalability and performance
-\item Built comprehensive automated testing suite and ensured data protection compliance
-\end{itemize}
+\subsection*{{JobHunter Automation Platform}}
+\textit{{2024 - Present}}
+\begin{{itemize}}[noitemsep]
+\item Built comprehensive job search automation using Python, FastAPI, and PostgreSQL
+\item Implemented automated document generation using LaTeX and PDF processing
+\item Integrated multiple job boards with RESTful APIs and database optimization
+\item Technologies: Python, FastAPI, PostgreSQL, Supabase, LaTeX, React
+\end{{itemize}}
 
-\subsection{EcarxTV \& EcarxBot - Android Auto Applications}
-\textit{March 2025 - Present}
-\begin{itemize}
-\item Developing Android Auto apps with Java backend services and modern frontend interfaces
-\item Implemented RESTful APIs for real-time data processing and voice command integration
-\item Built secure API integrations with SQL database optimization for vehicle data access
-\item Developed comprehensive testing framework for both frontend and backend components
-\end{itemize}
-
-\subsection{Hong Yan AB - E-commerce Platform (smrtmart.com)}
-\textit{April 2024 - Present}
-\begin{itemize}
+\subsection*{{Hong Yan AB - E-commerce Platform (smrtmart.com)}}
+\textit{{April 2024 - Present}}
+\begin{{itemize}}[noitemsep]
 \item Fullstack e-commerce platform with Spring Boot backend and React frontend
-\item Implemented microservices architecture with PostgreSQL and MongoDB database integration
-\item Built comprehensive order management, inventory tracking, and payment processing systems
-\item Developed RESTful APIs for frontend-backend communication and third-party integrations
+\item Implemented microservices architecture with PostgreSQL and MongoDB integration
+\item Built order management, inventory tracking, and payment processing systems
 \item Optimized application performance for maximum speed and scalability
-\end{itemize}
+\end{{itemize}}
 
-\vspace{6pt}
-\section*{Education}
-\textbf{IT Högskolan}\\
-\textit{Bachelor's Degree in .NET Cloud Development} | 2021-2023\\
-\textbf{Mölndal Campus}\\
-\textit{Bachelor's Degree in Java Integration} | 2019-2021\\
-\textbf{University of Gothenburg}\\
-\textit{Master's Degree in International Business and Trade} | 2016-2019\\
+% Education
+\section*{{Education}}
+\textbf{{IT Högskolan}} | \textit{{Bachelor's Degree in .NET Cloud Development}} | 2021-2023\\
+\textbf{{Mölndal Campus}} | \textit{{Bachelor's Degree in Java Integration}} | 2019-2021\\
+\textbf{{University of Gothenburg}} | \textit{{Master's in International Business and Trade}} | 2016-2019
 
-\vspace{6pt}
-\section*{Certifications}
-\begin{itemize}
+% Certifications
+\section*{{Certifications}}
+\begin{{itemize}}[noitemsep]
 \item AWS Certified Solutions Architect - Associate (Aug 2022)
 \item Microsoft Certified: Azure Fundamentals (Jun 2022)
 \item AWS Certified Developer - Associate (Nov 2022)
-\end{itemize}
+\end{{itemize}}
 
-\vspace{6pt}
-\section*{Additional Information}
-\begin{itemize}
-\item \textbf{Languages:} Fluent in English and Mandarin, B2 for Swedish
-\item \textbf{Interests:} Vehicle technology, energy sector, new media platform
-\item \textbf{Personal Website:} \href{https://www.bluehawana.com}{bluehawana.com}
-\item \textbf{Customer Websites:} \href{https://www.senior798.eu}{senior798.eu}, \href{https://www.mibo.se}{mibo.se}, \href{https://www.omstallningsstod.se}{omstallningsstod.se}
-\end{itemize}
+% Additional Information
+\section*{{Additional Information}}
+\begin{{itemize}}[noitemsep]
+\item \textbf{{Languages:}} Fluent in English and Mandarin
+\item \textbf{{Personal Website:}} \href{{https://www.bluehawana.com}}{{bluehawana.com}}
+\item \textbf{{Portfolio Sites:}} \href{{https://www.senior798.eu}}{{senior798.eu}}, \href{{https://www.mibo.se}}{{mibo.se}}
+\end{{itemize}}
 
-\end{document}"""
+\end{{document}}"""
 
-        # Your cover letter template
-        self.cover_letter_template = r"""\documentclass[11pt,a4paper]{{article}}
-\usepackage[utf8]{{inputenc}}
-\usepackage{{geometry}}
+        # Your cover letter template - Matching CV format
+        self.cover_letter_template = r"""\documentclass[a4paper,10pt]{{article}}
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{{geometry}}
 \usepackage{{enumitem}}
 \usepackage{{titlesec}}
 \usepackage{{hyperref}}
@@ -217,12 +174,11 @@ class LaTeXResumeService:
 
 \begin{{letter}}{{\textcolor{{darkblue}}{{\\
 {company_name}\\
-{company_address}
-}}}}\\
+{company_address}}}}}\\
 
 \vspace{{40pt}}
 
-\opening{{Dear {hiring_manager},}}
+\opening{{{hiring_manager_greeting},}}
 \vspace{{10pt}}
 
 {cover_letter_body}
@@ -293,19 +249,21 @@ hongzhili01@gmail.com\\
             company_name = job.get('company', 'Your Company')
             job_title = job.get('title', 'the position')
             job_description = job.get('description', '')
-            job_url = job.get('url', '')
             
             # Generate cover letter body
             cover_letter_body = self._generate_cover_letter_body(job, job_description)
             
             # Determine hiring manager greeting
-            hiring_manager = self._determine_hiring_manager(job_description)
+            hiring_manager_greeting = self._determine_hiring_manager_greeting(job_description)
+            
+            # Get company address (can be generic or specific)
+            company_address = self._get_company_address(company_name)
             
             # Fill in template
             cover_letter_content = self.cover_letter_template.format(
                 company_name=company_name,
-                company_address=self._get_company_address(company_name),
-                hiring_manager=hiring_manager,
+                company_address=company_address,
+                hiring_manager_greeting=hiring_manager_greeting,
                 cover_letter_body=cover_letter_body,
                 current_date=datetime.now().strftime("%Y.%m.%d")
             )
@@ -484,19 +442,44 @@ hongzhili01@gmail.com\\
         
         return found_techs[:5]  # Return top 5 most relevant
     
-    def _determine_hiring_manager(self, description: str) -> str:
+    def _determine_hiring_manager_greeting(self, description: str) -> str:
         """Determine appropriate greeting for cover letter"""
         # Look for specific names or titles in job description
-        if 'linda' in description.lower():
-            return "Linda"
-        elif any(title in description.lower() for title in ['hr manager', 'hiring manager', 'recruitment']):
-            return "Hiring Manager"
+        description_lower = description.lower()
+        
+        if 'linda' in description_lower:
+            return "Hej Linda"
+        elif 'anna' in description_lower:
+            return "Hej Anna"
+        elif 'erik' in description_lower:
+            return "Hej Erik"
+        elif 'maria' in description_lower:
+            return "Hej Maria"
+        elif any(title in description_lower for title in ['hr manager', 'hiring manager', 'recruitment']):
+            return "Dear Hiring Manager"
         else:
-            return "Hiring Manager"
+            return "Dear Hiring Manager"
+    
+    def _determine_hiring_manager(self, description: str) -> str:
+        """Determine appropriate greeting for cover letter (legacy method)"""
+        return self._determine_hiring_manager_greeting(description)
     
     def _get_company_address(self, company_name: str) -> str:
         """Get company address or use generic Swedish address"""
-        # You could expand this with a database of company addresses
+        # Common company addresses (can be expanded)
+        company_addresses = {
+            'HaleyTek': 'Theres Svenssons gata 7\\\\41755 Göteborg',
+            'ECARX': 'ECARX Sweden AB\\\\Göteborg, Sweden',
+            'Volvo': 'Volvo Group\\\\Göteborg, Sweden',
+            'Polestar': 'Polestar AB\\\\Göteborg, Sweden'
+        }
+        
+        # Check if we have a specific address
+        for company, address in company_addresses.items():
+            if company.lower() in company_name.lower():
+                return address
+        
+        # Default generic address
         return f"{company_name}\\\\Göteborg, Sweden"
     
     async def _compile_latex_to_pdf(self, latex_content: str, filename: str) -> bytes:
@@ -553,10 +536,16 @@ hongzhili01@gmail.com\\
         company_name = job.get('company', 'Your Company')
         job_title = job.get('title', 'the position')
         
+        default_body = f"""I am writing to express my sincere interest in the {job_title} role at {company_name}. With over 5 years of experience as a Senior Fullstack Developer and my current role as IT/Infrastructure Specialist at ECARX, I am excited about the opportunity to contribute my expertise in Java/J2EE, modern web technologies, and scalable application development to your dynamic team.
+
+My technical background includes extensive experience with backend development using Java/J2EE, Spring Boot, C#/.NET Core, Python, and Node.js, as well as frontend technologies like Angular, ReactJS, and Vue.js. I have proven expertise in database management with PostgreSQL, MySQL, and MongoDB, along with cloud platforms including AWS, Azure, and GCP.
+
+I would welcome the opportunity to discuss how my experience and passion for innovative software development can contribute to {company_name}'s continued success. Thank you for considering my application."""
+        
         return self.cover_letter_template.format(
             company_name=company_name,
-            company_address=f"{company_name}\\\\Sweden",
-            hiring_manager="Hiring Manager",
-            cover_letter_body=f"I am writing to express my interest in the {job_title} position at {company_name}. With my extensive experience in fullstack development and cloud technologies, I believe I would be a valuable addition to your team.",
+            company_address=self._get_company_address(company_name),
+            hiring_manager_greeting="Dear Hiring Manager",
+            cover_letter_body=default_body,
             current_date=datetime.now().strftime("%Y.%m.%d")
         )
