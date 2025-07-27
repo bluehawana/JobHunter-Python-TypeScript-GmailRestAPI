@@ -1,0 +1,135 @@
+{
+  "devops": [],
+  "fullstack": [],
+  "backend": [
+    {
+      "name": "AnyNewsBot-Python-Epub-TTS-Podcast",
+      "description": "A Python application designed to access paid news content by crossing payroll barriers, convert the content into EPUB format, and utilize Text-to-Speech (TTS) technology to read it aloud, allowing users to conveniently listen to the news during their commute.",
+      "url": "https://github.com/bluehawana/AnyNewsBot-Python-Epub-TTS-Podcast",
+      "languages": [],
+      "technologies": [
+        "Integration",
+        "Api",
+        "Python"
+      ],
+      "features": [
+        "Easy to use a",
+        "Adds proper metadata for Apple Music\n- Uses adva",
+        "Google Chrome browser\n- macOS/Li",
+        "Bloomberg Article to Audio Co",
+        "Bypasses Bloomberg's paywall usi"
+      ],
+      "achievements": []
+    },
+    {
+      "name": "API-Integration-H2DB-authentication",
+      "description": "A Api integration task with springboot,mysql for user registration and authentication and book management.",
+      "url": "https://github.com/bluehawana/API-Integration-H2DB-authentication",
+      "languages": [],
+      "technologies": [
+        "Api",
+        "Gitlab"
+      ],
+      "features": [
+        "Book API med Aute"
+      ],
+      "achievements": []
+    }
+  ],
+  "frontend": [
+    {
+      "name": "bluehawana.github.io",
+      "description": null,
+      "url": "https://github.com/bluehawana/bluehawana.github.io",
+      "languages": [],
+      "technologies": [
+        "Integration",
+        "Api",
+        "Python",
+        "Javascript"
+      ],
+      "features": [
+        "- Works perfectly o",
+        "- Fast loadi",
+        "- Real-time GitHub repository i",
+        "- Automated blog post sy",
+        "Portfolio Website\n\n[![Live Site](https://img.shields.io/badge/live-bluehawa"
+      ],
+      "achievements": []
+    }
+  ],
+  "android": [
+    {
+      "name": "carbot-js-ai",
+      "description": "A customized carbot with better funtionalities than Google Assitant from Android Auto.",
+      "url": "https://github.com/bluehawana/carbot-js-ai",
+      "languages": [],
+      "technologies": [
+        "Api",
+        "Integration"
+      ],
+      "features": [
+        "Voice Assista",
+        "Wake word detectio",
+        "Speech recog",
+        "Car-specific features (",
+        "Google Auto platform i"
+      ],
+      "achievements": []
+    },
+    {
+      "name": "carplayer-kotlin-androidauto",
+      "description": null,
+      "url": "https://github.com/bluehawana/carplayer-kotlin-androidauto",
+      "languages": [],
+      "technologies": [
+        "Kotlin",
+        "Api",
+        "Integration"
+      ],
+      "features": [
+        "**Car-Optimized UI**: Desig",
+        "Valid IPTV subscriptio",
+        "**M3U/M3U8**: Sta",
+        "**Data Efficie",
+        "**Subscriptio"
+      ],
+      "achievements": []
+    }
+  ],
+  "api": [
+    {
+      "name": "AnyNewsBot-Python-Epub-TTS-Podcast",
+      "description": "A Python application designed to access paid news content by crossing payroll barriers, convert the content into EPUB format, and utilize Text-to-Speech (TTS) technology to read it aloud, allowing users to conveniently listen to the news during their commute.",
+      "url": "https://github.com/bluehawana/AnyNewsBot-Python-Epub-TTS-Podcast",
+      "languages": [],
+      "technologies": [
+        "Integration",
+        "Api",
+        "Python"
+      ],
+      "features": [
+        "Easy to use a",
+        "Adds proper metadata for Apple Music\n- Uses adva",
+        "Google Chrome browser\n- macOS/Li",
+        "Bloomberg Article to Audio Co",
+        "Bypasses Bloomberg's paywall usi"
+      ],
+      "achievements": []
+    },
+    {
+      "name": "API-Integration-H2DB-authentication",
+      "description": "A Api integration task with springboot,mysql for user registration and authentication and book management.",
+      "url": "https://github.com/bluehawana/API-Integration-H2DB-authentication",
+      "languages": [],
+      "technologies": [
+        "Api",
+        "Gitlab"
+      ],
+      "features": [
+        "Book API med Aute"
+      ],
+      "achievements": []
+    }
+  ]
+}
