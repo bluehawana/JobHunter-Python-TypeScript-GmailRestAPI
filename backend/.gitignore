@@ -1,0 +1,62 @@
+# API Credentials and Secrets
+*.env
+.env*
+config.json
+credentials.json
+secrets.json
+
+# Environment Variables Files  
+.envrc
+.env.local
+.env.production
+.env.development
+
+# API Keys and Tokens
+**/api_keys.py
+**/credentials.py
+**/secrets.py
+
+# Generated Files
+*.pdf
+*.log
+*.tex
+!**/templates/*.tex
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+
+# Email Attachments
+*_READY.pdf
+*_SOURCE.tex
+*_OPTIMIZED.pdf
+
+# Security - Never commit these patterns
+*password*
+*secret*
+*key*
+*token*
+*auth*
+sk-*
