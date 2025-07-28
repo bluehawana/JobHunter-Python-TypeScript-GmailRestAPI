@@ -39,11 +39,11 @@ def send_daily_documents():
     """Send daily CV/CL documents via email"""
     try:
         # Email configuration from environment
-        smtp_user = os.getenv("SMTP_USER", "bluehawana@gmail.com")
+        smtp_user = os.getenv("SMTP_USER", "leeharvad@gmail.com")
         smtp_password = os.getenv("SMTP_PASSWORD")
         smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com")
         smtp_port = int(os.getenv("SMTP_PORT", "587"))
-        to_email = "leeharvad@gmail.com"
+        to_email = "hongzhili01@gmail.com"
         
         if not smtp_password:
             logger.error("SMTP_PASSWORD not set")
