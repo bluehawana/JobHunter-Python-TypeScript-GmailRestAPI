@@ -79,3 +79,14 @@ venv.bak/
 *.db
 *.sqlite
 *.sqlite3
+
+# Security - API Keys and Secrets
+*secret*
+*key*
+*token*
+*password*
+*auth*
+sk-*
+config.json
+credentials.json
+secrets.json

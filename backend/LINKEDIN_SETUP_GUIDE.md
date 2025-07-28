@@ -26,11 +26,15 @@
 
 ## Step 2: Set Environment Variables
 
-Once you have the credentials, set them:
+⚠️ **SECURITY WARNING**: Never commit API keys or passwords to version control!
+
+Once you have the credentials, set them as environment variables:
 
 ```bash
 export LINKEDIN_CLIENT_SECRET="your_actual_client_secret_here"
 export LINKEDIN_ACCESS_TOKEN="your_actual_access_token_here"
+export SMTP_PASSWORD="your_gmail_app_password"
+export ANTHROPIC_AUTH_TOKEN="your_anthropic_api_token"
 ```
 
 ## Step 3: Test the Integration
@@ -38,11 +42,11 @@ export LINKEDIN_ACCESS_TOKEN="your_actual_access_token_here"
 Run the LinkedIn integration:
 
 ```bash
-export SMTP_PASSWORD='pvfpejpkrbknqbpj' && \\
-export ANTHROPIC_BASE_URL='https://anyrouter.top' && \\
-export ANTHROPIC_AUTH_TOKEN='sk-wldqMp1L48Uh85iQWgv05sRuUgtZxqyJAH92mW476z0SyiG4' && \\
-export LINKEDIN_CLIENT_SECRET='your_secret' && \\
-export LINKEDIN_ACCESS_TOKEN='your_token' && \\
+export SMTP_PASSWORD='your_gmail_app_password' && \\
+export ANTHROPIC_BASE_URL='your_anthropic_api_base_url' && \\
+export ANTHROPIC_AUTH_TOKEN='your_anthropic_api_token' && \\
+export LINKEDIN_CLIENT_SECRET='your_linkedin_client_secret' && \\
+export LINKEDIN_ACCESS_TOKEN='your_linkedin_access_token' && \\
 python3 linkedin_real_integration.py
 ```
 
