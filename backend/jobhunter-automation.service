@@ -1,0 +1,18 @@
+[Unit]
+Description=Daily Job Automation for JobHunter
+After=network.target
+
+[Service]
+Type=oneshot
+User=bluehawana
+WorkingDirectory=/Users/bluehawana/Projects/Jobhunter/backend
+Environment=PATH=/opt/homebrew/opt/postgresql@15/bin:/opt/homebrew/opt/postgresql@15/bin:/opt/homebrew/opt/ruby/bin:/usr/local/mysql/bin:/Users/bluehawana/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.12/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/Library/TeX/texbin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/corplink/mdm/opt/corplink-mdm/bin:/usr/local/go/bin:/Users/bluehawana/Library/Android/sdk/cmdline-tools/latest/bin:/Users/bluehawana/Library/Android/sdk/platform-tools:/Users/bluehawana/Library/Android/sdk/emulator:/Users/bluehawana/Library/Application Support/JetBrains/Toolbox/scripts:/Users/bluehawana/Library/Android/sdk/tools/bin:/Users/bluehawana/Library/Application Support/JetBrains/Toolbox/scripts:Unknown command: bin
+
+To see a list of supported npm commands, run:
+  npm help
+ExecStart=/opt/homebrew/opt/python@3.13/bin/python3.13 /Users/bluehawana/Projects/Jobhunter/backend/daily_job_automation.py
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

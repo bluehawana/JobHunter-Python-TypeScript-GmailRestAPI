@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Daily Job Automation every day at 9 AM
+Requires=jobhunter-automation.service
+
+[Timer]
+OnCalendar=Mon..Fri *-*-* 06:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

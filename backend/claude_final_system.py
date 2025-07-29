@@ -297,8 +297,8 @@ Please provide a detailed, ATS-optimized response that maximizes keyword matchin
             
             print(f"🤖 Calling Claude 3.7 API...")
             
-            # Call Claude via command line (using Claude 3.7)
-            cmd = ["claude", "--model", "claude-3-7-sonnet-20250219", "--print"]
+            # Call Claude via command line (using Claude Sonnet 3.5)
+            cmd = ["claude", "--model", "claude-3-5-sonnet-20241022", "--print"]
             
             result = subprocess.run(
                 cmd,

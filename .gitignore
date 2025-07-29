@@ -90,3 +90,15 @@ sk-*
 config.json
 credentials.json
 secrets.json
+source_credentials.json
+gmail_token.pickle
+*credentials*.json
+.env
+.env.*
+*_credentials*
+*_token*
+*_key*
+*_secret*
+*.pickle
+backend/app/services/source_credentials.json
+backend/app/services/gmail_token.pickle
