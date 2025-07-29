@@ -1,0 +1,1 @@
+# Requirements for Daily Job Automation\n# Generated on 2025-07-28T17:53:48.828760\n\nsupabase>=2.0.0\npython-multipart>=0.0.6\naiohttp>=3.8.0\nbeautifulsoup4>=4.12.0\nhttpx>=0.25.0\npython-dotenv>=1.0.0\nnltk>=3.8.0\nrequests>=2.31.0\nasyncio>=3.4.3\npathlib>=1.0.1\n

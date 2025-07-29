@@ -31,25 +31,39 @@ class Settings(BaseSettings):
     SUPABASE_ANON_KEY: Optional[str] = os.getenv("SUPABASE_ANON_KEY")
     
     # JWT settings
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # Email settings
     SMTP_TLS: bool = True
-    SMTP_PORT: Optional[int] = None
-    SMTP_HOST: Optional[str] = None
-    SMTP_USER: Optional[str] = None
-    SMTP_PASSWORD: Optional[str] = None
-    EMAILS_FROM_EMAIL: Optional[str] = None
+    SMTP_PORT: int = 587
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_USER: str = os.getenv("SENDER_EMAIL", "")
+    SOURCE_GMAIL_CREDENTIALS: Optional[str] = os.getenv("SOURCE_GMAIL_CREDENTIALS")
+    SENDER_EMAIL: str = os.getenv("SENDER_EMAIL", "")
+    SENDER_GMAIL_PASSWORD: Optional[str] = os.getenv("SENDER_GMAIL_PASSWORD")
     EMAILS_FROM_NAME: Optional[str] = None
+    EMAILS_FROM_EMAIL: str = os.getenv("SENDER_EMAIL", "")
     
     # External API settings
     GMAIL_CLIENT_ID: Optional[str] = os.getenv("GMAIL_CLIENT_ID")
     GMAIL_CLIENT_SECRET: Optional[str] = os.getenv("GMAIL_CLIENT_SECRET")
+    GMAIL_CREDENTIALS: Optional[str] = os.getenv("GMAIL_CREDENTIALS")
+    SMTP_PASSWORD: Optional[str] = os.getenv("SMTP_PASSWORD")
     LINKEDIN_CLIENT_ID: Optional[str] = os.getenv("LINKEDIN_CLIENT_ID")
     LINKEDIN_CLIENT_SECRET: Optional[str] = os.getenv("LINKEDIN_CLIENT_SECRET")
     LINKEDIN_ACCESS_TOKEN: Optional[str] = os.getenv("LINKEDIN_ACCESS_TOKEN")
+    
+    # Claude API settings
+    ANTHROPIC_API_KEY: Optional[str] = os.getenv("ANTHROPIC_API_KEY")
+    ANTHROPIC_BASE_URL: Optional[str] = os.getenv("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
+    
+    # R2 Storage settings
+    R2_ENDPOINT: Optional[str] = os.getenv("R2_ENDPOINT")
+    R2_ACCESS_KEY: Optional[str] = os.getenv("R2_ACCESS_KEY")
+    R2_SECRET_KEY: Optional[str] = os.getenv("R2_SECRET_KEY")
+    R2_BUCKET: str = os.getenv("R2_BUCKET", "jobhunter-documents")
     
     # Job Search APIs
     GOOGLE_CUSTOM_SEARCH_API_KEY: Optional[str] = os.getenv("GOOGLE_CUSTOM_SEARCH_API_KEY")
