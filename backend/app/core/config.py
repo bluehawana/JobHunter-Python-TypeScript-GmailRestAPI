@@ -80,5 +80,6 @@ class Settings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = ".env"
+        extra = "allow"  # Allow extra environment variables
 
 settings = Settings()

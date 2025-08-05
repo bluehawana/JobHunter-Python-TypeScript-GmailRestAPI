@@ -1,0 +1,177 @@
+{
+  "workflows": [
+    {
+      "name": "Daily Job Hunter Automation",
+      "description": "Fully automated daily job scanning and application generation",
+      "trigger": {
+        "type": "cron",
+        "schedule": "0 6 * * *",
+        "timezone": "Europe/Stockholm"
+      },
+      "nodes": [
+        {
+          "name": "Daily Trigger",
+          "type": "n8n-nodes-base.cron",
+          "parameters": {
+            "rule": {
+              "interval": [
+                {
+                  "field": "cronExpression",
+                  "expression": "0 6 * * *"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Trigger Job Scan",
+          "type": "n8n-nodes-base.httpRequest",
+          "parameters": {
+            "url": "http://localhost:8000/api/v1/webhooks/trigger/daily-job-scan",
+            "method": "POST",
+            "headers": {
+              "Content-Type": "application/json"
+            }
+          }
+        },
+        {
+          "name": "Send Success Notification",
+          "type": "n8n-nodes-base.emailSend",
+          "parameters": {
+            "fromEmail": "automation@jobhunter.com",
+            "toEmail": "hongzhili01@gmail.com",
+            "subject": "✅ Daily Job Scan Completed",
+            "text": "Your automated job hunting system has completed the daily scan. Check leeharvad@gmail.com for new applications."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gmail Job Monitor",
+      "description": "Monitor Gmail for new job emails and process immediately",
+      "trigger": {
+        "type": "gmail",
+        "query": "from:(linkedin.com OR indeed.com OR glassdoor.com) subject:(job OR opportunity OR position)"
+      },
+      "nodes": [
+        {
+          "name": "Gmail Trigger",
+          "type": "n8n-nodes-base.gmailTrigger",
+          "parameters": {
+            "pollTimes": {
+              "item": [
+                {
+                  "mode": "everyMinute",
+                  "value": 5
+                }
+              ]
+            },
+            "simple": false,
+            "filters": {
+              "sender": "linkedin.com,indeed.com,glassdoor.com",
+              "subject": "job,opportunity,position,hiring"
+            }
+          }
+        },
+        {
+          "name": "Extract Job Data",
+          "type": "n8n-nodes-base.function",
+          "parameters": {
+            "functionCode": "// Extract job information from email\nconst email = items[0].json;\nconst subject = email.subject || '';\nconst body = email.snippet || email.body || '';\nconst sender = email.from || '';\n\n// Extract company and title\nconst company = extractCompany(sender, body);\nconst title = extractTitle(subject, body);\nconst description = body.substring(0, 1000);\n\nfunction extractCompany(sender, body) {\n  if (sender.includes('linkedin')) return 'LinkedIn Job';\n  if (sender.includes('indeed')) return 'Indeed Job';\n  if (sender.includes('glassdoor')) return 'Glassdoor Job';\n  return 'Job Opportunity';\n}\n\nfunction extractTitle(subject, body) {\n  const titlePatterns = [\n    /job[:\\s]+([^\\n\\r,]+)/i,\n    /position[:\\s]+([^\\n\\r,]+)/i,\n    /opportunity[:\\s]+([^\\n\\r,]+)/i\n  ];\n  \n  for (const pattern of titlePatterns) {\n    const match = subject.match(pattern) || body.match(pattern);\n    if (match) return match[1].trim();\n  }\n  \n  return 'Software Developer Position';\n}\n\nreturn [{\n  json: {\n    id: `email_${Date.now()}`,\n    title: title,\n    company: company,\n    description: description,\n    source: 'gmail_monitor',\n    keywords: ['software', 'developer', 'fullstack'],\n    location: 'Sweden',\n    url: email.link || '',\n    job_type: 'fulltime',\n    remote_option: body.toLowerCase().includes('remote')\n  }\n}];"
+          }
+        },
+        {
+          "name": "Process Job",
+          "type": "n8n-nodes-base.httpRequest",
+          "parameters": {
+            "url": "http://localhost:8000/api/v1/webhooks/trigger/process-job",
+            "method": "POST",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": "={{ JSON.stringify($json) }}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Volvo Energy Alert System",
+      "description": "Emergency processing for Volvo Energy IT support positions",
+      "trigger": {
+        "type": "webhook",
+        "path": "volvo-energy-alert"
+      },
+      "nodes": [
+        {
+          "name": "Volvo Alert Webhook",
+          "type": "n8n-nodes-base.webhook",
+          "parameters": {
+            "path": "volvo-energy-alert",
+            "httpMethod": "POST"
+          }
+        },
+        {
+          "name": "Process Urgent Job",
+          "type": "n8n-nodes-base.httpRequest",
+          "parameters": {
+            "url": "http://localhost:8000/api/v1/webhooks/trigger/emergency-job-alert",
+            "method": "POST",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": "={{ JSON.stringify({keywords: ['volvo', 'energy', 'IT support', 'technical support']}) }}"
+          }
+        },
+        {
+          "name": "Send Urgent Notification",
+          "type": "n8n-nodes-base.twilioSms",
+          "parameters": {
+            "from": "+1234567890",
+            "to": "+46728384299",
+            "message": "🚨 URGENT: Volvo Energy IT support position detected and processed! Check your email for customized application."
+          }
+        }
+      ]
+    }
+  ],
+  "zapier_webhooks": [
+    {
+      "name": "Daily Job Automation",
+      "trigger_url": "http://localhost:8000/api/v1/webhooks/trigger/daily-job-scan",
+      "schedule": "Every day at 6:00 AM Stockholm time",
+      "method": "POST"
+    },
+    {
+      "name": "Gmail Job Processing",
+      "trigger_url": "http://localhost:8000/api/v1/webhooks/trigger/gmail-scan", 
+      "trigger": "New email in Gmail matching job keywords",
+      "method": "POST"
+    },
+    {
+      "name": "Emergency Job Alert",
+      "trigger_url": "http://localhost:8000/api/v1/webhooks/trigger/emergency-job-alert",
+      "trigger": "Keyword monitoring service detects Volvo Energy",
+      "method": "POST",
+      "payload": {
+        "keywords": ["volvo", "energy", "IT support"]
+      }
+    }
+  ],
+  "twilio_integration": {
+    "phone_number": "+46728384299",
+    "notifications": [
+      {
+        "trigger": "daily_scan_complete",
+        "message": "✅ Daily job scan completed. Check email for new applications."
+      },
+      {
+        "trigger": "urgent_job_found", 
+        "message": "🚨 URGENT: {{company}} {{title}} position found and processed!"
+      },
+      {
+        "trigger": "system_error",
+        "message": "❌ JobHunter system error. Check logs."
+      }
+    ]
+  }
+}

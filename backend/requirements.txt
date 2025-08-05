@@ -29,6 +29,7 @@ google-auth-httplib2==0.2.0
 google-api-python-client==2.110.0
 beautifulsoup4==4.12.2
 lxml==4.9.3
+brotli==1.1.0
 
 # LaTeX and PDF processing
 Pillow==10.1.0
@@ -57,3 +58,13 @@ asyncpg==0.30.0
 
 # Required for SQLAlchemy async
 greenlet==3.2.3
+
+# Master Automation Orchestrator dependencies
+reportlab==4.0.7
+apscheduler==3.10.4
+pytz==2023.3
+anthropic==0.8.1
+
+# Additional automation dependencies
+python-dotenv==1.0.0
+requests==2.31.0

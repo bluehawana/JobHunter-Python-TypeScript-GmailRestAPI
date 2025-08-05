@@ -1,0 +1,328 @@
+{
+  "total_found": 19,
+  "filtered_jobs": [
+    {
+      "source": "skf_careers",
+      "job_id": "skf_1",
+      "title": "Senior Software Engineer - Digital Solutions",
+      "company": "SKF Group",
+      "location": "Gothenburg, Sweden",
+      "application_link": "https://careers.skf.com/job/12345",
+      "description": "Join SKF's digital transformation journey. Work with IoT, cloud platforms, and data analytics to revolutionize bearing technology.",
+      "keywords": [
+        "java",
+        "spring boot",
+        "aws",
+        "microservices",
+        "iot",
+        "analytics"
+      ],
+      "employment_type": "Permanent",
+      "experience_level": "Senior",
+      "salary": "60,000 - 80,000 SEK/month",
+      "date_posted": "Recent",
+      "company_info": "SKF Group is a leading technology company in the automotive and industrial sectors.",
+      "benefits": [
+        "Competitive salary",
+        "Health insurance",
+        "Flexible working",
+        "Professional development"
+      ],
+      "requirements": [
+        "3+ years of software development experience",
+        "Strong experience with Java and Spring Framework",
+        "Experience with cloud platforms (AWS/Azure)",
+        "Strong problem-solving skills",
+        "Experience working in Agile environments",
+        "Excellent communication skills in English"
+      ],
+      "quality_score": 64
+    },
+    {
+      "source": "skf_careers",
+      "job_id": "skf_3",
+      "title": "DevOps Engineer - Platform Team",
+      "company": "SKF Group",
+      "location": "Malmö, Sweden",
+      "application_link": "https://careers.skf.com/job/12347",
+      "description": "Build and maintain our cloud infrastructure. Experience with Kubernetes, Docker, and CI/CD pipelines.",
+      "keywords": [
+        "kubernetes",
+        "docker",
+        "terraform",
+        "jenkins",
+        "aws",
+        "devops"
+      ],
+      "employment_type": "Permanent",
+      "experience_level": "Senior",
+      "salary": "60,000 - 80,000 SEK/month",
+      "date_posted": "Recent",
+      "company_info": "SKF Group is a leading technology company in the automotive and industrial sectors.",
+      "benefits": [
+        "Competitive salary",
+        "Health insurance",
+        "Flexible working",
+        "Professional development"
+      ],
+      "requirements": [
+        "3+ years of software development experience",
+        "Experience with cloud platforms (AWS/Azure)",
+        "Experience with DevOps practices and tools",
+        "Strong problem-solving skills",
+        "Experience working in Agile environments",
+        "Excellent communication skills in English"
+      ],
+      "quality_score": 61
+    },
+    {
+      "source": "volvo_cars_careers",
+      "job_id": "volvo_cars_2",
+      "title": "Backend Developer - Connected Services",
+      "company": "Volvo Cars",
+      "location": "Stockholm, Sweden",
+      "application_link": "https://careers.volvo_cars.com/job/12346",
+      "description": "Develop backend services for connected car features. Experience with Java, Spring Boot, and cloud platforms.",
+      "keywords": [
+        "java",
+        "spring boot",
+        "microservices",
+        "aws",
+        "backend",
+        "automotive"
+      ],
+      "employment_type": "Permanent",
+      "experience_level": "Mid-level",
+      "salary": "45,000 - 60,000 SEK/month",
+      "date_posted": "Recent",
+      "company_info": "Volvo Cars is a leading technology company in the automotive and industrial sectors.",
+      "benefits": [
+        "Competitive salary",
+        "Health insurance",
+        "Flexible working",
+        "Professional development"
+      ],
+      "requirements": [
+        "3+ years of software development experience",
+        "Strong experience with Java and Spring Framework",
+        "Experience with cloud platforms (AWS/Azure)",
+        "Strong problem-solving skills",
+        "Experience working in Agile environments",
+        "Excellent communication skills in English"
+      ],
+      "quality_score": 59
+    },
+    {
+      "source": "volvo_group_careers",
+      "job_id": "volvo_group_3",
+      "title": "DevOps Engineer - Infrastructure",
+      "company": "Volvo Group",
+      "location": "Gothenburg, Sweden",
+      "application_link": "https://careers.volvo_group.com/job/12347",
+      "description": "Maintain and develop our cloud infrastructure. Experience with Azure, Docker, and automation tools.",
+      "keywords": [
+        "azure",
+        "docker",
+        "kubernetes",
+        "terraform",
+        "ansible",
+        "devops"
+      ],
+      "employment_type": "Permanent",
+      "experience_level": "Senior",
+      "salary": "60,000 - 80,000 SEK/month",
+      "date_posted": "Recent",
+      "company_info": "Volvo Group is a leading technology company in the automotive and industrial sectors.",
+      "benefits": [
+        "Competitive salary",
+        "Health insurance",
+        "Flexible working",
+        "Professional development"
+      ],
+      "requirements": [
+        "3+ years of software development experience",
+        "Experience with cloud platforms (AWS/Azure)",
+        "Experience with DevOps practices and tools",
+        "Strong problem-solving skills",
+        "Experience working in Agile environments",
+        "Excellent communication skills in English"
+      ],
+      "quality_score": 58
+    },
+    {
+      "source": "skf_careers",
+      "job_id": "skf_2",
+      "title": "Fullstack Developer - Industrial IoT",
+      "company": "SKF Group",
+      "location": "Stockholm, Sweden",
+      "application_link": "https://careers.skf.com/job/12346",
+      "description": "Develop cutting-edge industrial IoT solutions. Experience with React, Node.js, and cloud platforms required.",
+      "keywords": [
+        "react",
+        "nodejs",
+        "typescript",
+        "azure",
+        "iot",
+        "fullstack"
+      ],
+      "employment_type": "Permanent",
+      "experience_level": "Mid-level",
+      "salary": "45,000 - 60,000 SEK/month",
+      "date_posted": "Recent",
+      "company_info": "SKF Group is a leading technology company in the automotive and industrial sectors.",
+      "benefits": [
+        "Competitive salary",
+        "Health insurance",
+        "Flexible working",
+        "Professional development"
+      ],
+      "requirements": [
+        "3+ years of software development experience",
+        "Experience with React.js and modern frontend development",
+        "Experience with cloud platforms (AWS/Azure)",
+        "Full-stack development experience",
+        "Strong problem-solving skills",
+        "Experience working in Agile environments"
+      ],
+      "quality_score": 53
+    },
+    {
+      "source": "volvo_group_careers",
+      "job_id": "volvo_group_2",
+      "title": "Fullstack Developer - Digital Services",
+      "company": "Volvo Group",
+      "location": "Stockholm, Sweden",
+      "application_link": "https://careers.volvo_group.com/job/12346",
+      "description": "Build digital services for commercial vehicles. Experience with React, Node.js, and cloud technologies.",
+      "keywords": [
+        "react",
+        "nodejs",
+        "typescript",
+        "azure",
+        "fullstack",
+        "commercial"
+      ],
+      "employment_type": "Permanent",
+      "experience_level": "Mid-level",
+      "salary": "45,000 - 60,000 SEK/month",
+      "date_posted": "Recent",
+      "company_info": "Volvo Group is a leading technology company in the automotive and industrial sectors.",
+      "benefits": [
+        "Competitive salary",
+        "Health insurance",
+        "Flexible working",
+        "Professional development"
+      ],
+      "requirements": [
+        "3+ years of software development experience",
+        "Experience with React.js and modern frontend development",
+        "Experience with cloud platforms (AWS/Azure)",
+        "Full-stack development experience",
+        "Strong problem-solving skills",
+        "Experience working in Agile environments"
+      ],
+      "quality_score": 53
+    }
+  ],
+  "sources": {
+    "gmail": {
+      "count": 10
+    },
+    "linkedin": {
+      "count": 0
+    },
+    "indeed": {
+      "count": 0
+    },
+    "arbetsformedlingen": {
+      "count": 0
+    },
+    "company_careers": {
+      "count": 9
+    }
+  },
+  "summary": {
+    "total_sources": 5,
+    "total_raw_jobs": 19,
+    "filtered_jobs": 6,
+    "final_unique_jobs": 6,
+    "avg_experience_level": "Mixed Senior/Mid-level",
+    "top_companies": [
+      {
+        "company": "SKF Group",
+        "count": 3
+      },
+      {
+        "company": "Volvo Group",
+        "count": 2
+      },
+      {
+        "company": "Volvo Cars",
+        "count": 1
+      }
+    ],
+    "top_keywords": [
+      {
+        "keyword": "aws",
+        "count": 3
+      },
+      {
+        "keyword": "azure",
+        "count": 3
+      },
+      {
+        "keyword": "java",
+        "count": 2
+      },
+      {
+        "keyword": "spring boot",
+        "count": 2
+      },
+      {
+        "keyword": "microservices",
+        "count": 2
+      },
+      {
+        "keyword": "iot",
+        "count": 2
+      },
+      {
+        "keyword": "kubernetes",
+        "count": 2
+      },
+      {
+        "keyword": "docker",
+        "count": 2
+      },
+      {
+        "keyword": "terraform",
+        "count": 2
+      },
+      {
+        "keyword": "devops",
+        "count": 2
+      },
+      {
+        "keyword": "react",
+        "count": 2
+      },
+      {
+        "keyword": "nodejs",
+        "count": 2
+      },
+      {
+        "keyword": "typescript",
+        "count": 2
+      },
+      {
+        "keyword": "fullstack",
+        "count": 2
+      },
+      {
+        "keyword": "analytics",
+        "count": 1
+      }
+    ]
+  },
+  "timestamp": "2025-08-04T22:41:58.952668"
+}

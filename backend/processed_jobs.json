@@ -1,0 +1,32 @@
+[
+  {
+    "company": "Tech Company",
+    "title": "Recruiter",
+    "url": "mailto:LinkedIn <messages-noreply@linkedin.com>",
+    "location": "Sweden"
+  },
+  {
+    "company": "Tech Company",
+    "title": "Software Developer",
+    "url": "mailto:LinkedIn <groups-noreply@linkedin.com>",
+    "location": "Sweden"
+  },
+  {
+    "company": "is actively hiring",
+    "title": "Software Developer",
+    "url": "https://www.linkedin.com/comm/jobs/view/4264724013/?trackingId=%2FMj%2FQSJ36UyZYrt3Zze2tQ%3D%3D&refId=ByteString%28length%3D16%2Cbytes%3D9a2c038f...dcb358b7%29&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BHZj1MeBBQfuY%2F1PJAoR5mQ%3D%3D&midToken=AQFxyw94_DNA5g&midSig=18j6NUeir04HU1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_4360937801&trkEmail=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_4360937801-null-2q3rao~mdsgzmkv~70-null-null&eid=2q3rao-mdsgzmkv-70&otpToken=MTMwMzFhZTcxNTI5Y2VjNWI2MjQwNGVkNDMxYWU3Yjc4ZWNkZDc0NzlhYWE4NzYxNzRjMTAzNmI0NjVlNWVmM2ZmZDBkZmIyNjRkOWM4ZjcwMzg4YThkYThkNDE0MTc4YjNiMWNhN2U1OTlkZTMyZjRiZWEwYiwxLDE%3D",
+    "location": "Gothenburg"
+  },
+  {
+    "company": "Tech Company",
+    "title": "Nyligen upplagt",
+    "url": "https://se.indeed.com/jobs?q=devops&hl=sv&from=ja&l=G%C3%B6teborg&radius=25&alid=656c487d4a73b25d21a82b91&tmtk=1j19i988egosi800&utm_campaign=job_alerts&utm_medium=email&utm_source=jobseeker_emails&of=1&fr=t",
+    "location": "G\u00f6teborg"
+  },
+  {
+    "company": "Tech Company",
+    "title": "i att utveckla och implementera l\u00f6sningar f\u00f6r kontinuerlig i",
+    "url": "https://se.indeed.com/jobs?q=azure&hl=sv&from=ja&l=M%C3%B6lndal&radius=25&alid=65b0add57d6c9c301abd698e&tmtk=1j1at4rsnjc13800&utm_campaign=job_alerts&utm_medium=email&utm_source=jobseeker_emails&of=1&fr=t",
+    "location": "G\u00f6teborg"
+  }
+]

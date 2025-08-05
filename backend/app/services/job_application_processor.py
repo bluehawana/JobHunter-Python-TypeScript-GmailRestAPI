@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 import re
 
 from app.core.config import settings
-from app.services.latex_resume_service import LaTeXResumeService
+from app.services.professional_latex_service import ProfessionalLaTeXService
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class JobApplicationProcessor:
     """Service for processing job applications and generating customized documents"""
     
     def __init__(self):
-        self.latex_service = LaTeXResumeService()
+        self.latex_service = ProfessionalLaTeXService()
         self.smtp_host = settings.SMTP_HOST
         self.smtp_port = settings.SMTP_PORT
         self.smtp_user = settings.SMTP_USER
