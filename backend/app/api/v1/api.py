@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, jobs, applications, documents, dashboard, gmail, automation, job_fetcher, job_aggregator
+from app.api.v1.endpoints import auth, jobs, applications, webhooks, documents, dashboard, gmail, automation, job_fetcher, job_aggregator
 
 api_router = APIRouter()
 
