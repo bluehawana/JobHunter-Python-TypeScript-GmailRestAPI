@@ -13,9 +13,12 @@ from pathlib import Path
 # Add current directory to Python path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from fastapi import FastAPI, BackgroundTasks
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, BackgroundTasks, Request
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 import uvicorn
+import json
 
 # Configure logging for Heroku
 logging.basicConfig(
@@ -40,6 +43,23 @@ app = FastAPI(
     description="Automated job hunting with intelligent template customization",
     version="1.0.0"
 )
+
+# Setup templates and static files
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Statistics storage (in production, use a database)
+stats = {
+    "total_runs": 0,
+    "jobs_fetched": 0,
+    "jobs_filtered": 0,
+    "resumes_generated": 0,
+    "cover_letters_generated": 0,
+    "emails_sent": 0,
+    "last_run": None,
+    "success_rate": 0.0,
+    "recent_jobs": []
+}
 
 # Initialize scheduler if available
 scheduler = None
@@ -81,16 +101,31 @@ async def shutdown_event():
         scheduler.shutdown()
     logger.info("🛑 JobHunter LEGO System stopped")
 
-@app.get("/")
-async def root():
-    """Health check endpoint"""
+@app.get("/", response_class=HTMLResponse)
+async def dashboard(request: Request):
+    """Main dashboard with statistics"""
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request,
+        "stats": stats,
+        "status": "running",
+        "service": "JobHunter LEGO System",
+        "next_run": get_next_run_time(),
+        "timezone": "Europe/Stockholm",
+        "schedule": "Monday-Friday at 6:00 AM",
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
+
+@app.get("/api/status")
+async def api_status():
+    """JSON API endpoint for status"""
     return {
         "status": "running",
         "service": "JobHunter LEGO System",
         "next_scheduled_run": get_next_run_time(),
         "timezone": "Europe/Stockholm",
         "schedule": "Monday-Friday at 6:00 AM",
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
+        "stats": stats
     }
 
 @app.get("/health")
@@ -135,12 +170,38 @@ async def run_automation_sync():
             # Run the complete automation workflow
             await orchestrator.run_complete_automation()
             
+            # Update statistics
+            jobs_fetched = getattr(orchestrator, 'jobs_found', 0)
+            jobs_filtered = getattr(orchestrator, 'jobs_processed', 0)
+            emails_sent = getattr(orchestrator, 'successful_applications', 0)
+            
+            # Create recent jobs list
+            recent_jobs = []
+            if hasattr(orchestrator, 'processed_jobs'):
+                for job in orchestrator.processed_jobs[-10:]:
+                    recent_jobs.append({
+                        "title": job.get('title', 'Unknown'),
+                        "company": job.get('company', 'Unknown'),
+                        "status": "sent" if job.get('sent', False) else "pending"
+                    })
+            
+            update_stats(
+                jobs_fetched=jobs_fetched,
+                jobs_filtered=jobs_filtered,
+                resumes_generated=emails_sent,  # Assume 1 resume per email
+                cover_letters_generated=emails_sent,  # Assume 1 cover letter per email
+                emails_sent=emails_sent,
+                recent_jobs=recent_jobs
+            )
+            
             return {
                 "status": "success",
-                "message": f"Automation completed: {orchestrator.successful_applications} applications sent",
-                "successful_applications": orchestrator.successful_applications,
-                "failed_applications": orchestrator.failed_applications,
-                "execution_time": orchestrator._get_execution_time(),
+                "message": f"Automation completed: {emails_sent} applications sent",
+                "successful_applications": emails_sent,
+                "failed_applications": getattr(orchestrator, 'failed_applications', 0),
+                "jobs_fetched": jobs_fetched,
+                "jobs_filtered": jobs_filtered,
+                "execution_time": getattr(orchestrator, '_get_execution_time', lambda: "N/A")(),
                 "timestamp": datetime.now().isoformat()
             }
         except ImportError as e:
@@ -195,8 +256,49 @@ def get_next_run_time():
     jobs = scheduler.get_jobs()
     if jobs:
         next_run = jobs[0].next_run_time
-        return next_run.isoformat() if next_run else None
+        return next_run.strftime("%Y-%m-%d %H:%M:%S") if next_run else None
     return None
+
+def update_stats(jobs_fetched=0, jobs_filtered=0, resumes_generated=0, cover_letters_generated=0, emails_sent=0, recent_jobs=None):
+    """Update statistics"""
+    global stats
+    stats["total_runs"] += 1
+    stats["jobs_fetched"] += jobs_fetched
+    stats["jobs_filtered"] += jobs_filtered
+    stats["resumes_generated"] += resumes_generated
+    stats["cover_letters_generated"] += cover_letters_generated
+    stats["emails_sent"] += emails_sent
+    stats["last_run"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    if emails_sent > 0 and jobs_filtered > 0:
+        stats["success_rate"] = (stats["emails_sent"] / max(stats["jobs_filtered"], 1)) * 100
+    
+    if recent_jobs:
+        stats["recent_jobs"].extend(recent_jobs)
+        # Keep only last 50 jobs
+        stats["recent_jobs"] = stats["recent_jobs"][-50:]
+
+@app.get("/api/stats")
+async def get_stats():
+    """Get current statistics"""
+    return stats
+
+@app.post("/api/stats/reset")
+async def reset_stats():
+    """Reset all statistics"""
+    global stats
+    stats = {
+        "total_runs": 0,
+        "jobs_fetched": 0,
+        "jobs_filtered": 0,
+        "resumes_generated": 0,
+        "cover_letters_generated": 0,
+        "emails_sent": 0,
+        "last_run": None,
+        "success_rate": 0.0,
+        "recent_jobs": []
+    }
+    return {"status": "success", "message": "Statistics reset"}
 
 async def run_daily_lego_automation():
     """Daily automation task using master orchestrator"""
@@ -210,7 +312,31 @@ async def run_daily_lego_automation():
             orchestrator = MasterAutomationOrchestrator()
             await orchestrator.run_complete_automation()
             
-            logger.info(f"🎉 Daily automation completed: {orchestrator.successful_applications} applications sent")
+            # Update statistics for daily run
+            jobs_fetched = getattr(orchestrator, 'jobs_found', 0)
+            jobs_filtered = getattr(orchestrator, 'jobs_processed', 0)
+            emails_sent = getattr(orchestrator, 'successful_applications', 0)
+            
+            # Create recent jobs list
+            recent_jobs = []
+            if hasattr(orchestrator, 'processed_jobs'):
+                for job in orchestrator.processed_jobs[-10:]:
+                    recent_jobs.append({
+                        "title": job.get('title', 'Unknown'),
+                        "company": job.get('company', 'Unknown'),
+                        "status": "sent" if job.get('sent', False) else "pending"
+                    })
+            
+            update_stats(
+                jobs_fetched=jobs_fetched,
+                jobs_filtered=jobs_filtered,
+                resumes_generated=emails_sent,
+                cover_letters_generated=emails_sent,
+                emails_sent=emails_sent,
+                recent_jobs=recent_jobs
+            )
+            
+            logger.info(f"🎉 Daily automation completed: {emails_sent} applications sent")
         except ImportError as e:
             logger.error(f"❌ Import error in daily automation: {e}")
         
