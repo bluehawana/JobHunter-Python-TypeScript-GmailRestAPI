@@ -112,7 +112,7 @@ class MasterAutomationOrchestrator:
             required_vars = [
                 'SENDER_EMAIL',
                 'SENDER_GMAIL_PASSWORD',
-                'CLAUDE_API_KEY'
+                'ANTHROPIC_AUTH_TOKEN'
             ]
             
             missing_vars = []
