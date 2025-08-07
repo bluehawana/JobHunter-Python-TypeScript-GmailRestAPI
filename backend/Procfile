@@ -1,1 +1,1 @@
-web: python heroku_app.py
+web: cd backend && python heroku_app.py
