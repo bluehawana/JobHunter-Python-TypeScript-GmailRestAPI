@@ -45,8 +45,16 @@ app = FastAPI(
 )
 
 # Setup templates and static files
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+import os
+template_dir = os.path.join(os.path.dirname(__file__), "templates")
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+
+# Create directories if they don't exist
+os.makedirs(template_dir, exist_ok=True)
+os.makedirs(static_dir, exist_ok=True)
+
+templates = Jinja2Templates(directory=template_dir)
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # Statistics storage (in production, use a database)
 stats = {
@@ -104,16 +112,33 @@ async def shutdown_event():
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request):
     """Main dashboard with statistics"""
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
-        "stats": stats,
-        "status": "running",
-        "service": "JobHunter LEGO System",
-        "next_run": get_next_run_time(),
-        "timezone": "Europe/Stockholm",
-        "schedule": "Monday-Friday at 6:00 AM",
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
+    try:
+        return templates.TemplateResponse("dashboard.html", {
+            "request": request,
+            "stats": stats,
+            "status": "running",
+            "service": "JobHunter LEGO System",
+            "next_run": get_next_run_time(),
+            "timezone": "Europe/Stockholm",
+            "schedule": "Monday-Friday at 6:00 AM",
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+    except Exception as e:
+        # Fallback to simple HTML if template fails
+        logger.error(f"Template error: {e}")
+        return HTMLResponse(f"""
+        <!DOCTYPE html>
+        <html>
+        <head><title>JobHunter Dashboard</title></head>
+        <body>
+            <h1>🎯 JobHunter LEGO System</h1>
+            <p>Status: Running</p>
+            <p>Stats: {stats}</p>
+            <p>Error loading template: {str(e)}</p>
+            <a href="/api/status">API Status</a>
+        </body>
+        </html>
+        """)
 
 @app.get("/api/status")
 async def api_status():
