@@ -15,8 +15,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from fastapi import FastAPI, BackgroundTasks, Request
 from fastapi.responses import JSONResponse, HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 import uvicorn
 import json
 
@@ -44,17 +42,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Setup templates and static files
-import os
-template_dir = os.path.join(os.path.dirname(__file__), "templates")
-static_dir = os.path.join(os.path.dirname(__file__), "static")
-
-# Create directories if they don't exist
-os.makedirs(template_dir, exist_ok=True)
-os.makedirs(static_dir, exist_ok=True)
-
-templates = Jinja2Templates(directory=template_dir)
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+# Simple HTML dashboard without templates
 
 # Statistics storage (in production, use a database)
 stats = {
@@ -109,36 +97,228 @@ async def shutdown_event():
         scheduler.shutdown()
     logger.info("🛑 JobHunter LEGO System stopped")
 
+def generate_dashboard_html():
+    """Generate dashboard HTML without templates"""
+    return f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>JobHunter LEGO System - Dashboard</title>
+        <style>
+            * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+            body {{
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                color: #333;
+                padding: 20px;
+            }}
+            .container {{ max-width: 1200px; margin: 0 auto; }}
+            .header {{ text-align: center; color: white; margin-bottom: 30px; }}
+            .header h1 {{ font-size: 2.5rem; margin-bottom: 10px; }}
+            .header p {{ font-size: 1.1rem; opacity: 0.9; }}
+            .stats-grid {{
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }}
+            .stat-card {{
+                background: white;
+                border-radius: 12px;
+                padding: 25px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                text-align: center;
+                transition: transform 0.3s ease;
+            }}
+            .stat-card:hover {{ transform: translateY(-5px); }}
+            .stat-number {{
+                font-size: 2.5rem;
+                font-weight: bold;
+                color: #667eea;
+                margin-bottom: 10px;
+            }}
+            .stat-label {{
+                font-size: 1rem;
+                color: #666;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }}
+            .controls {{
+                background: white;
+                border-radius: 12px;
+                padding: 25px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                margin-bottom: 30px;
+            }}
+            .controls h3 {{ margin-bottom: 20px; color: #333; }}
+            .button-group {{ display: flex; gap: 15px; flex-wrap: wrap; }}
+            .btn {{
+                padding: 12px 24px;
+                border: none;
+                border-radius: 8px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: inline-block;
+            }}
+            .btn-primary {{ background: #667eea; color: white; }}
+            .btn-primary:hover {{ background: #5a6fd8; }}
+            .btn-secondary {{
+                background: #f8f9fa;
+                color: #333;
+                border: 2px solid #dee2e6;
+            }}
+            .btn-secondary:hover {{ background: #e9ecef; }}
+            .status-section {{
+                background: white;
+                border-radius: 12px;
+                padding: 25px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                margin-bottom: 30px;
+            }}
+            .status-indicator {{
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                margin-right: 8px;
+                background: #28a745;
+            }}
+            .footer {{
+                text-align: center;
+                color: white;
+                opacity: 0.8;
+                margin-top: 30px;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🎯 JobHunter LEGO System</h1>
+                <p>Automated Job Hunting with Intelligent Template Customization</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">{stats['total_runs']}</div>
+                    <div class="stat-label">Total Runs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{stats['jobs_fetched']}</div>
+                    <div class="stat-label">Jobs Fetched</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{stats['jobs_filtered']}</div>
+                    <div class="stat-label">Jobs Filtered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{stats['resumes_generated']}</div>
+                    <div class="stat-label">Resumes Generated</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{stats['cover_letters_generated']}</div>
+                    <div class="stat-label">Cover Letters</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{stats['emails_sent']}</div>
+                    <div class="stat-label">Emails Sent</div>
+                </div>
+            </div>
+            
+            <div class="status-section">
+                <h3>System Status</h3>
+                <p>
+                    <span class="status-indicator"></span>
+                    <strong>Status:</strong> Running
+                </p>
+                <p><strong>Service:</strong> JobHunter LEGO System</p>
+                <p><strong>Schedule:</strong> Monday-Friday at 6:00 AM</p>
+                <p><strong>Timezone:</strong> Europe/Stockholm</p>
+                <p><strong>Next Run:</strong> {get_next_run_time() or 'Not scheduled'}</p>
+                <p><strong>Last Run:</strong> {stats['last_run'] or 'Never'}</p>
+                <p><strong>Success Rate:</strong> {stats['success_rate']:.1f}%</p>
+            </div>
+            
+            <div class="controls">
+                <h3>Manual Controls</h3>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="runAutomation()">🚀 Run Automation Now</button>
+                    <button class="btn btn-secondary" onclick="triggerManual()">⚡ Quick Trigger</button>
+                    <button class="btn btn-secondary" onclick="refreshStats()">🔄 Refresh Stats</button>
+                    <a href="/health" class="btn btn-secondary">📊 Health Check</a>
+                    <a href="/api/status" class="btn btn-secondary">📋 API Status</a>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p>Last updated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
+                <p>🌐 <a href="https://bluehawana.com" style="color: white;">bluehawana.com</a></p>
+            </div>
+        </div>
+        
+        <script>
+            async function runAutomation() {{
+                const btn = event.target;
+                btn.disabled = true;
+                btn.textContent = '⏳ Running...';
+                
+                try {{
+                    const response = await fetch('/run-automation', {{ method: 'POST' }});
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {{
+                        alert(`✅ Automation completed!\\n${{result.message}}`);
+                    }} else {{
+                        alert(`❌ Error: ${{result.message}}`);
+                    }}
+                }} catch (error) {{
+                    alert(`❌ Network error: ${{error.message}}`);
+                }}
+                
+                btn.disabled = false;
+                btn.textContent = '🚀 Run Automation Now';
+                setTimeout(() => location.reload(), 2000);
+            }}
+            
+            async function triggerManual() {{
+                const btn = event.target;
+                btn.disabled = true;
+                btn.textContent = '⏳ Triggering...';
+                
+                try {{
+                    const response = await fetch('/trigger/manual-run', {{ method: 'POST' }});
+                    const result = await response.json();
+                    alert(`✅ ${{result.message}}`);
+                }} catch (error) {{
+                    alert(`❌ Network error: ${{error.message}}`);
+                }}
+                
+                btn.disabled = false;
+                btn.textContent = '⚡ Quick Trigger';
+            }}
+            
+            function refreshStats() {{
+                location.reload();
+            }}
+            
+            // Auto-refresh every 30 seconds
+            setInterval(() => {{
+                location.reload();
+            }}, 30000);
+        </script>
+    </body>
+    </html>
+    """
+
 @app.get("/", response_class=HTMLResponse)
-async def dashboard(request: Request):
+async def dashboard():
     """Main dashboard with statistics"""
-    try:
-        return templates.TemplateResponse("dashboard.html", {
-            "request": request,
-            "stats": stats,
-            "status": "running",
-            "service": "JobHunter LEGO System",
-            "next_run": get_next_run_time(),
-            "timezone": "Europe/Stockholm",
-            "schedule": "Monday-Friday at 6:00 AM",
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        })
-    except Exception as e:
-        # Fallback to simple HTML if template fails
-        logger.error(f"Template error: {e}")
-        return HTMLResponse(f"""
-        <!DOCTYPE html>
-        <html>
-        <head><title>JobHunter Dashboard</title></head>
-        <body>
-            <h1>🎯 JobHunter LEGO System</h1>
-            <p>Status: Running</p>
-            <p>Stats: {stats}</p>
-            <p>Error loading template: {str(e)}</p>
-            <a href="/api/status">API Status</a>
-        </body>
-        </html>
-        """)
+    return HTMLResponse(generate_dashboard_html())
 
 @app.get("/api/status")
 async def api_status():
