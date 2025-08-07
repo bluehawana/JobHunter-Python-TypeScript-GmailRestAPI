@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobHunter LEGO System - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .controls {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .controls h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a6fd8;
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #dee2e6;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+        
+        .status-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-running {
+            background: #28a745;
+        }
+        
+        .status-stopped {
+            background: #dc3545;
+        }
+        
+        .recent-jobs {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .job-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .job-item:last-child {
+            border-bottom: none;
+        }
+        
+        .job-title {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .job-company {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .job-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-sent {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 JobHunter LEGO System</h1>
+            <p>Automated Job Hunting with Intelligent Template Customization</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_runs }}</div>
+                <div class="stat-label">Total Runs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.jobs_fetched }}</div>
+                <div class="stat-label">Jobs Fetched</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.jobs_filtered }}</div>
+                <div class="stat-label">Jobs Filtered</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.resumes_generated }}</div>
+                <div class="stat-label">Resumes Generated</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.cover_letters_generated }}</div>
+                <div class="stat-label">Cover Letters</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.emails_sent }}</div>
+                <div class="stat-label">Emails Sent</div>
+            </div>
+        </div>
+        
+        <div class="status-section">
+            <h3>System Status</h3>
+            <p>
+                <span class="status-indicator status-running"></span>
+                <strong>Status:</strong> {{ status }}
+            </p>
+            <p><strong>Service:</strong> {{ service }}</p>
+            <p><strong>Schedule:</strong> {{ schedule }}</p>
+            <p><strong>Timezone:</strong> {{ timezone }}</p>
+            {% if next_run %}
+            <p><strong>Next Run:</strong> {{ next_run }}</p>
+            {% endif %}
+            {% if stats.last_run %}
+            <p><strong>Last Run:</strong> {{ stats.last_run }}</p>
+            {% endif %}
+            <p><strong>Success Rate:</strong> {{ "%.1f"|format(stats.success_rate) }}%</p>
+        </div>
+        
+        <div class="controls">
+            <h3>Manual Controls</h3>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="runAutomation()">🚀 Run Automation Now</button>
+                <button class="btn btn-secondary" onclick="triggerManual()">⚡ Quick Trigger</button>
+                <button class="btn btn-secondary" onclick="refreshStats()">🔄 Refresh Stats</button>
+                <a href="/health" class="btn btn-secondary">📊 Health Check</a>
+                <a href="/status/next-jobs" class="btn btn-secondary">⏰ Scheduled Jobs</a>
+            </div>
+        </div>
+        
+        {% if stats.recent_jobs %}
+        <div class="recent-jobs">
+            <h3>Recent Job Applications</h3>
+            {% for job in stats.recent_jobs[-10:] %}
+            <div class="job-item">
+                <div>
+                    <div class="job-title">{{ job.title }}</div>
+                    <div class="job-company">{{ job.company }}</div>
+                </div>
+                <div class="job-status status-{{ job.status }}">{{ job.status.upper() }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div class="footer">
+            <p>Last updated: {{ timestamp }}</p>
+            <p>🌐 <a href="https://bluehawana.com" style="color: white;">bluehawana.com</a></p>
+        </div>
+    </div>
+    
+    <script>
+        async function runAutomation() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Running...';
+            
+            try {
+                const response = await fetch('/run-automation', { method: 'POST' });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert(`✅ Automation completed!\n${result.message}`);
+                } else {
+                    alert(`❌ Error: ${result.message}`);
+                }
+            } catch (error) {
+                alert(`❌ Network error: ${error.message}`);
+            }
+            
+            btn.disabled = false;
+            btn.textContent = '🚀 Run Automation Now';
+            setTimeout(() => location.reload(), 2000);
+        }
+        
+        async function triggerManual() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ Triggering...';
+            
+            try {
+                const response = await fetch('/trigger/manual-run', { method: 'POST' });
+                const result = await response.json();
+                alert(`✅ ${result.message}`);
+            } catch (error) {
+                alert(`❌ Network error: ${error.message}`);
+            }
+            
+            btn.disabled = false;
+            btn.textContent = '⚡ Quick Trigger';
+        }
+        
+        function refreshStats() {
+            location.reload();
+        }
+        
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>
