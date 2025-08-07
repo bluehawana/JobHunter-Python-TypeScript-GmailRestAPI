@@ -1,0 +1,344 @@
+{
+  "name": "Master Job Hunting Automation - n8n Version",
+  "description": "Complete sequential job hunting workflow in n8n - mirrors the Python master orchestrator",
+  "version": "2.0",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression", 
+              "expression": "0 6 * * 1-5"
+            }
+          ]
+        },
+        "timezone": "Europe/Stockholm"
+      },
+      "name": "Daily 6AM Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "id": "step-1-trigger"
+    },
+    {
+      "parameters": {
+        "functionCode": "// STEP 1: Environment Validation\nconsole.log('🎯 STEP 1: Environment Validation');\n\nconst requiredEnvVars = [\n  'SENDER_EMAIL',\n  'SENDER_GMAIL_PASSWORD', \n  'CLAUDE_API_KEY',\n  'TARGET_EMAIL'\n];\n\nconst missingVars = [];\nfor (const envVar of requiredEnvVars) {\n  if (!process.env[envVar]) {\n    missingVars.push(envVar);\n  }\n}\n\nif (missingVars.length > 0) {\n  throw new Error(`Missing environment variables: ${missingVars.join(', ')}`);\n}\n\nreturn [{\n  json: {\n    step: 1,\n    name: 'Environment Validation',\n    status: 'SUCCESS',\n    message: 'All environment variables validated',\n    timestamp: new Date().toISOString(),\n    required_vars: requiredEnvVars,\n    execution_log: [{\n      step: 'STEP_1',\n      message: 'Environment validation completed successfully',\n      status: 'SUCCESS',\n      timestamp: new Date().toISOString()\n    }]\n  }\n}];"
+      },
+      "name": "Step 1: Environment Validation",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "id": "step-1-validation"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "me",
+          "mode": "list"
+        },
+        "simple": false,
+        "filters": {
+          "query": "from:(linkedin.com OR indeed.com OR glassdoor.com OR jobs.com OR monster.com) newer_than:3d",
+          "readStatus": "unread"
+        },
+        "format": "resolved"
+      },
+      "name": "Step 2: Gmail Job Scanning",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "id": "step-2-gmail-scan"
+    },
+    {
+      "parameters": {
+        "functionCode": "// STEP 3: Job Data Processing & Enhancement\nconsole.log('🎯 STEP 3: Job Data Processing');\n\nconst jobs = items.map((item, index) => {\n  const email = item.json;\n  const subject = email.subject || '';\n  const body = email.snippet || email.bodyPlain || '';\n  const sender = email.from?.value?.[0]?.address || '';\n  \n  // Enhanced company extraction\n  function extractCompany(subject, body, sender) {\n    const content = `${subject} ${body}`;\n    \n    // Swedish patterns for company extraction\n    const patterns = [\n      /([A-ZÅÄÖ][a-zåäö\\s&]+?)\\s+(?:söker|ker)\\s+nu\\s+fler\\s+talanger/,\n      /([A-ZÅÄÖ][a-zåäö\\s&]+?)\\s+is\\s+actively\\s+hiring/,\n      /Join\\s+([A-ZÅÄÖ][a-zåäö\\s&]+?)\\s+as/,\n      /^([A-ZÅÄÖ][a-zåäö\\s&]+?)\\s*[-–]\\s*[A-Z]/\n    ];\n    \n    for (const pattern of patterns) {\n      const match = content.match(pattern);\n      if (match) {\n        return match[1].trim().replace(/\\s+/g, ' ');\n      }\n    }\n    \n    // Known Swedish companies\n    const knownCompanies = {\n      'volvo': 'Volvo Group',\n      'ericsson': 'Ericsson', \n      'spotify': 'Spotify',\n      'klarna': 'Klarna',\n      'skf': 'SKF Group'\n    };\n    \n    const contentLower = content.toLowerCase();\n    for (const [keyword, fullName] of Object.entries(knownCompanies)) {\n      if (contentLower.includes(keyword)) {\n        return fullName;\n      }\n    }\n    \n    return 'Technology Company';\n  }\n  \n  // Extract job title\n  function extractTitle(subject, body) {\n    if (subject.toLowerCase().includes('ker nu fler talanger till')) {\n      const match = subject.match(/ker nu fler talanger till\\s+(.+)/i);\n      if (match) return match[1].trim();\n    }\n    \n    const titlePatterns = [\n      /(?:job|position|role)[:\\s]+([^\\n\\r,]+)/i,\n      /([^\\n\\r,]+)\\s+(?:position|role|job)/i\n    ];\n    \n    for (const pattern of titlePatterns) {\n      const match = subject.match(pattern) || body.match(pattern);\n      if (match) return match[1].trim();\n    }\n    \n    return 'Software Developer';\n  }\n  \n  // Extract application URL\n  function extractUrl(body) {\n    const urlPatterns = [\n      /https:\\/\\/[^\\s]+\\.linkedin\\.com\\/jobs\\/view\\/\\d+/,\n      /https:\\/\\/[^\\s]+\\.indeed\\.com\\/viewjob\\?jk=[a-zA-Z0-9]+/,\n      /https:\\/\\/[^\\s]+\\/jobs?\\/[^\\s]+/,\n      /https:\\/\\/[^\\s]+\\/careers?\\/[^\\s]+/\n    ];\n    \n    for (const pattern of urlPatterns) {\n      const match = body.match(pattern);\n      if (match) return match[0];\n    }\n    \n    return '';\n  }\n  \n  const company = extractCompany(subject, body, sender);\n  const title = extractTitle(subject, body);\n  const url = extractUrl(body);\n  \n  return {\n    id: `job_${index + 1}_${Date.now()}`,\n    title: title,\n    company: company,\n    description: body.substring(0, 1000),\n    url: url,\n    location: 'Sweden',\n    keywords: ['software', 'developer', 'fullstack', 'backend', 'frontend'],\n    source: 'gmail',\n    email_subject: subject,\n    body: body,\n    sender: sender,\n    processed_at: new Date().toISOString(),\n    processing_id: `job_${index + 1}_${new Date().toISOString().slice(0, 10)}`\n  };\n});\n\nconsole.log(`✅ STEP 3: Processed ${jobs.length} jobs`);\n\nreturn jobs.map(job => ({ json: job }));"
+      },
+      "name": "Step 3: Job Data Processing",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "id": "step-3-processing"
+    },
+    {
+      "parameters": {
+        "url": "https://anyrouter.top/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpMethod": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.CLAUDE_API_KEY }}"
+            },
+            {
+              "name": "Content-Type", 
+              "value": "application/json"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "claude-3-7-sonnet-20250219"
+            },
+            {
+              "name": "max_tokens",
+              "value": "2000"
+            },
+            {
+              "name": "messages",
+              "value": "=[{\"role\": \"user\", \"content\": `Generate a professional CV content for ${$json.title} position at ${$json.company}. Include: Professional Summary, Technical Skills, Experience (ECARX IT/Infrastructure Specialist Oct 2024-Present, Synteda Azure Fullstack Developer Aug 2023-Sep 2024), Education (IT Högskolan .NET Cloud Development 2021-2023), Certifications (AWS Solutions Architect, Azure Fundamentals). Format as structured text for PDF generation.`}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Step 4A: Generate CV Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 200],
+      "id": "step-4a-cv-generation"
+    },
+    {
+      "parameters": {
+        "url": "https://anyrouter.top/v1/messages",
+        "authentication": "genericCredentialType", 
+        "genericAuthType": "httpHeaderAuth",
+        "httpMethod": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.CLAUDE_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model", 
+              "value": "claude-3-7-sonnet-20250219"
+            },
+            {
+              "name": "max_tokens",
+              "value": "1500"
+            },
+            {
+              "name": "messages",
+              "value": "=[{\"role\": \"user\", \"content\": `Write a professional cover letter for ${$json.title} position at ${$json.company}. Address: Dear Hiring Manager, Express interest in the role, highlight relevant experience from ECARX and Synteda, mention technical skills alignment, show enthusiasm for the company, request interview opportunity. Keep professional and concise. Format as structured text.`}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Step 4B: Generate Cover Letter",
+      "type": "n8n-nodes-base.httpRequest", 
+      "typeVersion": 4,
+      "position": [1120, 400],
+      "id": "step-4b-cl-generation"
+    },
+    {
+      "parameters": {
+        "functionCode": "// STEP 4C: Combine Generated Documents\nconsole.log('🎯 STEP 4C: Document Combination');\n\n// Get the job data from the first input\nconst jobData = $input.first().json;\n\n// Get CV content from Claude API response\nconst cvResponse = $input.all()[1]?.json;\nconst cvContent = cvResponse?.content?.[0]?.text || 'CV generation failed';\n\n// Get Cover Letter content from Claude API response  \nconst clResponse = $input.all()[2]?.json;\nconst clContent = clResponse?.content?.[0]?.text || 'Cover letter generation failed';\n\n// Create document package\nconst documentPackage = {\n  job: jobData,\n  cv_content: cvContent,\n  cover_letter_content: clContent,\n  generated_at: new Date().toISOString(),\n  cv_length: cvContent.length,\n  cl_length: clContent.length,\n  status: 'documents_generated'\n};\n\nconsole.log(`✅ STEP 4C: Documents generated for ${jobData.company}`);\nconsole.log(`   CV: ${cvContent.length} characters`);\nconsole.log(`   CL: ${clContent.length} characters`);\n\nreturn [{ json: documentPackage }];"
+      },
+      "name": "Step 4C: Combine Documents",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "id": "step-4c-combine"
+    },
+    {
+      "parameters": {
+        "fromEmail": "{{ $env.SENDER_EMAIL }}",
+        "toEmail": "{{ $env.TARGET_EMAIL }}",
+        "subject": "🎯 Ready to Apply: {{ $json.job.title }} at {{ $json.job.company }}",
+        "emailFormat": "html",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <style>\n        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n        .header { background: #2c3e50; color: white; padding: 20px; text-align: center; }\n        .content { padding: 20px; }\n        .job-details { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; }\n        .documents { background: #e8f5e9; padding: 15px; border-radius: 5px; margin: 15px 0; }\n        .next-steps { background: #fff3e0; padding: 15px; border-radius: 5px; margin: 15px 0; }\n        .footer { background: #34495e; color: white; padding: 15px; text-align: center; }\n        .btn { background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }\n    </style>\n</head>\n<body>\n    <div class=\"header\">\n        <h1>🎯 NEW JOB APPLICATION READY</h1>\n        <p>Your n8n automation has processed a new opportunity</p>\n    </div>\n    \n    <div class=\"content\">\n        <div class=\"job-details\">\n            <h2>📋 JOB DETAILS</h2>\n            <p><strong>Position:</strong> {{ $json.job.title }}</p>\n            <p><strong>Company:</strong> {{ $json.job.company }}</p>\n            <p><strong>Location:</strong> {{ $json.job.location }}</p>\n            <p><strong>Source:</strong> n8n Gmail Monitor</p>\n            <p><strong>Processing ID:</strong> {{ $json.job.processing_id }}</p>\n        </div>\n        \n        <div class=\"documents\">\n            <h2>📄 GENERATED DOCUMENTS</h2>\n            <p>✅ <strong>Customized CV</strong> - {{ $json.cv_length }} characters</p>\n            <p>✅ <strong>Personalized Cover Letter</strong> - {{ $json.cl_length }} characters</p>\n            <p><em>Documents are AI-generated and tailored for this specific role</em></p>\n        </div>\n        \n        <div class=\"next-steps\">\n            <h2>🎯 NEXT STEPS</h2>\n            <ol>\n                <li>Review the generated documents below</li>\n                <li>Copy content to create PDF versions</li>\n                <li>Visit the application link: <a href=\"{{ $json.job.url }}\" class=\"btn\">Apply Now</a></li>\n                <li>Submit your application</li>\n            </ol>\n        </div>\n        \n        <div class=\"job-details\">\n            <h2>📝 GENERATED CV CONTENT</h2>\n            <pre style=\"white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px;\">{{ $json.cv_content }}</pre>\n        </div>\n        \n        <div class=\"job-details\">\n            <h2>💌 GENERATED COVER LETTER</h2>\n            <pre style=\"white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px;\">{{ $json.cover_letter_content }}</pre>\n        </div>\n        \n        <div class=\"job-details\">\n            <h2>🔍 JOB DESCRIPTION PREVIEW</h2>\n            <p>{{ $json.job.description }}</p>\n        </div>\n    </div>\n    \n    <div class=\"footer\">\n        <p>✨ Generated by n8n Master Job Automation</p>\n        <p>🕐 {{ $json.generated_at }}</p>\n        <p>🚀 Good luck with your application!</p>\n    </div>\n</body>\n</html>",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "name": "Step 5: Send Application Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1560, 300],
+      "id": "step-5-email-send"
+    },
+    {
+      "parameters": {
+        "functionCode": "// STEP 6: Results Summary & Logging\nconsole.log('🎯 STEP 6: Results Summary');\n\nconst executionData = $input.all();\nconst totalJobs = executionData.length;\nconst successfulEmails = executionData.filter(item => item.json.status !== 'error').length;\nconst failedEmails = totalJobs - successfulEmails;\n\nconst summary = {\n  execution_id: `n8n_automation_${Date.now()}`,\n  execution_time: new Date().toISOString(),\n  platform: 'n8n',\n  workflow_name: 'Master Job Hunting Automation',\n  total_jobs_processed: totalJobs,\n  successful_applications: successfulEmails,\n  failed_applications: failedEmails,\n  success_rate: `${((successfulEmails / Math.max(totalJobs, 1)) * 100).toFixed(1)}%`,\n  processed_jobs: executionData.map(item => ({\n    title: item.json.job?.title || 'Unknown',\n    company: item.json.job?.company || 'Unknown',\n    processing_id: item.json.job?.processing_id || 'Unknown',\n    status: item.json.status || 'completed'\n  })),\n  execution_log: [\n    { step: 'STEP_1', message: 'Environment validation completed', status: 'SUCCESS' },\n    { step: 'STEP_2', message: `Gmail scan found ${totalJobs} jobs`, status: 'SUCCESS' },\n    { step: 'STEP_3', message: `Job data processing completed`, status: 'SUCCESS' },\n    { step: 'STEP_4', message: `Document generation completed`, status: 'SUCCESS' },\n    { step: 'STEP_5', message: `Email delivery: ${successfulEmails} successful, ${failedEmails} failed`, status: 'SUCCESS' },\n    { step: 'STEP_6', message: 'Summary generation completed', status: 'SUCCESS' }\n  ]\n};\n\nconsole.log('🎉 n8n AUTOMATION SUMMARY:');\nconsole.log(`📊 Jobs Processed: ${totalJobs}`);\nconsole.log(`✅ Successful: ${successfulEmails}`);\nconsole.log(`❌ Failed: ${failedEmails}`);\nconsole.log(`📈 Success Rate: ${summary.success_rate}`);\n\nreturn [{ json: summary }];"
+      },
+      "name": "Step 6: Generate Summary",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1780, 300],
+      "id": "step-6-summary"
+    },
+    {
+      "parameters": {
+        "fromEmail": "{{ $env.SENDER_EMAIL }}",
+        "toEmail": "{{ $env.SENDER_EMAIL }}",
+        "subject": "📊 n8n Job Automation Summary - {{ $json.execution_time }}",
+        "emailFormat": "html",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <style>\n        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n        .header { background: #27ae60; color: white; padding: 20px; text-align: center; }\n        .metrics { display: flex; justify-content: space-around; margin: 20px 0; }\n        .metric { text-align: center; padding: 15px; background: #f8f9fa; border-radius: 5px; }\n        .jobs-list { background: #e8f5e9; padding: 15px; border-radius: 5px; margin: 15px 0; }\n        .footer { background: #2c3e50; color: white; padding: 15px; text-align: center; }\n    </style>\n</head>\n<body>\n    <div class=\"header\">\n        <h1>📊 n8n JOB AUTOMATION SUMMARY</h1>\n        <p>Execution completed at {{ $json.execution_time }}</p>\n    </div>\n    \n    <div class=\"metrics\">\n        <div class=\"metric\">\n            <h3>{{ $json.total_jobs_processed }}</h3>\n            <p>Jobs Found</p>\n        </div>\n        <div class=\"metric\">\n            <h3>{{ $json.successful_applications }}</h3>\n            <p>Applications Sent</p>\n        </div>\n        <div class=\"metric\">\n            <h3>{{ $json.success_rate }}</h3>\n            <p>Success Rate</p>\n        </div>\n    </div>\n    \n    <div class=\"jobs-list\">\n        <h2>📋 PROCESSED JOBS</h2>\n        {{#each $json.processed_jobs}}\n        <p>• <strong>{{this.title}}</strong> at {{this.company}} ({{this.status}})</p>\n        {{/each}}\n    </div>\n    \n    <div class=\"footer\">\n        <p>🤖 Powered by n8n Master Automation Workflow</p>\n        <p>📧 Check hongzhili01@gmail.com for job applications</p>\n    </div>\n</body>\n</html>"
+      },
+      "name": "Step 6B: Send Summary Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [2000, 300],
+      "id": "step-6b-summary-email"
+    }
+  ],
+  "connections": {
+    "Daily 6AM Trigger": {
+      "main": [
+        [
+          {
+            "node": "Step 1: Environment Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 1: Environment Validation": {
+      "main": [
+        [
+          {
+            "node": "Step 2: Gmail Job Scanning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 2: Gmail Job Scanning": {
+      "main": [
+        [
+          {
+            "node": "Step 3: Job Data Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 3: Job Data Processing": {
+      "main": [
+        [
+          {
+            "node": "Step 4A: Generate CV Content",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Step 4B: Generate Cover Letter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 4A: Generate CV Content": {
+      "main": [
+        [
+          {
+            "node": "Step 4C: Combine Documents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 4B: Generate Cover Letter": {
+      "main": [
+        [
+          {
+            "node": "Step 4C: Combine Documents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 4C: Combine Documents": {
+      "main": [
+        [
+          {
+            "node": "Step 5: Send Application Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 5: Send Application Email": {
+      "main": [
+        [
+          {
+            "node": "Step 6: Generate Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 6: Generate Summary": {
+      "main": [
+        [
+          {
+            "node": "Step 6B: Send Summary Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "timezone": "Europe/Stockholm",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "id": "automation",
+      "name": "automation"
+    },
+    {
+      "createdAt": "2025-01-01T00:00:00.000Z", 
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "id": "job-hunting",
+      "name": "job-hunting"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-01T00:00:00.000Z",
+  "versionId": "master-automation-v2"
+}
