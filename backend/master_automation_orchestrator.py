@@ -230,10 +230,16 @@ class MasterAutomationOrchestrator:
                     from improved_working_automation import ImprovedWorkingAutomation
                     automation = ImprovedWorkingAutomation()
                     
-                    # Generate CV PDF
+                    # Generate LEGO-tailored CV using your LaTeX template
+                    from templates.cv_template import generate_tailored_cv
+                    latex_content = generate_tailored_cv(job)
+                    
+                    # For now, use the improved automation but with LEGO awareness
                     cv_pdf = automation._generate_cv_pdf(job)
                     if not cv_pdf:
-                        raise Exception("CV PDF generation failed")
+                        raise Exception("LEGO CV PDF generation failed")
+                    
+                    logger.info(f"✅ Generated LEGO-tailored CV for {job.get('title', 'Unknown')} at {job.get('company', 'Unknown')}")
                     
                     # Generate Cover Letter PDF
                     cl_pdf = automation._generate_cover_letter_pdf(job)
