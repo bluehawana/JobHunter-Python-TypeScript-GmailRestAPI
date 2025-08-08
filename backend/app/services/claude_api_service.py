@@ -19,7 +19,7 @@ class ClaudeAPIService:
         # Third-party API configuration (primary)
         self.third_party_token = os.getenv("ANTHROPIC_AUTH_TOKEN")
         self.third_party_base_url = os.getenv("ANTHROPIC_BASE_URL", "https://anyrouter.top")
-        self.claude_model = os.getenv("CLAUDE_MODEL", "claude-3-5-sonnet-20241022")
+        self.claude_model = os.getenv("CLAUDE_MODEL", "claude-3-7-sonnet-20250219")
         
         # Official Anthropic API configuration (fallback)
         self.official_token = os.getenv("ANTHROPIC_API_KEY")
@@ -278,14 +278,15 @@ Important: Return only the requested content without additional commentary or fo
             # Use Claude CLI
             cmd = ["claude", "--model", self.claude_model, "--print"]
             
-            # Run the command
+            # Run the command with shorter timeout for faster fallback
+            logger.info(f"🔧 Running Claude CLI: {' '.join(cmd)}")
             result = subprocess.run(
                 cmd,
                 input=cli_prompt,
                 text=True,
                 capture_output=True,
                 env=env,
-                timeout=60  # Increased timeout for CLI
+                timeout=30  # Shorter timeout for faster fallback
             )
             
             if result.returncode == 0 and result.stdout:

@@ -5,6 +5,48 @@ Intelligently customizes your excellent LaTeX template based on job requirements
 """
 from typing import Dict, Any
 
+def get_base_template_components() -> str:
+    """Return base template components for Claude to work with"""
+    return """
+    HONGZHI LI'S RESUME COMPONENTS:
+    
+    HEADER:
+    - Name: Hongzhi Li
+    - Contact: hongzhili01@gmail.com | 0728384299
+    - LinkedIn: https://www.linkedin.com/in/hzl/
+    - GitHub: https://github.com/bluehawana
+    
+    EXPERIENCE COMPONENTS:
+    1. ECARX - IT/Infrastructure Specialist (Oct 2024-Present)
+       - Infrastructure optimization and system integration
+       - Cost optimization by migrating from AKS to local Kubernetes
+       - Monitoring solutions using Grafana and advanced scripting
+       - Network systems management and technical solution design
+    
+    2. Synteda - Azure Fullstack Developer (Aug 2023-Sep 2024)
+       - Talent management system using C# and .NET Core
+       - Office management platform development
+       - RESTful APIs and microservices architecture
+       - SQL and NoSQL database integration
+    
+    SKILLS COMPONENTS:
+    - Programming: Java/J2EE, C#/.NET Core, JavaScript, TypeScript, Python
+    - Frontend: Angular, React, Vue.js, HTML5, CSS3
+    - Backend: Spring Boot, .NET Core, Node.js, FastAPI
+    - Cloud: AWS, Azure, GCP, Alibaba Cloud
+    - DevOps: Docker, Kubernetes, Jenkins, GitHub Actions
+    - Databases: PostgreSQL, MySQL, MongoDB, AWS RDS
+    
+    EDUCATION:
+    - IT Högskolan: Bachelor's in .NET Cloud Development (2021-2023)
+    - University of Gothenburg: Master's in International Business (2016-2019)
+    
+    CERTIFICATIONS:
+    - AWS Certified Solutions Architect - Associate (Aug 2022)
+    - Microsoft Certified: Azure Fundamentals (Jun 2022)
+    - AWS Certified Developer - Associate (Nov 2022)
+    """
+
 CV_TEMPLATE = r"""
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -251,8 +293,8 @@ PROJECTS_SECTION = r"""
 \item Dynamic city lookup and caching mechanism for optimized API usage and response speed
 \end{itemize}
 """
-clas
-s LegoResumeBuilder:
+
+class LegoResumeBuilder:
     """LEGO Component Resume Builder - Intelligently tailors resume based on job requirements"""
     
     def __init__(self):
@@ -300,13 +342,26 @@ s LegoResumeBuilder:
         """Detect if this is a Backend role"""
         backend_keywords = ['backend', 'api', 'microservices', 'spring', 'java', 'database', 'server',
                            'rest', 'graphql', 'sql', 'postgresql', 'mysql', 'mongodb']
-        return any(keyword in job_title + job_description for keyword in backend_keywords)
+        devops_keywords = ['devops', 'infrastructure', 'kubernetes', 'docker', 'aws', 'cloud', 'ci/cd', 
+                          'deployment', 'monitoring', 'grafana', 'jenkins', 'terraform', 'ansible']
+        
+        has_backend = any(keyword in job_title + job_description for keyword in backend_keywords)
+        has_devops = any(keyword in job_title + job_description for keyword in devops_keywords)
+        
+        return has_backend and not has_devops
     
     def _is_frontend_role(self, job_title: str, job_description: str) -> bool:
         """Detect if this is a Frontend role"""
         frontend_keywords = ['frontend', 'react', 'angular', 'vue', 'javascript', 'ui', 'ux', 
                             'typescript', 'css', 'html', 'responsive', 'mobile']
-        return any(keyword in job_title + job_description for keyword in frontend_keywords)
+        backend_keywords = ['backend', 'api', 'microservices', 'spring', 'java', 'database', 'server']
+        devops_keywords = ['devops', 'infrastructure', 'kubernetes', 'docker', 'aws', 'cloud', 'ci/cd']
+        
+        has_frontend = any(keyword in job_title + job_description for keyword in frontend_keywords)
+        has_backend = any(keyword in job_title + job_description for keyword in backend_keywords)
+        has_devops = any(keyword in job_title + job_description for keyword in devops_keywords)
+        
+        return has_frontend and not has_backend and not has_devops
     
     def _is_fullstack_role(self, job_title: str, job_description: str) -> bool:
         """Detect if this is a Fullstack role"""

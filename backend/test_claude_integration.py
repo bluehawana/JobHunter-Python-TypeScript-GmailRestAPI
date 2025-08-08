@@ -1,134 +1,79 @@
 #!/usr/bin/env python3
 """
-Test script for the enhanced Claude API integration
+Test Claude API integration with LEGO system
 """
 import asyncio
-import logging
 import sys
 import os
+from pathlib import Path
 
 # Add the app directory to Python path
-sys.path.append('/Users/bluehawana/Projects/Jobhunter/backend')
+sys.path.append(str(Path(__file__).parent))
 
-from app.services.simple_latex_service import SimpleLaTeXService
-from app.services.claude_api_service import ClaudeAPIService
+# Load environment variables
+def load_env_file():
+    try:
+        with open('.env', 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, value = line.split('=', 1)
+                    if '#' in value:
+                        value = value.split('#')[0].strip()
+                    os.environ[key] = value
+    except FileNotFoundError:
+        pass
 
-# Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+load_env_file()
 
-async def test_claude_api_integration():
-    """Test the enhanced LaTeX service with Claude API"""
+async def test_claude_lego_system():
+    """Test Claude API integration with LEGO system"""
+    print("🧪 Testing Claude API integration with LEGO system...")
     
     # Test job data
     test_job = {
-        'title': 'Senior DevOps Engineer',
-        'company': 'TechNova Solutions',
-        'description': '''
-        We are seeking a Senior DevOps Engineer to join our innovative team. 
-        Key responsibilities include:
-        - Designing and implementing CI/CD pipelines
-        - Managing Kubernetes clusters on AWS
-        - Collaborating with development teams
-        - Coaching junior engineers on best practices
-        - Leading infrastructure automation projects
-        
-        Required skills: Python, Docker, Kubernetes, AWS, CI/CD, GitLab, Terraform
-        ''',
-        'keywords': ['DevOps', 'Kubernetes', 'AWS', 'CI/CD', 'Python', 'Docker', 'Terraform'],
-        'hiring_manager': 'Linda Anderson',
-        'address': 'Storgatan 15\\\\Stockholm'
+        'title': 'Senior Backend Developer',
+        'company': 'Spotify',
+        'description': 'We are looking for a Senior Backend Developer with expertise in Java, Spring Boot, microservices architecture, and cloud platforms. Experience with Kubernetes, Docker, and AWS is highly valued. The role involves building scalable APIs and working with international teams.',
+        'url': 'https://jobs.spotify.com/test',
+        'location': 'Stockholm, Sweden'
     }
     
-    logger.info("Starting Claude API integration test...")
-    
     try:
-        # Initialize the LaTeX service (which includes Claude API)
-        latex_service = SimpleLaTeXService()
+        # Test Claude LEGO strategy
+        from improved_working_automation import ImprovedWorkingAutomation
+        automation = ImprovedWorkingAutomation()
         
-        # Test Claude API service directly first
-        logger.info("Testing Claude API service directly...")
-        api_info = latex_service.claude_api.get_current_api_info()
-        logger.info(f"Initial API configuration: {api_info}")
+        print("🧠 Testing Claude LEGO strategy analysis...")
+        strategy = await automation._get_claude_lego_strategy(test_job)
+        print(f"✅ LEGO Strategy: {strategy}")
         
-        # Test CV generation
-        logger.info("Testing CV generation with Claude API enhancement...")
-        cv_pdf = await latex_service.generate_customized_cv(test_job)
+        print("\n🤖 Testing Claude LEGO resume building...")
+        resume_content = await automation._build_claude_lego_resume(test_job, strategy)
+        print(f"✅ Resume built: {len(resume_content)} characters")
         
-        if cv_pdf and len(cv_pdf) > 0:
-            logger.info(f"✅ CV generated successfully! Size: {len(cv_pdf)} bytes")
-            
-            # Save CV for inspection
-            cv_filename = f"test_cv_{test_job['company']}.pdf"
-            with open(cv_filename, 'wb') as f:
-                f.write(cv_pdf)
-            logger.info(f"CV saved as: {cv_filename}")
-        else:
-            logger.error("❌ CV generation failed!")
+        print("\n💌 Testing Claude cover letter creation...")
+        cover_letter = await automation._build_claude_cover_letter(test_job)
+        print(f"✅ Cover letter created: {len(cover_letter)} characters")
         
-        # Test Cover Letter generation
-        logger.info("Testing Cover Letter generation with Claude API enhancement...")
-        cl_pdf = await latex_service.generate_customized_cover_letter(test_job)
+        # Save test outputs
+        with open('test_claude_strategy.json', 'w') as f:
+            import json
+            json.dump(strategy, f, indent=2)
         
-        if cl_pdf and len(cl_pdf) > 0:
-            logger.info(f"✅ Cover Letter generated successfully! Size: {len(cl_pdf)} bytes")
-            
-            # Save Cover Letter for inspection
-            cl_filename = f"test_cover_letter_{test_job['company']}.pdf"
-            with open(cl_filename, 'wb') as f:
-                f.write(cl_pdf)
-            logger.info(f"Cover Letter saved as: {cl_filename}")
-        else:
-            logger.error("❌ Cover Letter generation failed!")
+        with open('test_claude_resume.tex', 'w') as f:
+            f.write(resume_content)
         
-        # Test API fallback by simulating an error scenario
-        logger.info("Testing API fallback mechanism...")
+        with open('test_claude_cover_letter.txt', 'w') as f:
+            f.write(cover_letter)
         
-        # Get final API status
-        final_api_info = latex_service.claude_api.get_current_api_info()
-        logger.info(f"Final API configuration: {final_api_info}")
-        
-        logger.info("🎉 All tests completed successfully!")
+        print("\n🎉 Claude integration test completed successfully!")
+        print("📁 Check test_claude_*.* files for outputs")
         
     except Exception as e:
-        logger.error(f"❌ Test failed with error: {e}")
+        print(f"❌ Claude integration test failed: {e}")
         import traceback
         traceback.print_exc()
 
-def test_api_switching():
-    """Test the API switching and logout mechanism"""
-    logger.info("Testing API switching mechanism...")
-    
-    try:
-        # Initialize Claude API service
-        claude_api = ClaudeAPIService()
-        
-        # Show initial state
-        logger.info(f"Initial API: {claude_api.get_current_api_info()}")
-        
-        # Test switching to official API
-        asyncio.run(claude_api._switch_to_official_api())
-        logger.info(f"After switch: {claude_api.get_current_api_info()}")
-        
-        # Reset back to third-party
-        claude_api.reset_to_third_party()
-        logger.info(f"After reset: {claude_api.get_current_api_info()}")
-        
-        logger.info("✅ API switching test completed!")
-        
-    except Exception as e:
-        logger.error(f"❌ API switching test failed: {e}")
-
 if __name__ == "__main__":
-    print("🚀 Starting Claude API Integration Tests")
-    print("=" * 50)
-    
-    # Test 1: API switching mechanism
-    test_api_switching()
-    print()
-    
-    # Test 2: Full integration test
-    asyncio.run(test_claude_api_integration())
-    
-    print("\n" + "=" * 50)
-    print("✨ Test suite completed!")
+    asyncio.run(test_claude_lego_system())

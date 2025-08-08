@@ -4,6 +4,52 @@ Hongzhi Li's Cover Letter Template - Python-friendly version
 Converted from your exact LaTeX template with proper escaping
 """
 
+def get_base_cover_letter_template() -> str:
+    """Return base cover letter components focusing on soft skills and unique value"""
+    return """
+    HONGZHI LI'S COVER LETTER SOFT SKILLS FOCUS:
+    
+    UNIQUE VALUE PROPOSITIONS:
+    1. Cross-Cultural Bridge Builder
+       - Chinese background with deep Swedish tech integration
+       - Understands both Eastern and Western business cultures
+       - Valuable for companies with global operations or Chinese markets
+    
+    2. Business-IT Translator
+       - Master's in International Business + Technical expertise
+       - Bridges gap between technical complexity and business needs
+       - Translates technical solutions into business value
+    
+    3. Cultural Adaptability
+       - Successfully integrated into Swedish tech culture
+       - Multilingual communication (Mandarin, English, Swedish)
+       - Thrives in diverse, multicultural team environments
+    
+    4. Global Perspective
+       - International mindset from education and work experience
+       - Understands global market dynamics and cultural nuances
+       - Brings fresh perspectives to problem-solving
+    
+    5. Collaborative Leadership
+       - Experience working with diverse international teams
+       - Strong communication and interpersonal skills
+       - Facilitates cross-functional collaboration
+    
+    SOFT SKILLS TO EMPHASIZE:
+    - Cross-cultural communication
+    - Business acumen combined with technical depth
+    - Adaptability and continuous learning
+    - Problem-solving with global perspective
+    - Team collaboration and cultural sensitivity
+    - Innovation through diverse thinking
+    
+    AVOID REPEATING FROM CV:
+    - Technical certifications
+    - Programming languages lists
+    - Detailed technical achievements
+    - Specific project implementations
+    """
+
 COVER_LETTER_TEMPLATE = r"""
 \documentclass[a4paper,10pt]{article}
 \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
@@ -26,22 +72,22 @@ COVER_LETTER_TEMPLATE = r"""
 \begin{document}
 \pagestyle{empty} % no page number
 
-\begin{letter}{\color{darkblue}\\COMPANY_NAME\\COMPANY_ADDRESS}
+\begin{letter}{\color{darkblue}\\{company_name}\\{company_address}}
 
 \vspace{40pt}
 
-\opening{GREETING}
+\opening{{greeting}}
 
 \vspace{10pt}
 
-COVER_LETTER_BODY
+{cover_letter_body}
 
 \vspace{20pt}
 
 Sincerely,
 
 Hongzhi Li\\
-CURRENT_DATE
+{current_date}
 
 \vspace{40pt}
 
