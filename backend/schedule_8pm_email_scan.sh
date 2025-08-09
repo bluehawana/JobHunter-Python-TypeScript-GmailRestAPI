@@ -1,13 +1,15 @@
 #!/bin/bash
 """
-Heroku Scheduler Script - 6 AM Daily Job Hunting
+Heroku Scheduler Script - 20:00 (8 PM) Daily Job Hunting
 Runs the Master Automation Orchestrator with complete sequential workflow
+Optimal time for Claude API (Chinese users sleeping, less API load)
 """
 
-echo "🎯 Starting JobHunter Master Automation at 6 AM..."
+echo "🎯 Starting JobHunter Master Automation at 20:00 (8 PM Swedish time)..."
 echo "📅 Date: $(date)"
 echo "🌍 Timezone: $TZ"
-echo "🔄 Sequential workflow: Gmail scan → Job processing → PDF generation → Email delivery"
+echo "🔄 Sequential workflow: Gmail scan → Claude LEGO analysis → PDF generation → Email delivery"
+echo "🧠 Claude API optimization: Running at night when Chinese users are sleeping"
 
 # Set environment variables for the script
 export PYTHONPATH="${PYTHONPATH}:."
