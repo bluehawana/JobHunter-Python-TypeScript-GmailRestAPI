@@ -60,7 +60,7 @@ class AutomatedJobHunter:
     async def run_daily_automation(self):
         """Main daily automation routine - completely hands-off"""
         try:
-            logger.info("🚀 Starting daily automation at 6:00 AM")
+            logger.info("🚀 Starting daily automation at 20:00 (8 PM) - optimal time for Claude API")
             
             # Import email scanner
             from app.services.real_email_scanner import RealEmailScanner
@@ -175,8 +175,8 @@ class AutomatedJobHunter:
         """Start the fully automated system"""
         logger.info("🤖 Starting fully automated JobHunter system")
         
-        # Schedule daily automation at 6:00 AM Stockholm time
-        schedule.every().day.at("06:00").do(lambda: asyncio.run(self.run_daily_automation()))
+        # Schedule daily automation at 20:00 (8 PM) Stockholm time - optimal for third-party API
+        schedule.every().day.at("20:00").do(lambda: asyncio.run(self.run_daily_automation()))
         
         # Schedule hourly urgent checks
         schedule.every().hour.do(lambda: asyncio.run(self.run_hourly_check()))
@@ -185,7 +185,7 @@ class AutomatedJobHunter:
         schedule.every().sunday.at("18:00").do(lambda: asyncio.run(self.send_weekly_summary()))
         
         logger.info("📅 Automation schedule configured:")
-        logger.info("   • Daily scan: 06:00 Stockholm time")
+        logger.info("   • Daily scan: 20:00 Stockholm time (optimal for Claude API)")
         logger.info("   • Hourly urgent checks")
         logger.info("   • Weekly summary: Sunday 18:00")
         

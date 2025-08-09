@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Mock 6AM Daily Automation Test
-Simulates tomorrow morning 6am when JobHunter automation starts automatically
+Mock 8PM Daily Automation Test
+Simulates tonight 8pm when JobHunter automation starts automatically
+Optimal time for Claude API (Chinese users sleeping, less API load)
 """
 import asyncio
 import sys
@@ -21,15 +22,16 @@ class MockDailyAutomation:
     def __init__(self):
         self.processor = PriorityJobProcessor()
         self.current_time = datetime.now()
-        self.mock_tomorrow_6am = self.current_time.replace(hour=6, minute=0, second=0) + timedelta(days=1)
+        self.mock_tonight_8pm = self.current_time.replace(hour=20, minute=0, second=0)
         
     def print_automation_header(self):
         """Print automation startup header"""
         print("🌅" + "=" * 70 + "🌅")
         print("🤖 JOBHUNTER DAILY AUTOMATION STARTED")
         print("=" * 72)
-        print(f"⏰ Current Time: {self.mock_tomorrow_6am.strftime('%Y-%m-%d 06:00:00')} (Simulated)")
-        print(f"📅 Day: {self.mock_tomorrow_6am.strftime('%A, %B %d, %Y')}")
+        print(f"⏰ Current Time: {self.mock_tonight_8pm.strftime('%Y-%m-%d 20:00:00')} (Simulated)")
+        print(f"📅 Day: {self.mock_tonight_8pm.strftime('%A, %B %d, %Y')}")
+        print(f"🧠 Claude API Optimization: Running when Chinese users are sleeping")
         print(f"🎯 Mode: Daily Job Search Automation")
         print(f"📧 Target Email: leeharvad@gmail.com")
         print("=" * 72)
@@ -284,7 +286,7 @@ class MockDailyAutomation:
         
         print("\n🔄 Next Actions:")
         print("   • Continue monitoring job sources")
-        print("   • Next automated scan: Tomorrow 6:00 AM")
+        print("   • Next automated scan: Tonight 20:00 (8 PM)")
         print("   • Manual scan available anytime")
         
     async def run_complete_mock_test(self):
@@ -304,7 +306,7 @@ class MockDailyAutomation:
         await self.simulate_daily_summary(len(jobs), min(3, len(jobs)), successful_apps)
         
         # Completion
-        print(f"\n🌅 6AM AUTOMATION COMPLETE!")
+        print(f"\n🌙 8PM AUTOMATION COMPLETE!")
         print("=" * 72)
         print(f"⏰ Automation finished at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"🎯 {successful_apps} job applications sent automatically")
@@ -313,7 +315,7 @@ class MockDailyAutomation:
         print("🌅" + "=" * 70 + "🌅")
 
 async def main():
-    """Run the complete 6am automation mock test"""
+    """Run the complete 8pm automation mock test"""
     automation = MockDailyAutomation()
     await automation.run_complete_mock_test()
 

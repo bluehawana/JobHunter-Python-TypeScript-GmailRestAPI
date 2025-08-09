@@ -113,121 +113,151 @@ class ImprovedWorkingAutomation:
             traceback.print_exc()
     
     async def _get_claude_lego_strategy(self, job: dict) -> dict:
-        """Claude analyzes job and decides LEGO component strategy"""
+        """Claude deeply analyzes job and creates comprehensive LEGO strategy"""
         try:
             from app.services.claude_api_service import ClaudeAPIService
             claude = ClaudeAPIService()
             
-            job_analysis_prompt = f"""
-            Analyze this job posting and create a LEGO component strategy for tailoring Hongzhi Li's resume:
-
-            JOB TITLE: {job.get('title', 'Software Developer')}
-            COMPANY: {job.get('company', 'Target Company')}
-            JOB DESCRIPTION: {job.get('description', 'No description provided')}
+            # DEEP Claude analysis - job + base resume analysis
+            deep_analysis_prompt = f"""
+            You are an expert resume strategist. Analyze this job posting AND Hongzhi Li's background to create a comprehensive LEGO customization strategy.
             
-            HONGZHI'S BACKGROUND:
-            - Current: IT/Infrastructure Specialist at ECARX (Oct 2024-Present)
-            - Previous: Azure Fullstack Developer at Synteda (Aug 2023-Sep 2024)
-            - Education: IT Högskolan (.NET Cloud Development), University of Gothenburg (International Business)
-            - Skills: Java/J2EE, C#/.NET Core, Angular, React, AWS, Azure, Docker, Kubernetes
+            JOB ANALYSIS:
+            Title: {job.get('title', 'Software Developer')}
+            Company: {job.get('company', 'Company')}
+            Description: {job.get('description', 'No description provided')}
             
-            Please analyze and decide:
-            1. PRIMARY_FOCUS: What should be the main positioning? (devops/backend/frontend/fullstack)
-            2. SKILLS_TO_HIGHLIGHT: Which technical skills to emphasize most?
-            3. EXPERIENCE_ORDER: Which job experience should lead?
-            4. PROFILE_ANGLE: How to position Hongzhi for this specific role?
-            5. KEYWORDS_TO_INCLUDE: Key terms from job description to naturally integrate
-            6. SECTIONS_TO_EMPHASIZE: Which resume sections need more detail?
-            7. TONE: Professional tone to match company culture
+            HONGZHI'S BASE RESUME COMPONENTS:
+            Current Role: IT/Infrastructure Specialist at ECARX (Oct 2024-Present)
+            - Infrastructure optimization and system integration
+            - Cost optimization by migrating from AKS to local Kubernetes
+            - Monitoring solutions using Grafana and advanced scripting
+            - Network systems management and technical solution design
             
-            Return as JSON format:
+            Previous Role: Azure Fullstack Developer at Synteda (Aug 2023-Sep 2024)
+            - Talent management system using C# and .NET Core
+            - Office management platform development
+            - RESTful APIs and microservices architecture
+            - SQL and NoSQL database integration
+            
+            Skills: Java/J2EE, C#/.NET Core, JavaScript, TypeScript, Python, Angular, React, Vue.js, Spring Boot, .NET Core, Node.js, AWS, Azure, GCP, Docker, Kubernetes, Jenkins, PostgreSQL, MySQL, MongoDB
+            
+            Education: IT Högskolan (.NET Cloud Development), University of Gothenburg (International Business)
+            Certifications: AWS Solutions Architect, Azure Fundamentals, AWS Developer
+            
+            DEEP ANALYSIS REQUIRED:
+            1. What is the PRIMARY job focus? (devops/backend/frontend/fullstack)
+            2. Which of Hongzhi's experiences should be emphasized MOST?
+            3. Which technical skills from his arsenal match this job BEST?
+            4. What role title should he position himself as?
+            5. Which LEGO components (experience bullets, skills, projects) should be highlighted?
+            6. Which components should be de-emphasized or moved to secondary position?
+            7. What keywords from job description should be naturally integrated?
+            8. What tone/style matches this company culture?
+            
+            Return comprehensive JSON strategy:
             {{
                 "primary_focus": "devops|backend|frontend|fullstack",
-                "skills_to_highlight": ["skill1", "skill2", "skill3"],
-                "experience_order": ["ecarx_first|synteda_first"],
-                "profile_angle": "specific positioning statement",
-                "keywords_to_include": ["keyword1", "keyword2"],
-                "sections_to_emphasize": ["skills", "experience", "projects"],
-                "tone": "corporate|startup|technical|innovative"
+                "role_positioning": "exact role title to use",
+                "experience_priority": {{
+                    "primary_experience": "ecarx|synteda",
+                    "emphasis_points": ["specific bullets to highlight"],
+                    "secondary_points": ["bullets to de-emphasize"]
+                }},
+                "skills_strategy": {{
+                    "top_skills": ["top 5 skills to highlight"],
+                    "secondary_skills": ["supporting skills"],
+                    "keywords_to_add": ["job-specific keywords to integrate"]
+                }},
+                "profile_customization": "tailored profile summary approach",
+                "ats_optimization": ["specific keywords for ATS"],
+                "company_culture_match": "tone and style adjustments"
             }}
             """
             
-            strategy_response = await claude.generate_text(job_analysis_prompt)
+            strategy_response = await claude.generate_text(deep_analysis_prompt)
             
-            if strategy_response:
+            if strategy_response and len(strategy_response) > 100:
                 try:
                     import json
                     strategy = json.loads(strategy_response)
-                    logger.info(f"🧠 Claude LEGO strategy: {strategy.get('primary_focus', 'fullstack')} focus")
+                    logger.info(f"🧠 Claude DEEP LEGO strategy: {strategy.get('primary_focus', 'fullstack')} focus with comprehensive customization")
                     return strategy
                 except json.JSONDecodeError:
-                    logger.warning("⚠️ Claude returned invalid JSON, using default strategy")
-            
-            # Fallback strategy
-            return {
-                "primary_focus": "fullstack",
-                "skills_to_highlight": ["Java", "React", "AWS"],
-                "experience_order": "ecarx_first",
-                "profile_angle": "Experienced developer",
-                "keywords_to_include": [],
-                "sections_to_emphasize": ["skills", "experience"],
-                "tone": "professional"
-            }
+                    logger.warning("⚠️ Claude returned invalid JSON, using simplified strategy")
             
         except Exception as e:
-            logger.error(f"❌ Claude LEGO strategy error: {e}")
-            return {"primary_focus": "fullstack", "skills_to_highlight": [], "experience_order": "ecarx_first"}
+            logger.warning(f"⚠️ Claude API unavailable: {e}")
+        
+        # Simplified fallback when Claude is unavailable
+        logger.info("🤖 Using Intelligent LEGO Fallback (keyword analysis)")
+        from intelligent_lego_fallback import IntelligentLegoFallback
+        fallback = IntelligentLegoFallback()
+        strategy = fallback.analyze_job_and_create_lego_strategy(job)
+        logger.info(f"🎯 Intelligent fallback strategy: {strategy.get('primary_focus', 'fullstack')} focus")
+        return strategy
     
     async def _build_claude_lego_resume(self, job: dict, strategy: dict) -> str:
-        """Claude builds the actual LaTeX resume using LEGO strategy"""
+        """Claude takes FULL control of LEGO resume building - completely automated"""
         try:
             from app.services.claude_api_service import ClaudeAPIService
             claude = ClaudeAPIService()
             
-            # Get base template components
+            # Get base template structure
             from templates.cv_template import get_base_template_components
             base_components = get_base_template_components()
             
-            lego_build_prompt = f"""
-            Build a tailored LaTeX resume for Hongzhi Li using this LEGO strategy:
+            # Claude takes FULL control - no manual intervention needed
+            full_automation_prompt = f"""
+            You are now in FULL AUTOMATION mode. Take complete control of building Hongzhi Li's resume using LEGO components.
             
-            STRATEGY: {strategy}
+            COMPREHENSIVE STRATEGY FROM PREVIOUS ANALYSIS:
+            {strategy}
             
-            JOB DETAILS:
-            - Title: {job.get('title', 'Software Developer')}
-            - Company: {job.get('company', 'Target Company')}
-            - Description: {job.get('description', 'No description provided')}
+            JOB REQUIREMENTS:
+            Title: {job.get('title', 'Software Developer')}
+            Company: {job.get('company', 'Target Company')}
+            Description: {job.get('description', 'No description provided')}
             
-            BASE TEMPLATE COMPONENTS:
+            HONGZHI'S COMPLETE PROFILE:
             {base_components}
             
-            INSTRUCTIONS:
-            1. Use the EXACT LaTeX structure from base template
-            2. Apply the LEGO strategy to customize content:
-               - Tailor profile summary based on primary_focus
-               - Reorder and emphasize skills based on skills_to_highlight
-               - Adjust experience descriptions based on experience_order
-               - Integrate keywords_to_include naturally
-               - Emphasize sections_to_emphasize with more detail
-            3. Keep professional LaTeX formatting
-            4. Ensure content fits appropriately on pages
-            5. Make it ATS-friendly with proper keywords
+            YOUR FULL AUTOMATION TASKS:
+            1. ANALYZE: Deep dive into job requirements vs Hongzhi's background
+            2. STRATEGIZE: Decide which LEGO components to emphasize/de-emphasize
+            3. CUSTOMIZE: Rewrite profile summary to match job perfectly
+            4. PRIORITIZE: Reorder experience bullets based on job relevance
+            5. OPTIMIZE: Integrate ATS keywords naturally throughout
+            6. TAILOR: Adjust technical skills section for maximum impact
+            7. PERSONALIZE: Make it feel written specifically for this company
             
-            Return ONLY the complete LaTeX document ready to compile.
+            FULL CONTROL INSTRUCTIONS:
+            - You decide everything - no human input needed
+            - Make bold customization decisions based on job analysis
+            - Emphasize most relevant experience heavily
+            - De-emphasize less relevant components
+            - Create compelling, job-specific profile summary
+            - Integrate company-specific language and keywords
+            - Ensure ATS optimization without keyword stuffing
+            - Maintain professional LaTeX structure
+            
+            OUTPUT: Complete, fully customized LaTeX resume ready for compilation.
+            This should be so well-tailored that it looks like Hongzhi wrote it specifically for this exact job.
             """
             
-            tailored_latex = await claude.generate_text(lego_build_prompt)
+            fully_automated_resume = await claude.generate_text(full_automation_prompt)
             
-            if tailored_latex and len(tailored_latex) > 500:
-                logger.info(f"🎯 Claude built tailored resume ({len(tailored_latex)} chars)")
-                return tailored_latex
+            if fully_automated_resume and len(fully_automated_resume) > 800:
+                logger.info(f"🤖 Claude FULL AUTOMATION: Built completely customized resume ({len(fully_automated_resume)} chars)")
+                logger.info("✅ Zero manual intervention - Claude handled everything!")
+                return fully_automated_resume
             else:
-                logger.warning("⚠️ Claude LEGO build failed, using fallback")
+                logger.warning("⚠️ Claude full automation failed, using template fallback")
                 from templates.cv_template import generate_tailored_cv
                 return generate_tailored_cv(job)
                 
         except Exception as e:
-            logger.error(f"❌ Claude LEGO build error: {e}")
+            logger.error(f"❌ Claude full automation error: {e}")
             from templates.cv_template import generate_tailored_cv
             return generate_tailored_cv(job)
     
@@ -919,77 +949,42 @@ class ImprovedWorkingAutomation:
             return b""
     
     async def _build_claude_cover_letter(self, job: dict) -> str:
-        """Claude creates personalized cover letter using job analysis"""
+        """Create personalized cover letter using Claude API or intelligent fallback"""
         try:
             from app.services.claude_api_service import ClaudeAPIService
             claude = ClaudeAPIService()
             
+            # Try Claude API first with concise prompt
             cover_letter_prompt = f"""
-            Create a personalized, compelling cover letter for Hongzhi Li that focuses on SOFT SKILLS and UNIQUE VALUE not covered in his CV:
+            Write a personalized cover letter for Hongzhi Li:
             
-            JOB DETAILS:
-            - Title: {job.get('title', 'Software Developer')}
-            - Company: {job.get('company', 'Target Company')}
-            - Description: {job.get('description', 'No description provided')}
+            Job: {job.get('title', 'Software Developer')} at {job.get('company', 'Company')}
             
-            HONGZHI'S UNIQUE BACKGROUND & SOFT SKILLS (focus on these):
-            - Cross-cultural bridge builder: Chinese background living/working in Sweden
-            - Business-IT translator: Master's in International Business + Technical expertise
-            - Cultural adaptability: Successfully integrated into Swedish tech culture
-            - Global perspective: Understands both Eastern and Western business approaches
-            - Communication skills: Bridges technical complexity with business needs
-            - Multilingual: Mandarin, English, Swedish (learning)
-            - International mindset: Valuable for companies with global operations
-            - Problem-solving approach: Combines analytical thinking with creative solutions
-            - Team collaboration: Experience working in diverse, multicultural teams
-            - Continuous learning: Constantly adapting to new technologies and cultures
+            Focus on soft skills:
+            - Cross-cultural bridge building (Chinese-Swedish perspective)
+            - Business-IT translation (Master's in International Business)
+            - Cultural adaptability and global mindset
+            - International team collaboration
             
-            TECHNICAL BACKGROUND (mention briefly):
-            - Current: IT/Infrastructure Specialist at ECARX (Oct 2024-Present)
-            - Previous: Azure Fullstack Developer at Synteda (Aug 2023-Sep 2024)
-            - Education: IT Högskolan (.NET Cloud Development), University of Gothenburg (International Business)
-            
-            COVER LETTER FOCUS AREAS:
-            1. Emphasize cross-cultural communication and bridge-building abilities
-            2. Highlight business-technical translation skills (Master's in International Business)
-            3. Show how Chinese-Swedish perspective adds value to the company
-            4. Demonstrate cultural adaptability and global mindset
-            5. Connect soft skills to specific job requirements
-            6. Show enthusiasm for Swedish tech culture and innovation
-            7. Mention ability to work with international teams/clients
-            8. Focus on problem-solving and collaborative approach
-            
-            AVOID:
-            - Don't repeat technical details from CV
-            - Don't list programming languages extensively
-            - Don't focus on certifications or technical achievements
-            
-            Structure:
-            - Professional header with contact info
-            - Date
-            - Company address
-            - Personalized greeting
-            - Opening: Express genuine interest and unique value proposition
-            - Body 1: Cross-cultural bridge-building and business-IT translation skills
-            - Body 2: How international perspective and soft skills benefit the company
-            - Body 3: Cultural fit and enthusiasm for Swedish innovation
-            - Closing: Professional and confident
-            
-            Return the complete cover letter content (not LaTeX format).
+            Keep it professional, 3-4 paragraphs, emphasize unique value.
             """
             
-            personalized_cover_letter = await claude.generate_text(cover_letter_prompt)
+            cover_letter = await claude.generate_text(cover_letter_prompt)
             
-            if personalized_cover_letter and len(personalized_cover_letter) > 300:
-                logger.info(f"💌 Claude created personalized cover letter ({len(personalized_cover_letter)} chars)")
-                return personalized_cover_letter
-            else:
-                logger.warning("⚠️ Claude cover letter creation failed, using fallback")
-                return self._get_fallback_cover_letter(job)
+            if cover_letter and len(cover_letter) > 200:
+                logger.info(f"💌 Claude created cover letter ({len(cover_letter)} chars)")
+                return cover_letter
                 
         except Exception as e:
-            logger.error(f"❌ Claude cover letter creation error: {e}")
-            return self._get_fallback_cover_letter(job)
+            logger.warning(f"⚠️ Claude cover letter error: {e}")
+        
+        # Use intelligent fallback
+        logger.info("🤖 Using intelligent cover letter fallback")
+        from intelligent_lego_fallback import IntelligentLegoFallback
+        fallback = IntelligentLegoFallback()
+        cover_strategy = fallback.create_intelligent_cover_letter_strategy(job)
+        
+        return self._create_intelligent_cover_letter(job, cover_strategy)
     
     def _create_claude_cover_letter_reportlab_pdf(self, job: dict, cover_letter_content: str) -> bytes:
         """Create PDF from Claude's cover letter content using ReportLab"""
@@ -1027,33 +1022,47 @@ class ImprovedWorkingAutomation:
             logger.error(f"❌ Error creating Claude cover letter PDF: {e}")
             return b""
     
-    def _get_fallback_cover_letter(self, job: dict) -> str:
-        """Fallback cover letter focusing on soft skills when Claude fails"""
+    def _create_intelligent_cover_letter(self, job: dict, strategy: dict) -> str:
+        """Create intelligent cover letter using fallback strategy"""
+        company = strategy.get('company', job.get('company', 'Company'))
+        title = strategy.get('title', job.get('title', 'Position'))
+        industry_focus = strategy.get('industry_focus', 'innovative technology solutions')
+        unique_value = strategy.get('unique_value', 'unique cross-cultural perspective')
+        
         return f"""HONGZHI LI
 Cross-Cultural Technology Professional
 hongzhili01@gmail.com | 0728384299
 
 {datetime.now().strftime('%Y-%m-%d')}
 
-{job.get('company', 'Hiring Team')}
+{company}
 Sweden
 
-Re: Application for {job.get('title', 'Software Developer')} Position
+Re: Application for {title} Position
 
 Dear Hiring Manager,
 
-I am writing to express my genuine interest in the {job.get('title', 'Software Developer')} role at {job.get('company', 'your company')}. What sets me apart is my unique ability to bridge cultures, translate between business and technology, and bring a global perspective to Swedish innovation.
+I am writing to express my genuine interest in the {title} role at {company}. What sets me apart is my unique ability to bridge cultures, translate between business and technology, and bring a global perspective to Swedish innovation in {industry_focus}.
 
 As a Chinese professional who has successfully integrated into Sweden's tech ecosystem, I offer a distinctive combination of cross-cultural communication skills and business-technical translation abilities. My Master's in International Business, combined with hands-on technical experience, allows me to understand both the strategic business context and the technical implementation details that drive successful projects.
 
-My multicultural background has proven invaluable in my current role at ECARX, where I facilitate communication between diverse international teams and help translate complex technical solutions into clear business value. This skill becomes increasingly important as Swedish companies expand globally and work with international partners and clients.
+{unique_value}. My multicultural background has proven invaluable in my current role at ECARX, where I facilitate communication between diverse international teams and help translate complex technical solutions into clear business value.
 
-What excites me most about {job.get('company', 'your company')} is the opportunity to contribute my unique perspective to your innovative team. I believe my combination of cultural adaptability, business acumen, and collaborative approach would add significant value to your organization's continued growth and success.
+What excites me most about {company} is the opportunity to contribute my unique perspective to your innovative team. I believe my combination of cultural adaptability, business acumen, and collaborative approach would add significant value to your organization's continued growth and success.
 
-I would welcome the opportunity to discuss how my cross-cultural expertise and passion for bridging business and technology can contribute to {job.get('company', 'your company')}'s objectives.
+I would welcome the opportunity to discuss how my cross-cultural expertise and passion for bridging business and technology can contribute to {company}'s objectives.
 
 Sincerely,
 Hongzhi Li"""
+    
+    def _get_fallback_cover_letter(self, job: dict) -> str:
+        """Simple fallback when all else fails"""
+        return self._create_intelligent_cover_letter(job, {
+            'company': job.get('company', 'Company'),
+            'title': job.get('title', 'Position'),
+            'industry_focus': 'technology innovation',
+            'unique_value': 'My cross-cultural perspective brings unique value'
+        })
     
     async def _send_improved_job_email(self, job: dict, cv_pdf: bytes, cl_pdf: bytes) -> bool:
         """Send improved job application email with PDFs and direct links"""

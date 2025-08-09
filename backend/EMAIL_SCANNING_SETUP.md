@@ -38,7 +38,7 @@ python app/scheduler/job_runner.py daily_summary
 ### Heroku Scheduler Setup
 Add these commands to Heroku Scheduler:
 
-1. **Daily Email Scan** (6:00 AM UTC):
+1. **Daily Email Scan** (20:00 Swedish time - optimal for Claude API):
    ```
    bash schedule_6am_email_scan.sh
    ```

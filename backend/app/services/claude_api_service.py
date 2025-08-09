@@ -19,16 +19,23 @@ class ClaudeAPIService:
         # Third-party API configuration (primary)
         self.third_party_token = os.getenv("ANTHROPIC_AUTH_TOKEN")
         self.third_party_base_url = os.getenv("ANTHROPIC_BASE_URL", "https://anyrouter.top")
-        self.claude_model = os.getenv("CLAUDE_MODEL", "claude-3-7-sonnet-20250219")
+        self.third_party_model = os.getenv("CLAUDE_MODEL", "claude-3-7-sonnet-20250219")
         
         # Official Anthropic API configuration (fallback)
-        self.official_token = os.getenv("ANTHROPIC_API_KEY")
+        self.official_token = os.getenv("ANTHROPIC_OFFICIAL_API_KEY")
         self.official_base_url = "https://api.anthropic.com"
+        self.official_model = "claude-3-5-sonnet-20241022"  # Limited to Sonnet 3.5 for cost efficiency
         
-        # Use third-party API as primary
+        # Use third-party API as primary (official API has low credits)
         self.current_api = "third_party"
         self.current_token = self.third_party_token
         self.current_base_url = self.third_party_base_url
+        self.current_model = self.third_party_model
+        
+        # Retry configuration for third-party API
+        self.third_party_max_retries = 5  # More retries for free API
+        self.third_party_base_delay = 2   # Start with 2 seconds
+        self.third_party_max_delay = 30   # Max 30 seconds between retries
         
         # Request headers
         self.headers = {
@@ -36,10 +43,11 @@ class ClaudeAPIService:
             "anthropic-version": "2023-06-01"
         }
         
-        logger.info(f"🚀 Claude API initialized with THIRD-PARTY configuration:")
-        logger.info(f"   Model: {self.claude_model}")
-        logger.info(f"   API: {self.current_api}")
-        logger.info(f"   Base URL: {self.current_base_url}")
+        logger.info(f"🚀 Claude API Load Balancer initialized:")
+        logger.info(f"   Primary: Third-party API ({self.third_party_base_url})")
+        logger.info(f"   Fallback: Official Claude Pro API (low credits)")
+        logger.info(f"   Current Model: {self.current_model}")
+        logger.info(f"   Retry Strategy: {self.third_party_max_retries} attempts with backoff")
         logger.info(f"   Token: {self.current_token[:20]}..." if self.current_token else "   Token: None")
         
     async def enhance_resume_content(self, job: Dict, base_resume_content: str) -> str:
@@ -169,92 +177,116 @@ class ClaudeAPIService:
         """
         return await self._make_claude_request(prompt)
     
-    async def _make_claude_request(self, prompt: str, max_retries: int = 2) -> str:
+    async def _make_claude_request(self, prompt: str) -> str:
         """
-        Make request to Claude API using CLI approach for third-party API
+        Smart load balancer: Try third-party API with retries, fallback to official API
         """
         if not self.current_token:
             logger.warning("No Claude API token available")
             return ""
         
-        # For third-party API, use CLI approach
+        # Try third-party API first with robust retry logic
         if self.current_api == "third_party":
-            return await self._make_claude_cli_request(prompt)
+            result = await self._try_third_party_api_with_retries(prompt)
+            if result:
+                return result
+            
+            # Third-party failed, note that official API has low credits
+            logger.warning("🔄 Third-party API failed, official API has insufficient credits")
+            logger.warning("💡 Consider running at 20:00 Swedish time for better third-party API availability")
         
-        # For official API, use HTTP approach
-        for attempt in range(max_retries):
-            try:
-                logger.info(f"Making Claude API request (attempt {attempt + 1}/{max_retries})")
-                
-                # Prepare request data with COST-EFFICIENT settings
-                request_data = {
-                    "model": self.claude_model,
-                    "max_tokens": 4096,  # Balanced tokens for cost efficiency
-                    "temperature": 0.5,  # Balanced creativity/accuracy
-                    "messages": [
-                        {
-                            "role": "user",
-                            "content": prompt
-                        }
-                    ]
-                }
-                
-                # Set up headers for official API
-                headers = self.headers.copy()
-                headers["x-api-key"] = self.current_token
-                
-                # Make the request
-                async with aiohttp.ClientSession() as session:
-                    url = f"{self.current_base_url}/v1/messages"
-                    
-                    async with session.post(
-                        url,
-                        headers=headers,
-                        json=request_data,
-                        timeout=aiohttp.ClientTimeout(total=30)
-                    ) as response:
-                        
-                        if response.status == 200:
-                            response_data = await response.json()
-                            
-                            # Extract content from response
-                            if "content" in response_data and response_data["content"]:
-                                content = response_data["content"][0]["text"]
-                                logger.info(f"✅ Claude API request successful ({len(content)} chars)")
-                                return content
-                            else:
-                                logger.warning("Claude API returned empty content")
-                                return ""
-                        
-                        elif response.status == 401:
-                            logger.error("Claude API authentication failed")
-                            return ""
-                        
-                        else:
-                            error_text = await response.text()
-                            logger.error(f"Claude API error {response.status}: {error_text}")
-                            
-                            if attempt < max_retries - 1:
-                                await asyncio.sleep(2 ** attempt)  # Exponential backoff
-                                continue
-                            return ""
-                            
-            except asyncio.TimeoutError:
-                logger.error(f"Claude API request timeout (attempt {attempt + 1})")
-                if attempt < max_retries - 1:
-                    await asyncio.sleep(2)
-                    continue
-                return ""
-                
-            except Exception as e:
-                logger.error(f"Claude API request error (attempt {attempt + 1}): {e}")
-                if attempt < max_retries - 1:
-                    await asyncio.sleep(2)
-                    continue
-                return ""
-        
-        logger.error("All Claude API attempts failed")
+        # Return empty if both APIs unavailable
         return ""
+    
+    async def _try_third_party_api_with_retries(self, prompt: str) -> str:
+        """
+        Try third-party API with exponential backoff for 502/500 errors
+        """
+        for attempt in range(self.third_party_max_retries):
+            try:
+                delay = min(self.third_party_base_delay * (2 ** attempt), self.third_party_max_delay)
+                
+                if attempt > 0:
+                    logger.info(f"🔄 Third-party API retry {attempt + 1}/{self.third_party_max_retries} (waiting {delay}s)")
+                    await asyncio.sleep(delay)
+                
+                result = await self._make_claude_cli_request(prompt)
+                
+                if result and len(result) > 10:  # Valid response
+                    logger.info(f"✅ Third-party API success on attempt {attempt + 1}")
+                    return result
+                else:
+                    logger.warning(f"⚠️ Third-party API returned empty/short response (attempt {attempt + 1})")
+                    
+            except subprocess.TimeoutExpired:
+                logger.warning(f"⏰ Third-party API timeout (attempt {attempt + 1}/{self.third_party_max_retries})")
+            except Exception as e:
+                logger.warning(f"⚠️ Third-party API error (attempt {attempt + 1}): {e}")
+                
+                # Check if it's a server overload error (502, 500, etc.)
+                if "502" in str(e) or "500" in str(e) or "503" in str(e):
+                    logger.info("🚦 Server overload detected, will retry with backoff")
+                    continue
+        
+        logger.warning(f"❌ Third-party API failed after {self.third_party_max_retries} attempts")
+        return ""
+    
+    async def _make_official_api_request(self, prompt: str) -> str:
+        """
+        Make request to official Claude Pro API with cost-efficient settings
+        """
+        try:
+            logger.info("🔑 Using official Claude Pro API")
+            
+            # Cost-efficient settings for official API (limited to Sonnet 3.5)
+            request_data = {
+                "model": self.current_model,  # claude-3-5-sonnet-20241022
+                "max_tokens": 1500,  # Reduced for cost efficiency
+                "temperature": 0.2,  # Lower temperature for consistency and cost
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            }
+            
+            headers = self.headers.copy()
+            headers["x-api-key"] = self.current_token
+            
+            async with aiohttp.ClientSession() as session:
+                url = f"{self.current_base_url}/v1/messages"
+                
+                async with session.post(
+                    url,
+                    headers=headers,
+                    json=request_data,
+                    timeout=aiohttp.ClientTimeout(total=30)
+                ) as response:
+                    
+                    if response.status == 200:
+                        response_data = await response.json()
+                        
+                        if "content" in response_data and response_data["content"]:
+                            content = response_data["content"][0]["text"]
+                            logger.info(f"✅ Official Claude Pro API success ({len(content)} chars)")
+                            return content
+                        else:
+                            logger.warning("Official API returned empty content")
+                            return ""
+                    
+                    elif response.status == 401:
+                        logger.error("❌ Official Claude Pro API authentication failed")
+                        return ""
+                    
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"❌ Official API error {response.status}: {error_text}")
+                        return ""
+                        
+        except Exception as e:
+            logger.error(f"❌ Official Claude Pro API error: {e}")
+            return ""
     
     async def _make_claude_cli_request(self, prompt: str) -> str:
         """
@@ -275,18 +307,17 @@ class ClaudeAPIService:
 
 Important: Return only the requested content without additional commentary or formatting."""
             
-            # Use Claude CLI
-            cmd = ["claude", "--model", self.claude_model, "--print"]
+            # Use Claude CLI with current model
+            cmd = ["claude", "--model", self.current_model, "--print"]
             
-            # Run the command with shorter timeout for faster fallback
-            logger.info(f"🔧 Running Claude CLI: {' '.join(cmd)}")
+            # Run the command with appropriate timeout
             result = subprocess.run(
                 cmd,
                 input=cli_prompt,
                 text=True,
                 capture_output=True,
                 env=env,
-                timeout=30  # Shorter timeout for faster fallback
+                timeout=20  # Reasonable timeout for CLI
             )
             
             if result.returncode == 0 and result.stdout:
@@ -310,21 +341,19 @@ Important: Return only the requested content without additional commentary or fo
     
     async def _switch_to_official_api(self):
         """
-        Switch from third-party API to official Anthropic API with logout
+        Switch from third-party API to official Claude Pro API
         """
         try:
-            # Perform logout from current session
-            await self._logout_claude_session()
-            
-            # Switch to official API
+            # Switch to official API configuration
             self.current_api = "official"
             self.current_token = self.official_token
             self.current_base_url = self.official_base_url
+            self.current_model = self.official_model
             
-            logger.info("Successfully switched to official Anthropic API")
+            logger.info(f"🔄 Switched to official Claude Pro API (model: {self.current_model})")
             
         except Exception as e:
-            logger.error(f"Error switching to official API: {e}")
+            logger.error(f"❌ Error switching to official API: {e}")
     
     async def _logout_claude_session(self):
         """
@@ -382,7 +411,8 @@ Important: Return only the requested content without additional commentary or fo
         self.current_api = "third_party"
         self.current_token = self.third_party_token
         self.current_base_url = self.third_party_base_url
-        logger.info("Reset to third-party API for next session")
+        self.current_model = self.third_party_model
+        logger.info("🔄 Reset to third-party API for next session")
     
     def get_current_api_info(self) -> Dict[str, str]:
         """
@@ -391,5 +421,6 @@ Important: Return only the requested content without additional commentary or fo
         return {
             "api_type": self.current_api,
             "base_url": self.current_base_url,
+            "model": self.current_model,
             "token_prefix": self.current_token[:10] + "..." if self.current_token else "None"
         }
