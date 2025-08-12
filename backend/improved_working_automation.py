@@ -430,9 +430,10 @@ class ImprovedWorkingAutomation:
             except Exception as latex_error:
                 logger.warning(f"⚠️ LaTeX compilation not available: {latex_error}")
             
-            # STEP 5: Create enhanced ReportLab PDF with Claude's LEGO logic
-            logger.info(f"📄 Creating enhanced PDF using Claude's LEGO strategy")
-            return self._create_enhanced_lego_pdf(job, latex_content)
+            # STEP 5: Create BEAUTIFUL multi-page PDF - NO MORE ONE-PAGE SHIT!
+            logger.info(f"📄 Creating BEAUTIFUL multi-page PDF using LEGO strategy")
+            from beautiful_pdf_generator import create_beautiful_multi_page_pdf
+            return create_beautiful_multi_page_pdf(job, latex_content)
             
         except Exception as e:
             logger.error(f"❌ Error generating Claude LEGO CV PDF: {e}")
@@ -490,9 +491,10 @@ class ImprovedWorkingAutomation:
             except Exception as latex_error:
                 logger.warning(f"⚠️ LaTeX compilation not available: {latex_error}")
             
-            # STEP 4: Create a MUCH BETTER ReportLab PDF that mimics your template
-            logger.info(f"📄 Creating enhanced PDF for {title} at {company} using LEGO logic")
-            return self._create_enhanced_lego_pdf(job, latex_content)
+            # STEP 4: Create BEAUTIFUL multi-page PDF - NO MORE ONE-PAGE SHIT!
+            logger.info(f"📄 Creating BEAUTIFUL multi-page PDF for {title} at {company}")
+            from beautiful_pdf_generator import create_beautiful_multi_page_pdf
+            return create_beautiful_multi_page_pdf(job, latex_content)
             buffer = BytesIO()
             doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=0.5*inch)
             
