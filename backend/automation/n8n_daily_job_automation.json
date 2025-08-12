@@ -1,0 +1,302 @@
+{
+  "name": "Daily Job Hunt Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * 1-5"
+            }
+          ]
+        }
+      },
+      "name": "6 AM Trigger (Mon-Fri)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression", 
+              "expression": "0 8 * * 1-5"
+            }
+          ]
+        }
+      },
+      "name": "8 AM Summary Trigger (Mon-Fri)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "job-processing",
+        "responseMode": "responseNode"
+      },
+      "name": "Job Processing Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ],
+      "webhookId": "6am-job-processing"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "summary-email",
+        "responseMode": "responseNode"
+      },
+      "name": "Summary Email Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        460,
+        500
+      ],
+      "webhookId": "8am-summary-email"
+    },
+    {
+      "parameters": {
+        "url": "https://your-heroku-app.herokuapp.com/api/v1/automation/6am-processing",
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "name": "Call 6 AM Job Processing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://your-heroku-app.herokuapp.com/api/v1/automation/8am-summary",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "name": "Call 8 AM Summary Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        680,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"status\"]}}",
+              "operation": "equal",
+              "value2": "success"
+            }
+          ]
+        }
+      },
+      "name": "Check 6 AM Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"status\"]}}",
+              "operation": "equal",
+              "value2": "success"
+            }
+          ]
+        }
+      },
+      "name": "Check 8 AM Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        900,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "subject": "✅ Job Hunt Automation Success",
+        "message": "6 AM job processing completed successfully!\n\nJobs processed: {{$json[\"data\"][\"jobs_processed\"]}}\nApplications sent: {{$json[\"data\"][\"applications_sent\"]}}\nPDFs generated: {{$json[\"data\"][\"pdfs_generated\"]}}\n\nCompanies: {{$json[\"data\"][\"successful_companies\"].join(\", \")}}"
+      },
+      "name": "Success Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "subject": "⚠️ Job Hunt Automation Issues",
+        "message": "6 AM job processing completed with issues:\n\nErrors: {{$json[\"data\"][\"errors\"].join(\", \")}}\n\nPlease check the system."
+      },
+      "name": "Error Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "subject": "📧 Summary Email Sent",
+        "message": "8 AM summary email sent successfully!"
+      },
+      "name": "Summary Success Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "subject": "❌ Summary Email Failed",
+        "message": "8 AM summary email failed to send. Please check the system."
+      },
+      "name": "Summary Error Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "6 AM Trigger (Mon-Fri)": {
+      "main": [
+        [
+          {
+            "node": "Job Processing Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8 AM Summary Trigger (Mon-Fri)": {
+      "main": [
+        [
+          {
+            "node": "Summary Email Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Job Processing Webhook": {
+      "main": [
+        [
+          {
+            "node": "Call 6 AM Job Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summary Email Webhook": {
+      "main": [
+        [
+          {
+            "node": "Call 8 AM Summary Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 6 AM Job Processing": {
+      "main": [
+        [
+          {
+            "node": "Check 6 AM Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 8 AM Summary Email": {
+      "main": [
+        [
+          {
+            "node": "Check 8 AM Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check 6 AM Success": {
+      "main": [
+        [
+          {
+            "node": "Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check 8 AM Success": {
+      "main": [
+        [
+          {
+            "node": "Summary Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Summary Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "id": "daily-job-hunt-automation"
+}

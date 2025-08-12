@@ -32,10 +32,10 @@ class ClaudeAPIService:
         self.current_base_url = self.third_party_base_url
         self.current_model = self.third_party_model
         
-        # Retry configuration for third-party API
-        self.third_party_max_retries = 5  # More retries for free API
-        self.third_party_base_delay = 2   # Start with 2 seconds
-        self.third_party_max_delay = 30   # Max 30 seconds between retries
+        # Retry configuration for third-party API (FREE - so we can be aggressive!)
+        self.third_party_max_retries = 10  # 10 attempts since it's totally free
+        self.third_party_base_delay = 3    # Start with 3 seconds
+        self.third_party_max_delay = 45    # Max 45 seconds between retries
         
         # Request headers
         self.headers = {
@@ -47,7 +47,7 @@ class ClaudeAPIService:
         logger.info(f"   Primary: Third-party API ({self.third_party_base_url})")
         logger.info(f"   Fallback: Official Claude Pro API (low credits)")
         logger.info(f"   Current Model: {self.current_model}")
-        logger.info(f"   Retry Strategy: {self.third_party_max_retries} attempts with backoff")
+        logger.info(f"   Retry Strategy: {self.third_party_max_retries} attempts with backoff (FREE API!)")
         logger.info(f"   Token: {self.current_token[:20]}..." if self.current_token else "   Token: None")
         
     async def enhance_resume_content(self, job: Dict, base_resume_content: str) -> str:
@@ -204,11 +204,14 @@ class ClaudeAPIService:
         """
         for attempt in range(self.third_party_max_retries):
             try:
+                # Progressive delay: 3s, 6s, 12s, 24s, 45s, 45s, 45s...
                 delay = min(self.third_party_base_delay * (2 ** attempt), self.third_party_max_delay)
                 
                 if attempt > 0:
-                    logger.info(f"🔄 Third-party API retry {attempt + 1}/{self.third_party_max_retries} (waiting {delay}s)")
+                    logger.info(f"🔄 Third-party API retry {attempt + 1}/{self.third_party_max_retries} (waiting {delay}s) - FREE API, keep trying!")
                     await asyncio.sleep(delay)
+                else:
+                    logger.info(f"🚀 Third-party API attempt {attempt + 1}/{self.third_party_max_retries} - FREE API advantage!")
                 
                 result = await self._make_claude_cli_request(prompt)
                 
@@ -224,11 +227,15 @@ class ClaudeAPIService:
                 logger.warning(f"⚠️ Third-party API error (attempt {attempt + 1}): {e}")
                 
                 # Check if it's a server overload error (502, 500, etc.)
-                if "502" in str(e) or "500" in str(e) or "503" in str(e):
-                    logger.info("🚦 Server overload detected, will retry with backoff")
+                if "502" in str(e) or "500" in str(e) or "503" in str(e) or "timeout" in str(e).lower():
+                    logger.info(f"🚦 Server overload/timeout detected (attempt {attempt + 1}), will retry with backoff - FREE API!")
+                    continue
+                elif "rate limit" in str(e).lower():
+                    logger.info(f"⏱️ Rate limit hit (attempt {attempt + 1}), waiting longer - FREE API!")
+                    await asyncio.sleep(delay * 2)  # Double wait for rate limits
                     continue
         
-        logger.warning(f"❌ Third-party API failed after {self.third_party_max_retries} attempts")
+        logger.warning(f"❌ Third-party API failed after {self.third_party_max_retries} attempts (FREE API exhausted)")
         return ""
     
     async def _make_official_api_request(self, prompt: str) -> str:

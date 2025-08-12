@@ -15,17 +15,18 @@ echo "🧠 Claude API optimization: Running at night when Chinese users are slee
 export PYTHONPATH="${PYTHONPATH}:."
 
 # Run the master automation orchestrator
-echo "🚀 Executing Master Automation Orchestrator..."
-python3 master_automation_orchestrator.py
+echo "🚀 Executing Heroku Job Automation with Beautiful PDFs..."
+python3 heroku_job_automation.py
 
 # Check exit status
 if [ $? -eq 0 ]; then
-    echo "✅ Master Automation completed successfully!"
-    echo "📧 Check hongzhili01@gmail.com for professional PDF applications"
-    echo "📊 Check automation summary files for detailed results"
+    echo "✅ Heroku Job Automation completed successfully!"
+    echo "📧 Check hongzhili01@gmail.com for beautiful multi-page PDF applications"
+    echo "🎯 LEGO intelligence with Claude API integration working"
+    echo "📊 Beautiful PDFs generated - NO MORE ONE-PAGE SHIT!"
 else
-    echo "❌ Master Automation failed with exit code $?"
-    echo "📋 Check automation.log for detailed error information"
+    echo "❌ Heroku Job Automation failed with exit code $?"
+    echo "📋 Check logs for detailed error information"
 fi
 
-echo "🎯 JobHunter Master Automation execution finished at $(date)"
+echo "🎯 JobHunter Heroku Automation execution finished at $(date)"

@@ -102,3 +102,12 @@ gmail_token.pickle
 *.pickle
 backend/app/services/source_credentials.json
 backend/app/services/gmail_token.pickle
+
+# Claude settings with credentials
+.claude/settings.local.json
+
+# Files with exposed credentials (to be cleaned)
+SECURITY_CLEANUP.md
+JOB_INTEGRATION_SUMMARY.md
+backend/CLAUDE_INTEGRATION_SUMMARY.md
+backend/deploy_fixed_dashboard.sh

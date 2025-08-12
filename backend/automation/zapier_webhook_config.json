@@ -1,0 +1,113 @@
+{
+  "zapier_automation": {
+    "name": "Daily Job Hunt Automation",
+    "description": "6 AM job processing + 8 AM summary email on working days",
+    "triggers": [
+      {
+        "name": "6 AM Job Processing",
+        "type": "schedule",
+        "schedule": "0 6 * * 1-5",
+        "timezone": "Europe/Stockholm",
+        "webhook_url": "https://your-heroku-app.herokuapp.com/api/v1/automation/6am-processing",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer your-webhook-token"
+        }
+      },
+      {
+        "name": "8 AM Summary Email",
+        "type": "schedule", 
+        "schedule": "0 8 * * 1-5",
+        "timezone": "Europe/Stockholm",
+        "webhook_url": "https://your-heroku-app.herokuapp.com/api/v1/automation/8am-summary",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer your-webhook-token"
+        }
+      }
+    ],
+    "actions": [
+      {
+        "name": "Process Jobs at 6 AM",
+        "description": "Scan Gmail, generate beautiful PDFs, send applications",
+        "webhook": {
+          "url": "https://your-heroku-app.herokuapp.com/api/v1/automation/6am-processing",
+          "method": "POST",
+          "timeout": 300
+        },
+        "success_action": {
+          "type": "email",
+          "to": "hongzhili01@gmail.com",
+          "subject": "✅ Job Hunt: {{applications_sent}} Applications Sent",
+          "body": "Morning job processing completed!\n\nJobs found: {{jobs_processed}}\nApplications sent: {{applications_sent}}\nPDFs generated: {{pdfs_generated}}\n\nCompanies: {{successful_companies}}"
+        },
+        "error_action": {
+          "type": "email",
+          "to": "hongzhili01@gmail.com", 
+          "subject": "⚠️ Job Hunt Automation Issues",
+          "body": "6 AM job processing encountered issues:\n\n{{errors}}\n\nPlease check the system."
+        }
+      },
+      {
+        "name": "Send Summary Email at 8 AM",
+        "description": "Send beautiful HTML summary of daily job hunt results",
+        "webhook": {
+          "url": "https://your-heroku-app.herokuapp.com/api/v1/automation/8am-summary",
+          "method": "POST",
+          "timeout": 60
+        },
+        "success_action": {
+          "type": "notification",
+          "message": "Daily summary email sent successfully"
+        },
+        "error_action": {
+          "type": "email",
+          "to": "hongzhili01@gmail.com",
+          "subject": "❌ Summary Email Failed",
+          "body": "8 AM summary email failed to send. Please check the system."
+        }
+      }
+    ],
+    "filters": [
+      {
+        "name": "Working Days Only",
+        "condition": "day_of_week in [1,2,3,4,5]",
+        "description": "Only run Monday through Friday"
+      }
+    ]
+  },
+  "webhook_endpoints": {
+    "6am_processing": {
+      "path": "/api/v1/automation/6am-processing",
+      "method": "POST",
+      "description": "Triggers morning job processing workflow",
+      "response_format": {
+        "status": "success|warning|error",
+        "message": "Human readable status message",
+        "data": {
+          "jobs_processed": "number",
+          "applications_sent": "number", 
+          "pdfs_generated": "number",
+          "successful_companies": "array",
+          "errors": "array",
+          "start_time": "ISO datetime",
+          "end_time": "ISO datetime"
+        }
+      }
+    },
+    "8am_summary": {
+      "path": "/api/v1/automation/8am-summary",
+      "method": "POST",
+      "description": "Sends HTML summary email with daily results",
+      "request_body": {
+        "results_data": "optional - job processing results from 6 AM"
+      },
+      "response_format": {
+        "status": "success|error",
+        "message": "Email sent status"
+      }
+    }
+  }
+}
