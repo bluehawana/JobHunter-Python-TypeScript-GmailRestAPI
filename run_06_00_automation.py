@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-20:00 Job Automation Execution - Complete Run
+06:00 Job Automation Execution - Complete Run
 Uses anyrouter.top Claude API to scan Gmail, find jobs, and generate applications
+Runs at 6:00 AM weekdays to deliver applications by 8:00 AM
 """
 import sys
 import os
@@ -30,7 +31,7 @@ class JobAutomationRunner:
         self.claude_base_url = os.getenv('ANTHROPIC_BASE_URL', 'https://anyrouter.top')
         self.sender_email = os.getenv('SENDER_EMAIL', 'leeharvad@gmail.com')
         self.sender_password = os.getenv('SENDER_GMAIL_PASSWORD')
-        self.recipient_email = 'hongzhili01@gmail.com'
+        self.recipient_email = os.getenv('RECIPIENT_EMAIL', 'hongzhili01@gmail.com')
         
         self.execution_log = []
         self.jobs_found = []
@@ -51,104 +52,38 @@ class JobAutomationRunner:
         print(f"{status_icon} [{timestamp}] {action}: {details}")
     
     def scan_gmail_with_claude(self):
-        """Use Claude API to simulate Gmail scanning and job finding"""
-        self.log_action("Gmail Scanning", "RUNNING", "Scanning for new job opportunities...")
+        """Scan REAL Gmail for actual job opportunities - NO FAKE JOBS"""
+        self.log_action("Gmail Scanning", "RUNNING", "Scanning Gmail for REAL job opportunities...")
         
         try:
-            # Simulate finding jobs using Claude API
-            prompt = """
-            You are a job hunting assistant. Based on typical job search patterns, 
-            generate 2-3 realistic DevOps/Backend/Fullstack job opportunities that 
-            Hongzhi Li might find in his Gmail. Include:
+            # Import the simple Gmail scanner
+            from simple_gmail_scanner import scan_real_gmail_jobs
             
-            1. Company name (real Swedish/Norwegian/European companies)
-            2. Job title
-            3. Location
-            4. Key requirements
-            5. Brief description
+            # Scan for real jobs in Gmail
+            real_jobs = scan_real_gmail_jobs()
             
-            Format as JSON array with objects containing: title, company, location, description, requirements
-            """
-            
-            headers = {
-                'Authorization': f'Bearer {self.claude_api_key}',
-                'Content-Type': 'application/json'
-            }
-            
-            data = {
-                'model': 'claude-3-7-sonnet-20250219',
-                'messages': [{'role': 'user', 'content': prompt}],
-                'max_tokens': 1500
-            }
-            
-            response = requests.post(
-                f'{self.claude_base_url}/v1/messages',
-                headers=headers,
-                json=data,
-                timeout=30
-            )
-            
-            if response.status_code == 200:
-                result = response.json()
-                claude_response = result['content'][0]['text']
+            if real_jobs:
+                self.jobs_found = real_jobs
+                self.log_action("Gmail Scanning", "SUCCESS", f"Found {len(real_jobs)} REAL job opportunities from Gmail")
                 
-                # Try to extract JSON from Claude's response
-                try:
-                    # Find JSON in the response
-                    start_idx = claude_response.find('[')
-                    end_idx = claude_response.rfind(']') + 1
-                    
-                    if start_idx != -1 and end_idx != -1:
-                        json_str = claude_response[start_idx:end_idx]
-                        jobs = json.loads(json_str)
-                        
-                        self.jobs_found = jobs
-                        self.log_action("Gmail Scanning", "SUCCESS", f"Found {len(jobs)} job opportunities")
-                        return jobs
-                    else:
-                        # Fallback to predefined jobs
-                        return self._get_fallback_jobs()
-                        
-                except json.JSONDecodeError:
-                    self.log_action("Gmail Scanning", "WARNING", "Claude response parsing failed, using fallback")
-                    return self._get_fallback_jobs()
+                # Log each real job found
+                for job in real_jobs:
+                    self.log_action("Gmail Scanning", "SUCCESS", f"Real job: {job['company']} - {job['title']} in {job['location']}")
+                
+                return real_jobs
             else:
-                self.log_action("Gmail Scanning", "ERROR", f"Claude API failed: {response.status_code}")
-                return self._get_fallback_jobs()
+                self.log_action("Gmail Scanning", "INFO", "No new job opportunities found in Gmail today")
+                return []
                 
         except Exception as e:
             self.log_action("Gmail Scanning", "ERROR", f"Gmail scanning failed: {e}")
-            return self._get_fallback_jobs()
+            # DO NOT use fallback fake jobs - return empty list instead
+            return []
     
-    def _get_fallback_jobs(self):
-        """Fallback jobs if Claude API fails"""
-        fallback_jobs = [
-            {
-                "title": "Senior DevOps Engineer",
-                "company": "Spotify",
-                "location": "Stockholm, Sweden",
-                "description": "We're looking for a Senior DevOps Engineer to join our Platform team. You'll work with Kubernetes, AWS, monitoring, and CI/CD pipelines.",
-                "requirements": "Kubernetes, Docker, AWS, Prometheus, Grafana, CI/CD, Python, Infrastructure as Code"
-            },
-            {
-                "title": "Backend Developer",
-                "company": "Klarna",
-                "location": "Stockholm, Sweden", 
-                "description": "Join our backend team to build scalable payment solutions. Work with Java, Spring Boot, microservices, and cloud technologies.",
-                "requirements": "Java, Spring Boot, Microservices, PostgreSQL, AWS, REST APIs, Agile"
-            },
-            {
-                "title": "Fullstack Developer",
-                "company": "King Digital Entertainment",
-                "location": "Stockholm, Sweden",
-                "description": "Build amazing gaming experiences with our fullstack team. React, Node.js, and cloud technologies.",
-                "requirements": "React, Node.js, TypeScript, MongoDB, AWS, Full-stack development"
-            }
-        ]
-        
-        self.jobs_found = fallback_jobs
-        self.log_action("Gmail Scanning", "SUCCESS", f"Using fallback jobs: {len(fallback_jobs)} opportunities")
-        return fallback_jobs
+    def _no_fallback_jobs(self):
+        """NO FALLBACK JOBS - Only process real opportunities"""
+        self.log_action("Gmail Scanning", "INFO", "No fallback jobs - only processing real Gmail opportunities")
+        return []
     
     def generate_application(self, job):
         """Generate CV and cover letter for a job"""
@@ -272,7 +207,7 @@ The documents are specifically tailored for this role with:
 
 ---
 Generated by JobHunter Automation System at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-Next scan: Tomorrow 20:00
+Next scan: Tomorrow 06:00 (weekdays only)
             """
             
             msg.attach(MIMEText(body, 'plain'))
@@ -311,6 +246,96 @@ Next scan: Tomorrow 20:00
             
         except Exception as e:
             self.log_action("Email Sending", "ERROR", f"Failed to send email for {company}: {e}")
+            return False
+    
+    def send_application_email_with_both(self, job, cv_pdf, cl_pdf):
+        """Send application email with BOTH CV and Cover Letter PDFs"""
+        company = job['company']
+        title = job['title']
+        
+        self.log_action("Email Sending", "RUNNING", f"Sending TRUE LEGO application to {self.recipient_email}")
+        
+        try:
+            # Create message
+            msg = MIMEMultipart()
+            msg['From'] = self.sender_email
+            msg['To'] = self.recipient_email
+            msg['Subject'] = f"🎯 {company} {title} - TRUE LEGO Application Package"
+            
+            # Email body
+            body = f"""
+🎯 TRUE LEGO JOB APPLICATION - {company.upper()}
+
+Dear Hongzhi,
+
+Your TRUE LEGO automation system has generated a professional application package!
+
+📊 JOB DETAILS:
+Company: {company}
+Position: {title}
+Location: {job.get('location', 'N/A')}
+
+🎯 TRUE LEGO HIGHLIGHTS:
+✅ EXACT LaTeX Templates: Your professional CV template with LEGO intelligence
+✅ Matching Cover Letter: Same LaTeX style and formatting
+✅ Claude 3.5 Customization: Intelligent content adaptation
+✅ Overleaf Quality: Professional LaTeX compilation
+✅ REAL Job Processing: No fake jobs, only genuine opportunities
+
+📄 ATTACHMENTS:
+• CV: Your exact LaTeX template with intelligent customization
+• Cover Letter: Matching LaTeX style with soft skills emphasis
+
+🚀 READY FOR APPLICATION!
+
+The documents use your EXACT LaTeX templates with:
+• Intelligent LEGO customization based on job requirements
+• Professional formatting matching Overleaf quality
+• Consistent styling between CV and cover letter
+• Real job processing (no fake Spotify/Klarna jobs)
+
+---
+Generated by TRUE LEGO Automation System at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+Next scan: Tomorrow 06:00 (weekdays only)
+            """
+            
+            msg.attach(MIMEText(body, 'plain'))
+            
+            # Attach CV PDF
+            if cv_pdf:
+                cv_attachment = MIMEBase('application', 'octet-stream')
+                cv_attachment.set_payload(cv_pdf)
+                encoders.encode_base64(cv_attachment)
+                cv_attachment.add_header(
+                    'Content-Disposition',
+                    f'attachment; filename="Hongzhi_Li_CV_{company.replace(" ", "_")}_{title.replace(" ", "_")}.pdf"'
+                )
+                msg.attach(cv_attachment)
+            
+            # Attach Cover Letter PDF
+            if cl_pdf:
+                cl_attachment = MIMEBase('application', 'octet-stream')
+                cl_attachment.set_payload(cl_pdf)
+                encoders.encode_base64(cl_attachment)
+                cl_attachment.add_header(
+                    'Content-Disposition',
+                    f'attachment; filename="Hongzhi_Li_CoverLetter_{company.replace(" ", "_")}.pdf"'
+                )
+                msg.attach(cl_attachment)
+            
+            # Send email
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(self.sender_email, self.sender_password)
+            text = msg.as_string()
+            server.sendmail(self.sender_email, self.recipient_email, text)
+            server.quit()
+            
+            self.log_action("Email Sending", "SUCCESS", f"TRUE LEGO application sent for {company}")
+            return True
+            
+        except Exception as e:
+            self.log_action("Email Sending", "ERROR", f"Failed to send TRUE LEGO email for {company}: {e}")
             return False
     
     def send_daily_summary(self):
@@ -355,7 +380,7 @@ Next scan: Tomorrow 20:00
             
             summary_body += f"""
 
-🚀 NEXT EXECUTION: Tomorrow 20:00
+🚀 NEXT EXECUTION: Next weekday 06:00
 
 ---
 JobHunter Automation System
@@ -379,31 +404,51 @@ LEGO Intelligence Active | Overleaf Integration Ready
             self.log_action("Daily Summary", "ERROR", f"Failed to send summary: {e}")
             return False
     
-    def run_automation(self):
+    async def run_automation(self):
         """Run complete automation workflow"""
-        print("🎯 20:00 JOB AUTOMATION EXECUTION")
+        print("🎯 06:00 JOB AUTOMATION EXECUTION - TRUE LEGO SYSTEM")
         print("=" * 60)
         print(f"🕐 Execution Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"🤖 Using Claude API: {self.claude_base_url}")
+        print(f"🤖 Using TRUE LEGO Templates with Claude Intelligence")
         print("=" * 60)
         
-        # Step 1: Scan Gmail for jobs
+        # Step 1: Scan Gmail for REAL jobs only
         jobs = self.scan_gmail_with_claude()
         
         if not jobs:
-            self.log_action("Automation", "ERROR", "No jobs found, terminating")
+            self.log_action("Automation", "INFO", "No new job opportunities found in Gmail today - this is normal")
+            self.send_daily_summary()  # Still send summary even if no jobs
             return
         
-        # Step 2: Process each job
+        # Step 2: Process each job using TRUE LEGO system
         for job in jobs[:2]:  # Process first 2 jobs to avoid spam
-            cv_pdf, cover_letter = self.generate_application(job)
-            
-            if cv_pdf and cover_letter:
-                # Step 3: Send application
-                self.send_application_email(job, cv_pdf, cover_letter)
+            try:
+                # Use the TRUE template automation system
+                from true_template_automation import TrueTemplateAutomation
+                true_automation = TrueTemplateAutomation()
+                
+                # Generate using EXACT templates with LEGO intelligence
+                cv_latex = await true_automation._generate_true_cv(job)
+                cl_latex = await true_automation._generate_true_cover_letter(job)
+                
+                # Compile to PDFs
+                cv_pdf = await true_automation._compile_latex_to_pdf(cv_latex, f"cv_{job['company']}")
+                cl_pdf = await true_automation._compile_latex_to_pdf(cl_latex, f"cl_{job['company']}")
+                
+                if cv_pdf and cl_pdf:
+                    # Step 3: Send application with BOTH CV and Cover Letter
+                    self.send_application_email_with_both(job, cv_pdf, cl_pdf)
+                    self.applications_sent += 1
+                    self.log_action("Application Complete", "SUCCESS", f"TRUE LEGO application sent for {job['company']}")
+                else:
+                    self.log_action("Application Generation", "ERROR", f"PDF generation failed for {job['company']}")
                 
                 # Small delay between applications
                 time.sleep(2)
+                
+            except Exception as e:
+                self.log_action("Application Processing", "ERROR", f"Failed for {job.get('company', 'Unknown')}: {e}")
+                continue
         
         # Step 4: Send daily summary
         self.send_daily_summary()
@@ -422,10 +467,11 @@ LEGO Intelligence Active | Overleaf Integration Ready
         else:
             print(f"\n⚠️ No applications sent - check logs above")
 
-def main():
+async def main():
     """Main execution function"""
     runner = JobAutomationRunner()
-    runner.run_automation()
+    await runner.run_automation()
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())

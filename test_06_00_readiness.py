@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Quick 20:00 Readiness Test for LEGO Job Automation System
-Test if everything is ready for the scheduled 20:00 run
+Quick 06:00 Readiness Test for LEGO Job Automation System
+Test if everything is ready for the scheduled 06:00 weekday run
 """
 import sys
 import os
@@ -89,38 +89,48 @@ def test_core_system():
     return tests_passed, total_tests
 
 def check_scheduler_status():
-    """Check if scheduler is ready for 20:00"""
+    """Check if scheduler is ready for 06:00"""
     print(f"\n⏰ SCHEDULER STATUS CHECK")
     print("=" * 50)
     
     current_time = time.strftime("%H:%M")
     current_hour = int(time.strftime("%H"))
     current_minute = int(time.strftime("%M"))
+    current_day = time.strftime("%A")
     
     print(f"🕐 Current Time: {current_time}")
-    print(f"🎯 Target Time: 20:00")
+    print(f"📅 Current Day: {current_day}")
+    print(f"🎯 Target Time: 06:00 (weekdays only)")
     
-    if current_hour == 19:
-        minutes_to_20 = 60 - current_minute
-        print(f"⏳ Time until 20:00: {minutes_to_20} minutes")
+    # Check if it's a weekday
+    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    is_weekday = current_day in weekdays
+    
+    if not is_weekday:
+        print(f"📅 {current_day} is not a weekday - automation only runs Mon-Fri")
+        return False
+    
+    if current_hour == 5:
+        minutes_to_6 = 60 - current_minute
+        print(f"⏳ Time until 06:00: {minutes_to_6} minutes")
         
-        if minutes_to_20 <= 30:
-            print("🚨 READY FOR 20:00 EXECUTION!")
+        if minutes_to_6 <= 30:
+            print("🚨 READY FOR 06:00 EXECUTION!")
             return True
         else:
-            print("⏰ Still some time before 20:00")
+            print("⏰ Still some time before 06:00")
             return False
-    elif current_hour == 20:
-        print("🎯 IT'S 20:00 TIME - SYSTEM SHOULD BE RUNNING!")
+    elif current_hour == 6:
+        print("🎯 IT'S 06:00 TIME - SYSTEM SHOULD BE RUNNING!")
         return True
     else:
-        print(f"⏰ Current time: {current_hour}:xx - waiting for 20:00")
+        print(f"⏰ Current time: {current_hour}:xx - waiting for next weekday 06:00")
         return False
 
 def main():
-    """Quick readiness check for 20:00 execution"""
+    """Quick readiness check for 06:00 execution"""
     
-    print("🎭 LEGO JOB AUTOMATION - 20:00 READINESS CHECK")
+    print("🎭 LEGO JOB AUTOMATION - 06:00 READINESS CHECK")
     print("=" * 60)
     
     # Test core system
@@ -140,7 +150,7 @@ def main():
     print(f"⏰ Scheduler Ready: {'✅ Yes' if scheduler_ready else '⏰ Waiting'}")
     
     if tests_passed >= 4:  # At least 4/5 tests should pass
-        print(f"\n🎉 SYSTEM READY FOR 20:00 EXECUTION!")
+        print(f"\n🎉 SYSTEM READY FOR 06:00 EXECUTION!")
         print(f"✅ LEGO intelligence working")
         print(f"✅ PDF generation functional")
         print(f"✅ LaTeX templates ready")
@@ -149,14 +159,15 @@ def main():
         if scheduler_ready:
             print(f"\n🚀 EXECUTING NOW OR VERY SOON!")
         else:
-            print(f"\n⏰ WAITING FOR 20:00 TRIGGER")
+            print(f"\n⏰ WAITING FOR NEXT WEEKDAY 06:00 TRIGGER")
             
-        print(f"\n🎯 WHAT WILL HAPPEN AT 20:00:")
+        print(f"\n🎯 WHAT WILL HAPPEN AT 06:00 (WEEKDAYS):")
         print(f"   1. Gmail scanning for new job opportunities")
         print(f"   2. LEGO intelligence analyzes job requirements")
         print(f"   3. Customized CV and cover letter generation")
         print(f"   4. R2 upload with Overleaf URLs")
         print(f"   5. Email delivery with application package")
+        print(f"   📧 You'll receive applications by 08:00 before work!")
         
     else:
         print(f"\n⚠️ SYSTEM NOT FULLY READY")
