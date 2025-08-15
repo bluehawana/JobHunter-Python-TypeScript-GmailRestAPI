@@ -32,8 +32,11 @@ class SimpleGmailScanner:
         
     def scan_for_real_jobs(self, days_back: int = 3) -> List[Dict[str, Any]]:
         """Scan Gmail for real job opportunities"""
-        if not self.gmail_password:
-            logger.warning("⚠️ Gmail app password not configured - using manual job input")
+        # Check if we have bluehawana Gmail password (where job alerts arrive)
+        bluehawana_password = os.getenv('BLUEHAWANA_GMAIL_PASSWORD')
+        
+        if not bluehawana_password:
+            logger.warning("⚠️ Bluehawana Gmail password not configured - using manual job input")
             # Use manual job input as fallback
             from manual_job_input import get_real_jobs_from_bluehawana
             manual_jobs = get_real_jobs_from_bluehawana()

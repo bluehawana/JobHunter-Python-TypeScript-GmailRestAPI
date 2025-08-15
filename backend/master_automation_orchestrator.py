@@ -226,25 +226,22 @@ class MasterAutomationOrchestrator:
                 self._log_step("STEP_4", f"Generating documents for job {i}/{len(jobs)}: {job['company']}", "RUNNING")
                 
                 try:
-                    # Import document generator
-                    from improved_working_automation import ImprovedWorkingAutomation
-                    automation = ImprovedWorkingAutomation()
+                    # Use WORKING LEGO systems - beautiful_pdf_generator + exact_cover_letter_generator
+                    from beautiful_pdf_generator import create_beautiful_multi_page_pdf
+                    from exact_cover_letter_generator import create_exact_cover_letter
                     
-                    # Generate LEGO-tailored CV using your LaTeX template
-                    from templates.cv_template import generate_tailored_cv
-                    latex_content = generate_tailored_cv(job)
-                    
-                    # For now, use the improved automation but with LEGO awareness
-                    cv_pdf = automation._generate_cv_pdf(job)
+                    # Generate CV using beautiful PDF generator (LEGO intelligence)
+                    cv_pdf = create_beautiful_multi_page_pdf(job)
                     if not cv_pdf:
                         raise Exception("LEGO CV PDF generation failed")
                     
-                    logger.info(f"✅ Generated LEGO-tailored CV for {job.get('title', 'Unknown')} at {job.get('company', 'Unknown')}")
-                    
-                    # Generate Cover Letter PDF
-                    cl_pdf = automation._generate_cover_letter_pdf(job)
+                    # Generate Cover Letter using exact LaTeX template
+                    cl_result = create_exact_cover_letter(job)
+                    cl_pdf = cl_result.get('pdf_content', b'')
                     if not cl_pdf:
-                        raise Exception("Cover Letter PDF generation failed")
+                        raise Exception("LEGO Cover Letter PDF generation failed")
+                    
+                    logger.info(f"✅ Generated LEGO documents for {job.get('title', 'Unknown')} at {job.get('company', 'Unknown')}")
                     
                     # Create job document package
                     job_document = {
@@ -283,7 +280,7 @@ class MasterAutomationOrchestrator:
                 self._log_step("STEP_5", f"Sending application {i}/{len(job_documents)}: {job['company']}", "RUNNING")
                 
                 try:
-                    # Import email sender
+                    # Use working email sender
                     from improved_working_automation import ImprovedWorkingAutomation
                     automation = ImprovedWorkingAutomation()
                     

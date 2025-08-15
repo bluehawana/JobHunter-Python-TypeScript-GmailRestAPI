@@ -230,10 +230,10 @@ def generate_test_application():
                 f.write(cv_pdf)
             print(f"✅ Test CV generated: test_opera_cv_debug.pdf ({len(cv_pdf):,} bytes)")
         
-        # Generate Cover Letter (simplified version)
-        from generate_opera_simple import create_cover_letter_latex, compile_latex_to_pdf
-        cl_latex = create_cover_letter_latex(opera_job)
-        cl_pdf = compile_latex_to_pdf(cl_latex, "cover_letter")
+        # Use TRUE LEGO system for cover letter
+        from exact_cover_letter_generator import create_exact_cover_letter
+        cl_result = create_exact_cover_letter(opera_job)
+        cl_pdf = cl_result.get('pdf_content', b'')
         
         if cl_pdf:
             with open('test_opera_cl_debug.pdf', 'wb') as f:
@@ -303,7 +303,7 @@ def main():
     print(f"1. Check Heroku logs: heroku logs --tail")
     print(f"2. Verify Heroku scheduler is running: heroku addons")
     print(f"3. Check environment variables in Heroku dashboard")
-    print(f"4. Test manual execution: python3 generate_opera_simple.py")
+    print(f"4. Test TRUE LEGO execution: python3 run_06_00_automation.py")
     print(f"5. Verify Gmail has job-related emails")
     
     print(f"\n⏰ FOR TODAY'S 20:00 RUN:")
