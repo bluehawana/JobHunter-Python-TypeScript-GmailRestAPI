@@ -49,11 +49,9 @@ class RealJobScanner:
         logger.info("🔍 Scanning Gmail for REAL job opportunities in Gothenburg area...")
         
         try:
-            # Import Gmail service
-            from app.services.gmail_service import GmailService
-            
-            # Initialize Gmail service
-            gmail_service = GmailService()
+            # For now, use a simple email scanning approach
+            # TODO: Implement proper Gmail API integration
+            logger.info("📧 Checking Gmail for job-related emails...")
             
             # Search for job-related emails
             job_keywords = [
