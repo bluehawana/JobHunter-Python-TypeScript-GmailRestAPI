@@ -85,80 +85,13 @@ class JobAutomationRunner:
         self.log_action("Gmail Scanning", "INFO", "No fallback jobs - only processing real Gmail opportunities")
         return []
     
-    def generate_application(self, job):
-        """Generate CV and cover letter for a job"""
-        company = job['company']
-        title = job['title']
-        
-        self.log_action("Application Generation", "RUNNING", f"Generating application for {company} - {title}")
-        
-        try:
-            # Generate CV
-            from beautiful_pdf_generator import create_beautiful_multi_page_pdf
-            cv_pdf = create_beautiful_multi_page_pdf(job)
-            
-            if not cv_pdf:
-                self.log_action("CV Generation", "ERROR", f"Failed to generate CV for {company}")
-                return None, None
-            
-            self.log_action("CV Generation", "SUCCESS", f"CV generated ({len(cv_pdf):,} bytes)")
-            
-            # Generate Cover Letter (simplified version to avoid LaTeX issues)
-            cl_content = self._generate_simple_cover_letter(job)
-            
-            self.log_action("Cover Letter Generation", "SUCCESS", f"Cover letter generated")
-            
-            return cv_pdf, cl_content
-            
-        except Exception as e:
-            self.log_action("Application Generation", "ERROR", f"Failed for {company}: {e}")
-            return None, None
+    def generate_application_REMOVED(self, job):
+        """REMOVED: Old simple application generator - Use TRUE LEGO system only"""
+        raise Exception("OLD SIMPLE GENERATORS REMOVED - Use TRUE LEGO automation system!")
     
-    def _generate_simple_cover_letter(self, job):
-        """Generate simple cover letter content"""
-        company = job['company']
-        title = job['title']
-        location = job.get('location', 'Location')
-        
-        # Determine greeting based on location
-        if 'sweden' in location.lower() or 'stockholm' in location.lower():
-            greeting = "Hej"
-        elif 'norway' in location.lower() or 'oslo' in location.lower():
-            greeting = "Hej"
-        else:
-            greeting = "Dear Hiring Manager"
-        
-        current_date = datetime.now().strftime("%Y-%m-%d")
-        
-        cover_letter = f"""
-{greeting},
-
-I am writing to express my sincere interest in the {title} position at {company}. 
-
-As an experienced professional with over 5 years in software development and infrastructure, I am excited about the opportunity to contribute to your team. My current role as IT/Infrastructure Specialist at ECARX has given me extensive experience with:
-
-• Kubernetes and Docker containerization
-• Cloud platforms (AWS, Azure, GCP)
-• Monitoring solutions (Prometheus, Grafana)
-• CI/CD pipeline optimization
-• Infrastructure automation and cost optimization
-
-What particularly attracts me to {company} is your innovative approach and the opportunity to work with cutting-edge technologies. My multicultural background and cross-cultural communication skills, developed through working in Swedish and international environments, would be valuable in your collaborative team setting.
-
-I have successfully led infrastructure optimization projects, including migrating from AKS to local Kubernetes clusters, resulting in 40% cost reduction and 25% performance improvement. My experience with system integration, performance monitoring, and team collaboration aligns well with your requirements.
-
-I would welcome the opportunity to discuss how my technical expertise and collaborative approach can contribute to {company}'s continued success.
-
-Best regards,
-Hongzhi Li
-{current_date}
-
-Contact: hongzhili01@gmail.com | 0728384299
-LinkedIn: https://www.linkedin.com/in/hzl/
-GitHub: https://github.com/bluehawana
-"""
-        
-        return cover_letter
+    def _removed_simple_generator(self):
+        """REMOVED: Simple generators deleted - only TRUE LEGO system allowed"""
+        raise Exception("SIMPLE GENERATORS REMOVED - Use TRUE LEGO system only!")
     
     def send_application_email(self, job, cv_pdf, cover_letter_content):
         """Send application email"""
@@ -423,23 +356,22 @@ LEGO Intelligence Active | Overleaf Integration Ready
         # Step 2: Process each job using TRUE LEGO system
         for job in jobs[:2]:  # Process first 2 jobs to avoid spam
             try:
-                # Use the TRUE template automation system
-                from true_template_automation import TrueTemplateAutomation
-                true_automation = TrueTemplateAutomation()
+                # Use WORKING LEGO systems
+                from beautiful_pdf_generator import create_beautiful_multi_page_pdf
+                from exact_cover_letter_generator import create_exact_cover_letter
                 
-                # Generate using EXACT templates with LEGO intelligence
-                cv_latex = await true_automation._generate_true_cv(job)
-                cl_latex = await true_automation._generate_true_cover_letter(job)
+                # Generate CV using LEGO intelligence
+                cv_pdf = create_beautiful_multi_page_pdf(job)
                 
-                # Compile to PDFs
-                cv_pdf = await true_automation._compile_latex_to_pdf(cv_latex, f"cv_{job['company']}")
-                cl_pdf = await true_automation._compile_latex_to_pdf(cl_latex, f"cl_{job['company']}")
+                # Generate Cover Letter using exact LaTeX template
+                cl_result = create_exact_cover_letter(job)
+                cl_pdf = cl_result.get('pdf_content', b'')
                 
                 if cv_pdf and cl_pdf:
                     # Step 3: Send application with BOTH CV and Cover Letter
                     self.send_application_email_with_both(job, cv_pdf, cl_pdf)
                     self.applications_sent += 1
-                    self.log_action("Application Complete", "SUCCESS", f"TRUE LEGO application sent for {job['company']}")
+                    self.log_action("Application Complete", "SUCCESS", f"LEGO application sent for {job['company']}")
                 else:
                     self.log_action("Application Generation", "ERROR", f"PDF generation failed for {job['company']}")
                 

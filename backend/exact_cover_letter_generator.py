@@ -26,8 +26,8 @@ class ExactCoverLetterGenerator:
     def get_company_info_with_claude(self, company_name: str, job_title: str, job_description: str = "") -> Dict[str, str]:
         """Extract company info from job ad, then use Claude API as fallback"""
         try:
-            # First, try to extract from job description
-            extracted_info = self._extract_from_job_ad(job_description)
+            # Skip job ad extraction for now - use Claude directly
+            extracted_info = {'has_contact_info': False}
             
             if extracted_info['has_contact_info']:
                 logger.info(f"✅ Extracted contact info from job ad for {company_name}")
@@ -194,15 +194,14 @@ My multicultural background has equipped me with exceptional cross-cultural comm
 \\begin{{document}}
 \\pagestyle{{empty}} % no page number
 
-\\begin{{letter}}{{\\color{{darkblue}}\\\\
+{{\\color{{darkblue}}
 {company}\\\\
 {company_info['company_address']}\\\\
 {company_info['postal_code']} {company_info['city']}}}
 
-\\\\
 \\vspace{{40pt}}
 
-\\opening{{{greeting_line}}}
+{greeting_line}
 
 \\vspace{{10pt}}
 
@@ -231,16 +230,11 @@ Hongzhi Li\\\\
 
 \\vspace{{4pt}}
 
-\\closing{{\\color{{darkblue}} 
+{{\\color{{darkblue}}
 Ebbe Lieberathsgatan 27\\\\
 412 65 Göteborg\\\\
 hongzhili01@gmail.com\\\\
 0728384299}}
-
-\\\\
-\\vspace{{10pt}}
-
-\\end{{letter}}
 
 \\end{{document}}"""
         
