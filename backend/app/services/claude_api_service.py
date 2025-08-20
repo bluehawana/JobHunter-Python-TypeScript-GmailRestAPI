@@ -191,9 +191,12 @@ class ClaudeAPIService:
             if result:
                 return result
             
-            # Third-party failed, note that official API has low credits
-            logger.warning("🔄 Third-party API failed, official API has insufficient credits")
-            logger.warning("💡 Consider running at 20:00 Swedish time for better third-party API availability")
+            # Third-party failed after 30 seconds, try official API
+            logger.warning("🔄 Third-party API failed after 30s timeout, switching to official Claude API")
+            if self.official_token:
+                return await self._make_official_api_request(prompt)
+            else:
+                logger.error("❌ No official Claude API key available for fallback")
         
         # Return empty if both APIs unavailable
         return ""
