@@ -48,7 +48,7 @@ async def run_heroku_job_scan():
         logger.info("📧 Starting Heroku job scan...")
         
         # Import email scanner
-        from app.services.real_email_scanner import RealEmailScanner
+        from app.services.email_scanner_service import EmailScannerService as RealEmailScanner
         email_scanner = RealEmailScanner()
         
         # Scan Gmail
