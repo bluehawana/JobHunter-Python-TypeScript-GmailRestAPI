@@ -7,7 +7,7 @@ echo "🚀 Setting up Claude CLI for JobHunter"
 echo "=================================="
 
 # Export environment variables
-export ANTHROPIC_AUTH_TOKEN=sk-wldqMp1L48Uh85iQWgv05sRuUgtZxqyJAH92mW476z0SyiG4
+export ANTHROPIC_AUTH_TOKEN="${ANTHROPIC_AUTH_TOKEN}"
 export ANTHROPIC_BASE_URL=https://anyrouter.top
 
 echo "✅ Environment variables set:"

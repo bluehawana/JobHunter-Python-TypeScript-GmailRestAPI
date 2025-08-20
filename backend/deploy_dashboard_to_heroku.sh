@@ -20,7 +20,7 @@ heroku create $APP_NAME --region eu || echo "App already exists"
 
 # Set environment variables
 echo "⚙️ Setting environment variables..."
-heroku config:set ANTHROPIC_AUTH_TOKEN=sk-wldqMp1L48Uh85iQWgv05sRuUgtZxqyJAH92mW476z0SyiG4 --app $APP_NAME
+heroku config:set ANTHROPIC_AUTH_TOKEN="$ANTHROPIC_AUTH_TOKEN" --app $APP_NAME
 heroku config:set ANTHROPIC_BASE_URL=https://anyrouter.top --app $APP_NAME
 heroku config:set CLAUDE_MODEL=claude-3-7-sonnet-20250219 --app $APP_NAME
 heroku config:set SENDER_EMAIL=leeharvad@gmail.com --app $APP_NAME

@@ -31,7 +31,7 @@ Claude creates cover letters that emphasize:
 
 #### Environment Configuration ✅
 ```bash
-ANTHROPIC_AUTH_TOKEN=sk-wldqMp1L48Uh85iQWgv05sRuUgtZxqyJAH92mW476z0SyiG4
+ANTHROPIC_AUTH_TOKEN=your_anyrouter_token_here
 ANTHROPIC_BASE_URL=https://anyrouter.top
 CLAUDE_MODEL=claude-3-7-sonnet-20250219
 ```
