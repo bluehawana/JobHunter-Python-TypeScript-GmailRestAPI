@@ -11,7 +11,7 @@ import asyncio
 
 from app.services.professional_latex_service import ProfessionalLaTeXService
 from app.services.job_application_processor import JobApplicationProcessor
-from real_email_scan_and_process import RealEmailScanner
+from app.services.email_scanner_service import EmailScannerService as RealEmailScanner
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

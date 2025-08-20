@@ -63,7 +63,7 @@ class AutomatedJobHunter:
             logger.info("🚀 Starting daily automation at 20:00 (8 PM) - optimal time for Claude API")
             
             # Import email scanner
-            from app.services.real_email_scanner import RealEmailScanner
+            from app.services.email_scanner_service import EmailScannerService as RealEmailScanner
             email_scanner = RealEmailScanner()
             
             # Scan Gmail for new jobs
@@ -132,7 +132,7 @@ class AutomatedJobHunter:
             logger.info("⏰ Running hourly urgent job check")
             
             # Import email scanner
-            from app.services.real_email_scanner import RealEmailScanner
+            from app.services.email_scanner_service import EmailScannerService as RealEmailScanner
             email_scanner = RealEmailScanner()
             
             # Scan for very recent jobs (last hour)
