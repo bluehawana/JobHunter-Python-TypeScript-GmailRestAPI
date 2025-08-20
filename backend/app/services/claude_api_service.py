@@ -324,7 +324,7 @@ Important: Return only the requested content without additional commentary or fo
                 text=True,
                 capture_output=True,
                 env=env,
-                timeout=20  # Reasonable timeout for CLI
+                timeout=30  # 30 second timeout as requested
             )
             
             if result.returncode == 0 and result.stdout:
