@@ -14,7 +14,17 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Divider
+  Divider,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress
 } from '@mui/material';
 import {
   Email as EmailIcon,
@@ -23,7 +33,8 @@ import {
   TrendingUp as TrendingUpIcon,
   Google as GoogleIcon,
   CheckCircle as CheckCircleIcon,
-  Error as ErrorIcon
+  Error as ErrorIcon,
+  FlashOn as FlashOnIcon
 } from '@mui/icons-material';
 import axios from 'axios';
 import GmailConnection from '../components/GmailConnection';
@@ -59,6 +70,14 @@ const Dashboard: React.FC = () => {
   const [gmailStatus, setGmailStatus] = useState<GmailStatus>({ connected: false });
   const [loading, setLoading] = useState(true);
   const [gmailLoading, setGmailLoading] = useState(false);
+  
+  // Instant Apply state
+  const [instantApplyOpen, setInstantApplyOpen] = useState(false);
+  const [jobUrl, setJobUrl] = useState('');
+  const [customMessage, setCustomMessage] = useState('');
+  const [rolePreference, setRolePreference] = useState('');
+  const [applyLoading, setApplyLoading] = useState(false);
+  const [applyResult, setApplyResult] = useState<any>(null);
 
   useEffect(() => {
     fetchDashboardData();
@@ -126,6 +145,43 @@ const Dashboard: React.FC = () => {
       alert('Failed to initiate Gmail connection');
     } finally {
       setGmailLoading(false);
+    }
+  };
+
+  const handleInstantApply = async () => {
+    if (!jobUrl.trim()) {
+      alert('Please enter a job URL');
+      return;
+    }
+
+    setApplyLoading(true);
+    try {
+      const response = await axios.post('http://localhost:8000/api/v1/instant-apply', {
+        job_url: jobUrl,
+        custom_message: customMessage,
+        role_preference: rolePreference
+      });
+
+      setApplyResult(response.data);
+      
+      // Show success message
+      alert(`✅ Application submitted successfully!\n\nJob: ${response.data.title}\nCompany: ${response.data.company}\nATS Score: ${Math.round(response.data.ats_score)}%\n\nYour customized resume and cover letter have been generated and sent via email.`);
+      
+      // Clear form
+      setJobUrl('');
+      setCustomMessage('');
+      setRolePreference('');
+      setInstantApplyOpen(false);
+      
+      // Refresh dashboard data
+      fetchDashboardData();
+      
+    } catch (error: any) {
+      console.error('Error applying to job:', error);
+      const errorMessage = error.response?.data?.detail || 'Failed to apply to job. Please try again.';
+      alert(`❌ Application failed: ${errorMessage}`);
+    } finally {
+      setApplyLoading(false);
     }
   };
 
@@ -235,6 +291,15 @@ const Dashboard: React.FC = () => {
               Quick Actions
             </Typography>
             <Box display="flex" flexDirection="column" gap={1}>
+              <Button 
+                variant="contained" 
+                fullWidth
+                startIcon={<FlashOnIcon />}
+                onClick={() => setInstantApplyOpen(true)}
+                sx={{ bgcolor: 'primary.main', '&:hover': { bgcolor: 'primary.dark' } }}
+              >
+                🚀 Instant Apply with LEGO Strategy
+              </Button>
               <Button variant="outlined" fullWidth>
                 Search for New Jobs
               </Button>
@@ -287,6 +352,81 @@ const Dashboard: React.FC = () => {
           </Typography>
         )}
       </Paper>
+
+      {/* Instant Apply Dialog */}
+      <Dialog 
+        open={instantApplyOpen} 
+        onClose={() => setInstantApplyOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          🚀 Instant Apply with LEGO Strategy
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
+            Paste any job URL below and our AI will automatically extract the job details, 
+            customize your resume and cover letter using our LEGO brick strategy, and send 
+            your application instantly.
+          </Typography>
+          
+          <TextField
+            fullWidth
+            label="Job URL"
+            placeholder="https://linkedin.com/jobs/view/123456789 or https://indeed.com/viewjob?jk=abc123"
+            value={jobUrl}
+            onChange={(e) => setJobUrl(e.target.value)}
+            sx={{ mb: 2 }}
+            helperText="Supports LinkedIn, Indeed, and most job boards"
+          />
+          
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Role Preference (Optional)</InputLabel>
+            <Select
+              value={rolePreference}
+              onChange={(e) => setRolePreference(e.target.value)}
+              label="Role Preference (Optional)"
+            >
+              <MenuItem value="">Auto-detect from job</MenuItem>
+              <MenuItem value="fullstack">Full Stack Developer</MenuItem>
+              <MenuItem value="frontend">Frontend Developer</MenuItem>
+              <MenuItem value="backend">Backend Developer</MenuItem>
+              <MenuItem value="devops">DevOps Engineer</MenuItem>
+            </Select>
+          </FormControl>
+          
+          <TextField
+            fullWidth
+            label="Custom Message (Optional)"
+            placeholder="Add a personal note or specific achievements you want to highlight..."
+            value={customMessage}
+            onChange={(e) => setCustomMessage(e.target.value)}
+            multiline
+            rows={3}
+            helperText="This will be incorporated into your cover letter"
+          />
+          
+          {applyResult && (
+            <Alert severity="success" sx={{ mt: 2 }}>
+              Successfully applied to {applyResult.title} at {applyResult.company}!
+              ATS Score: {Math.round(applyResult.ats_score)}%
+            </Alert>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setInstantApplyOpen(false)}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleInstantApply}
+            variant="contained"
+            disabled={applyLoading}
+            startIcon={applyLoading ? <CircularProgress size={20} /> : <FlashOnIcon />}
+          >
+            {applyLoading ? 'Applying...' : 'Apply Now'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
