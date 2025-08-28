@@ -60,3 +60,13 @@ temp/
 *token*
 *auth*
 sk-*
+
+# MySQL/Database Credentials
+*mysql*
+*database*
+*credentials*
+*.pickle
+
+# Gmail and OAuth Files
+source_credentials.json
+gmail_token.pickle
