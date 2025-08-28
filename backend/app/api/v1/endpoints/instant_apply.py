@@ -12,8 +12,8 @@ import asyncio
 
 from app.services.smart_cv_service import SmartCVService
 from app.services.email_automation_service import EmailAutomationService
-from app.core.auth import get_current_user
-from app.models.user import User
+from app.api.v1.endpoints.auth import get_current_user
+# from app.models.user import User
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -37,7 +37,7 @@ class InstantApplyResponse(BaseModel):
 async def instant_apply_to_job(
     request: InstantApplyRequest,
     background_tasks: BackgroundTasks,
-    current_user: User = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """
     Instantly apply to a job using URL with LEGO brick strategy
@@ -95,6 +95,10 @@ async def extract_job_from_url(job_url: str) -> Optional[Dict]:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
         
+        # Handle bluehawana.com custom URLs
+        if 'bluehawana.com/jobs' in job_url:
+            return extract_bluehawana_job(job_url)
+        
         response = requests.get(job_url, headers=headers, timeout=10)
         response.raise_for_status()
         
@@ -115,6 +119,52 @@ async def extract_job_from_url(job_url: str) -> Optional[Dict]:
     except Exception as e:
         logger.error(f"Error extracting job from URL {job_url}: {e}")
         return None
+
+def extract_bluehawana_job(job_url: str) -> Dict:
+    """Extract job details from bluehawana.com custom URLs"""
+    try:
+        # Parse bluehawana.com job URLs
+        # Format: www.bluehawana.com/jobs/new or www.bluehawana.com/jobs/{job_id}
+        
+        if '/jobs/new' in job_url:
+            # Handle new job creation URL
+            return {
+                'title': 'New Job Opportunity',
+                'company': 'To Be Determined',
+                'description': 'Job details to be filled from bluehawana system',
+                'source': 'bluehawana',
+                'url': job_url,
+                'job_type': 'custom',
+                'status': 'new'
+            }
+        
+        # Extract job ID from URL if present
+        job_id = job_url.split('/jobs/')[-1] if '/jobs/' in job_url else 'unknown'
+        
+        # In a real implementation, you would query your database here
+        # For now, return a template structure
+        return {
+            'title': f'Job Position {job_id}',
+            'company': 'Client Company',
+            'description': f'Job details from bluehawana system for ID: {job_id}',
+            'source': 'bluehawana',
+            'url': job_url,
+            'job_type': 'custom',
+            'job_id': job_id,
+            'location': 'Remote/On-site',
+            'salary_range': 'Competitive',
+            'requirements': 'Full-stack development experience required'
+        }
+        
+    except Exception as e:
+        logger.error(f"Error parsing bluehawana job URL {job_url}: {e}")
+        return {
+            'title': 'Bluehawana Job',
+            'company': 'Client Company',
+            'description': 'Custom job from bluehawana system',
+            'source': 'bluehawana',
+            'url': job_url
+        }
 
 def extract_linkedin_job(soup: BeautifulSoup, job_url: str) -> Dict:
     """Extract LinkedIn job details"""
@@ -195,10 +245,38 @@ async def send_application_email(job_data: Dict, application_result: Dict, email
     except Exception as e:
         logger.error(f"Error sending application email: {e}")
 
+@router.post("/save-job-url")
+async def save_job_url(
+    request: InstantApplyRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """Save a job URL to the system for later processing"""
+    try:
+        # Extract job information from URL
+        job_data = await extract_job_from_url(str(request.job_url))
+        
+        if not job_data:
+            raise HTTPException(status_code=400, detail="Could not extract job information from URL")
+        
+        # Here you would typically save to database
+        # For now, we'll return the extracted data
+        logger.info(f"Saved job URL: {job_data.get('title')} at {job_data.get('company')}")
+        
+        return {
+            "success": True,
+            "job_id": f"{job_data.get('company', 'unknown')}_{job_data.get('title', 'unknown')}".replace(' ', '_'),
+            "extracted_data": job_data,
+            "message": f"Job URL saved: {job_data.get('title')} at {job_data.get('company')}"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error saving job URL: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/instant-apply/status/{job_id}")
 async def get_application_status(
     job_id: str,
-    current_user: User = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """Get status of an instant application"""
     # This would typically query a database for application status

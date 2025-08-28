@@ -51,58 +51,59 @@ def get_base_cover_letter_template() -> str:
     """
 
 COVER_LETTER_TEMPLATE = r"""
-\documentclass[a4paper,10pt]{article}
-\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
-\usepackage{enumitem}
-\usepackage{titlesec}
-\usepackage{hyperref}
-\usepackage{graphicx}
-\usepackage{xcolor}
+\documentclass[a4paper,10pt]{{article}}
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{{geometry}}
+\usepackage{{enumitem}}
+\usepackage{{titlesec}}
+\usepackage{{hyperref}}
+\usepackage{{graphicx}}
+\usepackage{{xcolor}}
 
 % Define colors
-\definecolor{darkblue}{rgb}{0.0, 0.2, 0.6}
+\definecolor{{darkblue}}{{rgb}}{{0.0, 0.2, 0.6}}
 
 % Section formatting
-\titleformat{\section}{\large\bfseries\raggedright\color{black}}{}{0em}{}[\titlerule]
-\titleformat{\subsection}[runin]{\bfseries}{}{0em}{}[:]
+\titleformat{{\section}}{{\large\bfseries\raggedright\color{{black}}}}{{}}{{0em}}{{}}[\titlerule]
+\titleformat{{\subsection}}[runin]{{\bfseries}}{{}}{{0em}}{{}}[:]
 
 % Remove paragraph indentation
-\setlength{\parindent}{0pt}
+\setlength{{\parindent}}{{0pt}}
 
-\begin{document}
-\pagestyle{empty} % no page number
+\begin{{document}}
+\pagestyle{{empty}} % no page number
 
-\begin{letter}{\color{darkblue}\\{company_name}\\{company_address}}
+% Header with company info
+\textcolor{{darkblue}}{{{company_name}\\
+{company_address}}}
 
-\vspace{40pt}
+\vspace{{40pt}}
 
-\opening{{greeting}}
+{greeting}
 
-\vspace{10pt}
+\vspace{{10pt}}
 
 {cover_letter_body}
 
-\vspace{20pt}
+\vspace{{20pt}}
 
 Sincerely,
 
 Hongzhi Li\\
 {current_date}
 
-\vspace{40pt}
+\vspace{{40pt}}
 
-{\color{darkblue}\rule{\linewidth}{0.6pt}}
-\vspace{4pt}
+{{\color{{darkblue}}\rule{{\linewidth}}{{0.6pt}}}}
+\vspace{{4pt}}
 
-\closing{\color{darkblue} Ebbe Lieberathsgatan 27\\
+\textcolor{{darkblue}}{{Ebbe Lieberathsgatan 27\\
 412 65 Göteborg\\
 hongzhili01@gmail.com\\
-0728384299}
+0728384299}}
 
-\vspace{10pt}
+\vspace{{10pt}}
 
-\end{letter}
-\end{document}
+\end{{document}}
 """
 
 # Base cover letter structure for customization
@@ -171,3 +172,102 @@ TECHNOLOGY_LISTS = {
     'frontend': 'React, Angular, TypeScript, JavaScript, HTML5, CSS3, and modern frontend frameworks',
     'default': 'Python, Java, Spring Boot, React, Cloud/Azure/AWS, Kubernetes, Docker, PostgreSQL, and modern CI/CD practices'
 }
+
+class LegoCoverLetterBuilder:
+    """LEGO Component Cover Letter Builder - Intelligently tailors cover letter based on job requirements"""
+    
+    def __init__(self):
+        self.base_template = COVER_LETTER_TEMPLATE
+        self.base_body = BASE_COVER_LETTER_BODY
+        self.industry_customizations = INDUSTRY_CUSTOMIZATIONS
+        self.technical_alignments = TECHNICAL_ALIGNMENTS
+        self.technology_lists = TECHNOLOGY_LISTS
+    
+    def generate_tailored_cover_letter(self, job_data: dict, company_info: dict = None) -> str:
+        """Generate LEGO-tailored cover letter based on job requirements"""
+        
+        # Analyze job requirements
+        job_title = job_data.get('title', 'Software Developer')
+        company = job_data.get('company', 'Technology Company')
+        job_description = job_data.get('description', '').lower()
+        
+        # Use extracted company info if available
+        if company_info:
+            company = company_info.get('company_name', company)
+            company_address = company_info.get('company_address', f"{company}\\\\\\\\Sweden")
+            greeting = company_info.get('greeting', "Dear Hiring Manager,")
+        else:
+            company_address = f"{company}\\\\\\\\Sweden"
+            greeting = "Dear Hiring Manager,"
+        
+        # Determine industry and technical focus
+        industry_key = self._determine_industry(company, job_description)
+        tech_focus = self._determine_tech_focus(job_title, job_description)
+        
+        # Get LEGO components
+        industry_info = self.industry_customizations.get(industry_key, self.industry_customizations['default'])
+        technical_alignment = self.technical_alignments.get(tech_focus, self.technical_alignments['default'])
+        tool_list = self.technology_lists.get(tech_focus, self.technology_lists['default'])
+        
+        # Build cover letter body
+        customized_body = self.base_body.format(
+            job_title=job_title,
+            company=company,
+            industry=industry_info['industry'],
+            solutions=industry_info['solutions'],
+            target_audience=industry_info['target_audience'],
+            technical_alignment=technical_alignment,
+            key_technologies="containerization, infrastructure as code, and automation practices",
+            methodologies=industry_info['methodologies'],
+            tool_list=tool_list
+        )
+        
+        # Build complete cover letter
+        cover_letter = self.base_template.format(
+            company_name=company,
+            company_address=company_address,
+            greeting=greeting,
+            current_date="2025.08.28",
+            cover_letter_body=customized_body
+        )
+        
+        return cover_letter
+    
+    def _determine_industry(self, company: str, description: str) -> str:
+        """Determine industry for LEGO component selection"""
+        content = f"{company} {description}".lower()
+        
+        if any(word in content for word in ['volvo', 'automotive', 'car', 'vehicle', 'ecarx']):
+            return 'automotive'
+        elif any(word in content for word in ['spotify', 'music', 'audio', 'streaming']):
+            return 'music_tech'
+        elif any(word in content for word in ['klarna', 'bank', 'financial', 'fintech', 'payment']):
+            return 'fintech'
+        elif any(word in content for word in ['game', 'gaming', 'king', 'dice']):
+            return 'gaming'
+        else:
+            return 'default'
+    
+    def _determine_tech_focus(self, job_title: str, description: str) -> str:
+        """Determine technical focus for LEGO component selection"""
+        content = f"{job_title} {description}".lower()
+        
+        if any(word in content for word in ['devops', 'infrastructure', 'kubernetes', 'ci/cd']):
+            return 'devops'
+        elif any(word in content for word in ['backend', 'api', 'microservices', 'server']):
+            return 'backend'
+        elif any(word in content for word in ['frontend', 'react', 'angular', 'ui', 'ux']):
+            return 'frontend'
+        elif any(word in content for word in ['cloud', 'aws', 'azure', 'gcp']):
+            return 'cloud'
+        elif any(word in content for word in ['fullstack', 'full stack', 'full-stack']):
+            return 'fullstack'
+        else:
+            return 'default'
+
+# Create global instance for easy access
+lego_cover_letter_builder = LegoCoverLetterBuilder()
+
+def generate_tailored_cover_letter(job_data: dict, company_info: dict = None) -> str:
+    """Main function to generate LEGO-tailored cover letter"""
+    return lego_cover_letter_builder.generate_tailored_cover_letter(job_data, company_info)

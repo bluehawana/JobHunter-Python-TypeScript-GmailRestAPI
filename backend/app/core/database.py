@@ -23,8 +23,11 @@ def get_database_url():
     if settings.DATABASE_URL:
         # Heroku provides DATABASE_URL
         url = settings.DATABASE_URL
+        # Fix mysql:// to mysql+pymysql:// for SQLAlchemy
+        if url.startswith("mysql://"):
+            url = url.replace("mysql://", "mysql+pymysql://", 1)
         # Fix postgres:// to postgresql:// for SQLAlchemy 1.4+
-        if url.startswith("postgres://"):
+        elif url.startswith("postgres://"):
             url = url.replace("postgres://", "postgresql://", 1)
         return url
     else:
@@ -37,8 +40,10 @@ def get_database_url():
 def get_async_database_url():
     """Get async database URL"""
     url = get_database_url()
-    if "mysql" in url:
+    if "mysql+pymysql" in url:
         return url.replace("mysql+pymysql://", "mysql+aiomysql://")
+    elif "mysql" in url:
+        return url.replace("mysql://", "mysql+aiomysql://")
     else:
         return url.replace("postgresql://", "postgresql+asyncpg://")
 
