@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 from app.api.v1.endpoints.auth import get_current_user
 from app.services.job_aggregation_service import JobAggregationService, JobSearchRequest as ServiceJobSearchRequest
+from app.services.job_url_extractor import JobUrlExtractor
 from bson import ObjectId
 
 router = APIRouter()
@@ -28,6 +29,14 @@ class JobPosting(BaseModel):
     location: str
     description: str
     url: str
+
+class JobUrlRequest(BaseModel):
+    url: str = Field(..., description="Job URL to extract details from")
+
+class JobUrlResponse(BaseModel):
+    success: bool
+    job_details: Optional[dict] = None
+    error: Optional[str] = None
     source: str
     posting_date: Optional[datetime]
     salary: Optional[dict]
@@ -233,6 +242,91 @@ async def delete_job(
     # In a real implementation, you would delete from database
     return {"message": f"Job {job_id} deleted successfully"}
 
+class CreateJobRequest(BaseModel):
+    title: str = Field(..., description="Job title")
+    company: str = Field(..., description="Company name")
+    location: str = Field(..., description="Job location")
+    description: str = Field(..., description="Job description")
+    url: Optional[str] = Field(None, description="Job posting URL")
+    salary: Optional[dict] = Field(None, description="Salary information")
+    job_type: Optional[str] = Field("Full-time", description="Job type")
+    requirements: List[str] = Field([], description="Job requirements")
+    benefits: List[str] = Field([], description="Job benefits")
+    experience_level: Optional[str] = Field(None, description="Experience level required")
+    remote_option: bool = Field(False, description="Remote work option")
+    keywords: List[str] = Field([], description="Job keywords")
+
+@router.post("/create", response_model=JobPosting)
+async def create_job(
+    job_request: CreateJobRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Create a new manual job entry
+    """
+    try:
+        from app.core.database import get_database
+        from bson import ObjectId
+        
+        db = await get_database()
+        user_id = current_user.get("user_id") or str(current_user.get("_id"))
+        
+        # Create job document
+        job_doc = {
+            "_id": ObjectId(),
+            "user_id": user_id,
+            "title": job_request.title,
+            "company": job_request.company,
+            "location": job_request.location,
+            "description": job_request.description,
+            "url": job_request.url,
+            "source": "manual",
+            "posting_date": datetime.utcnow(),
+            "salary": job_request.salary,
+            "job_type": job_request.job_type,
+            "requirements": job_request.requirements,
+            "benefits": job_request.benefits,
+            "experience_level": job_request.experience_level,
+            "remote_option": job_request.remote_option,
+            "keywords": job_request.keywords,
+            "match_score": 1.0,
+            "confidence_score": 1.0,
+            "ats_score": 0.8,
+            "category": "manual",
+            "application_difficulty": "medium",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }
+        
+        # Save to database
+        await db.jobs.insert_one(job_doc)
+        
+        # Return created job
+        return JobPosting(
+            title=job_doc["title"],
+            company=job_doc["company"],
+            location=job_doc["location"],
+            description=job_doc["description"],
+            url=job_doc["url"] or "",
+            source=job_doc["source"],
+            posting_date=job_doc["posting_date"],
+            salary=job_doc["salary"],
+            job_type=job_doc["job_type"],
+            requirements=job_doc["requirements"],
+            benefits=job_doc["benefits"],
+            experience_level=job_doc["experience_level"],
+            remote_option=job_doc["remote_option"],
+            keywords=job_doc["keywords"],
+            match_score=job_doc["match_score"],
+            confidence_score=job_doc["confidence_score"],
+            ats_score=job_doc["ats_score"],
+            category=job_doc["category"],
+            application_difficulty=job_doc["application_difficulty"]
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create job: {str(e)}")
+
 @router.get("/test/integration")
 async def test_job_integration(
     current_user: dict = Depends(get_current_user)
@@ -374,3 +468,38 @@ async def test_job_integration(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Integration test failed: {str(e)}")
+@rou
+ter.post("/extract-from-url", response_model=JobUrlResponse)
+async def extract_job_from_url(
+    request: JobUrlRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Extract job details from a job posting URL
+    Supports LinkedIn, Indeed, Glassdoor, and company career pages
+    """
+    try:
+        # Initialize job URL extractor
+        extractor = JobUrlExtractor()
+        
+        # Extract job details
+        result = extractor.extract_job_details(request.url)
+        
+        if result.get('success'):
+            return JobUrlResponse(
+                success=True,
+                job_details=result['job_details'],
+                error=None
+            )
+        else:
+            return JobUrlResponse(
+                success=False,
+                job_details=None,
+                error=result.get('error', 'Failed to extract job details')
+            )
+            
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Job URL extraction failed: {str(e)}"
+        )

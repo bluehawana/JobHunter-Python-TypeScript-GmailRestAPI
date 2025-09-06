@@ -71,20 +71,20 @@ class CompanyInfoExtractor:
             - If multiple addresses exist, prioritize the office location for this specific job
             
             Return ONLY a JSON object with these exact keys:
-            {
+            {{
                 "company_name": "exact company name",
                 "company_address": "complete address",
                 "postal_code": "postal code",
                 "city": "city",
                 "country": "country",
-                "hr_name": "HR contact name or 'Not provided'",
-                "hr_title": "HR title or 'Not provided'",
-                "phone": "company phone or 'Not provided'",
-                "email": "company email or 'Not provided'",
-                "department": "specific department or 'Not provided'",
+                "hr_name": "HR contact name or Not provided",
+                "hr_title": "HR title or Not provided",
+                "phone": "company phone or Not provided",
+                "email": "company email or Not provided",
+                "department": "specific department or Not provided",
                 "confidence_score": "1-10 rating of information accuracy",
                 "validation_notes": "any concerns or clarifications"
-            }
+            }}
             """
             
             headers = {

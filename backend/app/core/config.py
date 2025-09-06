@@ -45,6 +45,8 @@ class Settings(BaseSettings):
     SENDER_GMAIL_PASSWORD: Optional[str] = os.getenv("SENDER_GMAIL_PASSWORD")
     EMAILS_FROM_NAME: Optional[str] = None
     EMAILS_FROM_EMAIL: str = os.getenv("SENDER_EMAIL", "")
+    GMAIL_APP_PASSWORD: Optional[str] = os.getenv("GMAIL_APP_PASSWORD")
+    GOOGLE_API_KEY: Optional[str] = os.getenv("GOOGLE_API_KEY")
     
     # External API settings
     GMAIL_CLIENT_ID: Optional[str] = os.getenv("GMAIL_CLIENT_ID")
@@ -57,13 +59,21 @@ class Settings(BaseSettings):
     
     # Claude API settings
     ANTHROPIC_API_KEY: Optional[str] = os.getenv("ANTHROPIC_API_KEY")
+    ANTHROPIC_AUTH_TOKEN: Optional[str] = os.getenv("ANTHROPIC_AUTH_TOKEN")
     ANTHROPIC_BASE_URL: Optional[str] = os.getenv("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
+    CLAUDE_MODEL: Optional[str] = os.getenv("CLAUDE_MODEL")
     
     # R2 Storage settings
     R2_ENDPOINT: Optional[str] = os.getenv("R2_ENDPOINT")
+    R2_ENDPOINT_URL: Optional[str] = os.getenv("R2_ENDPOINT_URL")
     R2_ACCESS_KEY: Optional[str] = os.getenv("R2_ACCESS_KEY")
+    R2_ACCESS_KEY_ID: Optional[str] = os.getenv("R2_ACCESS_KEY_ID")
     R2_SECRET_KEY: Optional[str] = os.getenv("R2_SECRET_KEY")
+    R2_SECRET_ACCESS_KEY: Optional[str] = os.getenv("R2_SECRET_ACCESS_KEY")
     R2_BUCKET: str = os.getenv("R2_BUCKET", "jobhunter-documents")
+    R2_BUCKET_NAME: Optional[str] = os.getenv("R2_BUCKET_NAME")
+    R2_PUBLIC_DOMAIN: Optional[str] = os.getenv("R2_PUBLIC_DOMAIN")
+    BASE_URL: Optional[str] = os.getenv("BASE_URL")
     
     # Job Search APIs
     GOOGLE_CUSTOM_SEARCH_API_KEY: Optional[str] = os.getenv("GOOGLE_CUSTOM_SEARCH_API_KEY")
@@ -73,6 +83,12 @@ class Settings(BaseSettings):
     
     # Redis/Celery
     REDIS_URL: Optional[str] = os.getenv("REDIS_URL", "redis://localhost:6379")
+    
+    # Twilio Configuration
+    TWILIO_ACCOUNT_SID: Optional[str] = os.getenv("TWILIO_ACCOUNT_SID")
+    TWILIO_AUTH_TOKEN: Optional[str] = os.getenv("TWILIO_AUTH_TOKEN")
+    TWILIO_PHONE_NUMBER: Optional[str] = os.getenv("TWILIO_PHONE_NUMBER")
+    USER_PHONE_NUMBER: Optional[str] = os.getenv("USER_PHONE_NUMBER")
     
     # Environment
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")

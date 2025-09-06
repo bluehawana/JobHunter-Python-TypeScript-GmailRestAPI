@@ -166,8 +166,9 @@ class LegoAutomationSystem:
                     improved_job['url'] = url_match.group(0)
                     break
         
-        return improved_job    
-async def _lego_customize_cv(self, job: dict) -> str:
+        return improved_job
+    
+    async def _lego_customize_cv(self, job: dict) -> str:
         """LEGO CV customization - select optimal components"""
         try:
             job_description = job.get('description', '')

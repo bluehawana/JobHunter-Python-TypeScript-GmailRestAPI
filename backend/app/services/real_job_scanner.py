@@ -385,31 +385,113 @@ class RealJobScanner:
     
     # Additional extraction methods...
     def _extract_company_name_enhanced(self, subject: str, content: str, sender: str) -> str:
-        """Enhanced company name extraction"""
-        # Try sender domain first
+        """Enhanced company name extraction with better Swedish support"""
+        
+        # Enhanced known companies mapping (including Swedish companies)
+        content_lower = f"{subject} {content}".lower()
+        known_companies = {
+            # Tech companies
+            'volvo': 'Volvo Group',
+            'ericsson': 'Ericsson',
+            'spotify': 'Spotify Technology',
+            'klarna': 'Klarna Bank',
+            'skf': 'SKF Group',
+            'hasselblad': 'Hasselblad',
+            'polestar': 'Polestar',
+            'zenseact': 'Zenseact',
+            'cevt': 'CEVT',
+            'stena': 'Stena Line',
+            'opera': 'Opera Software',
+            'king': 'King Digital Entertainment',
+            'mojang': 'Mojang Studios',
+            'dice': 'DICE',
+            'massive': 'Massive Entertainment',
+            'saab': 'Saab AB',
+            'scania': 'Scania',
+            'electrolux': 'Electrolux',
+            'h&m': 'H&M Group',
+            'ikea': 'IKEA',
+            'telia': 'Telia Company',
+            'telenor': 'Telenor',
+            'nordea': 'Nordea Bank',
+            'seb': 'SEB Bank',
+            'handelsbanken': 'Handelsbanken',
+            'swedbank': 'Swedbank',
+            'axis': 'Axis Communications',
+            'fingerprint': 'Fingerprint Cards',
+            'tobii': 'Tobii',
+            'paradox': 'Paradox Interactive',
+            'embark': 'Embark Studios',
+            'avalanche': 'Avalanche Studios',
+            'sharkmob': 'Sharkmob',
+            'ecarx': 'ECARX',
+            'synteda': 'Synteda',
+            'addcell': 'AddCell',
+            'pembio': 'Pembio AB'
+        }
+        
+        # Check for known companies first
+        for keyword, full_name in known_companies.items():
+            if keyword in content_lower:
+                return full_name
+        
+        # Try sender domain (but be more selective)
         if "@" in sender:
             domain = sender.split("@")[-1].replace(">", "").lower()
-            if not any(common in domain for common in ["linkedin", "indeed", "noreply", "no-reply", "gmail", "yahoo"]):
-                company = domain.split(".")[0].title()
-                if len(company) > 2:
-                    return company
+            domain_name = domain.split(".")[0] if "." in domain else domain
+            
+            # Skip common job sites and generic domains
+            if (domain_name and len(domain_name) > 2 and 
+                not any(common in domain for common in ["linkedin", "indeed", "noreply", "no-reply", "gmail", "yahoo", "hotmail", "mail", "email", "glassdoor", "monster", "stepstone", "thelocal", "arbetsformedlingen"]) and
+                not domain_name.isdigit()):
+                return domain_name.title()
         
-        # Content patterns
-        company_patterns = [
-            r"company[:\s]+([^\n]{3,40})",
-            r"employer[:\s]+([^\n]{3,40})",
-            r"at\s+([A-Z][a-zA-Z\s&\.]{2,30})\s+(?:is|are|we|our)",
-            r"([A-Z][a-zA-Z\s&\.]{3,30})\s+(?:is hiring|is looking|seeks|is seeking)",
-            r"join\s+([A-Z][a-zA-Z\s&\.]{3,30})",
-            r"([A-Z][a-zA-Z\s&\.]{3,30})\s+team"
+        # Enhanced Swedish patterns
+        all_content = f"{subject} {content}"
+        
+        # Swedish company extraction patterns
+        swedish_patterns = [
+            r'([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)\s+(?:söker|letar efter|vill anställa|rekryterar)',
+            r'Bli\s+en\s+del\s+av\s+([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)(?:\s|!|\.|,)',
+            r'([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)\s+(?:expanderar|växer|utvecklas)',
+            r'Jobba\s+på\s+([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)(?:\s|!|\.|,)',
+            r'Vi\s+på\s+([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)(?:\s|!|\.|,)',
+            r'([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)\s+(?:AB|AS|ASA|Ltd|Limited|Inc|Corporation|Corp|Group|Sweden|Norge|Norway|Denmark)',
         ]
         
-        for pattern in company_patterns:
-            match = re.search(pattern, content, re.IGNORECASE)
-            if match:
-                company = match.group(1).strip()
-                if len(company) > 3 and not any(word in company.lower() for word in ["the job", "this role", "your team"]):
-                    return company
+        for pattern in swedish_patterns:
+            matches = re.findall(pattern, all_content, re.IGNORECASE)
+            for match in matches:
+                potential = match.strip()
+                # Filter out common false positives
+                if (3 < len(potential) < 50 and 
+                    not any(word in potential.lower() for word in ['söker', 'nu', 'fler', 'talanger', 'vi', 'du', 'dig', 'ditt', 'din', 'denna', 'detta', 'här', 'där', 'när', 'som', 'att', 'och', 'eller', 'men', 'för', 'till', 'från', 'med', 'på', 'av', 'om', 'under', 'över', 'genom', 'utan', 'mellan', 'efter', 'före', 'sedan', 'redan', 'bara', 'endast', 'också', 'även', 'inte', 'aldrig', 'alltid', 'ofta', 'ibland', 'kanske', 'troligen', 'möjligen']) and
+                    not potential.lower().startswith(('the ', 'a ', 'an ', 'this ', 'that ', 'these ', 'those '))):
+                    return potential
+        
+        # English patterns for international companies
+        english_patterns = [
+            r'company[:\s]+([A-Z][^\n]{3,40})',
+            r'employer[:\s]+([A-Z][^\n]{3,40})',
+            r'at\s+([A-Z][a-zA-Z\s&\.]{2,40})\s+(?:is|are|we|our)',
+            r'([A-Z][a-zA-Z\s&\.]{3,40})\s+(?:is hiring|is looking|seeks|is seeking|wants|needs)',
+            r'join\s+([A-Z][a-zA-Z\s&\.]{3,40})(?:\s|!|\.|,)',
+            r'work\s+at\s+([A-Z][a-zA-Z\s&\.]{3,40})(?:\s|!|\.|,)',
+            r'([A-Z][a-zA-Z\s&\.]{3,40})\s+(?:team|company|corporation|group|technologies|solutions)',
+            r'we\s+at\s+([A-Z][a-zA-Z\s&\.]{3,40})(?:\s|!|\.|,)',
+            r'([A-Z][a-zA-Z\s&\.]{3,40})\s+(?:AB|AS|ASA|Ltd|Limited|Inc|Corporation|Corp|Group|Technologies|Solutions)',
+        ]
+        
+        for pattern in english_patterns:
+            matches = re.findall(pattern, all_content, re.IGNORECASE)
+            for match in matches:
+                potential = match.strip()
+                if (3 < len(potential) < 50 and 
+                    not any(word in potential.lower() for word in ['the job', 'this role', 'your team', 'our team', 'a team', 'the team', 'we are', 'you are', 'they are', 'it is', 'there is', 'here is']) and
+                    not potential.lower().startswith(('the ', 'a ', 'an ', 'this ', 'that ', 'these ', 'those ', 'our ', 'your ', 'their '))):
+                    # Clean up the company name
+                    potential = re.sub(r'\s+(söker|letar|vill|is|are|team|company).*$', '', potential, flags=re.IGNORECASE)
+                    return potential.strip()
         
         return "Technology Company"
     
@@ -616,3 +698,115 @@ class RealJobScanner:
             return "Mid-level"
         
         return "Mid-level"  # Default
+    
+    async def send_job_email(self, job: Dict, cv_pdf: bytes, cl_pdf: bytes) -> bool:
+        """
+        Send personalized job email with CV/CL attachments and application link
+        """
+        try:
+            logger.info(f"Sending job email for {job['company']} - {job['title']}")
+            
+            # Create email message
+            msg = MIMEMultipart()
+            msg['From'] = self.sender_email
+            msg['To'] = self.target_email
+            msg['Subject'] = f"🎯 Job Match: {job['title']} at {job['company']}"
+            
+            # Create email body
+            email_body = self._create_job_email_body(job)
+            msg.attach(MIMEText(email_body, 'html'))
+            
+            # Attach CV PDF
+            if cv_pdf:
+                cv_attachment = MIMEApplication(cv_pdf, _subtype='pdf')
+                cv_attachment.add_header(
+                    'Content-Disposition', 
+                    'attachment', 
+                    filename=f"CV_{job['company']}_{job['title'].replace(' ', '_')}.pdf"
+                )
+                msg.attach(cv_attachment)
+            
+            # Attach Cover Letter PDF
+            if cl_pdf:
+                cl_attachment = MIMEApplication(cl_pdf, _subtype='pdf')
+                cl_attachment.add_header(
+                    'Content-Disposition', 
+                    'attachment', 
+                    filename=f"CL_{job['company']}_{job['title'].replace(' ', '_')}.pdf"
+                )
+                msg.attach(cl_attachment)
+            
+            # Send email
+            if not self.sender_password:
+                logger.warning("⚠️ SMTP password not configured - email simulation mode")
+                logger.info(f"✅ [SIMULATED] Email sent for {job['company']} - {job['title']}")
+                return True
+            
+            # Send using SMTP
+            with smtplib.SMTP('smtp.gmail.com', 587) as server:
+                server.starttls()
+                server.login(self.sender_email, self.sender_password)
+                server.send_message(msg)
+                
+            logger.info(f"✅ Successfully sent email for {job['company']} - {job['title']}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to send job email: {e}")
+            return False
+    
+    def _create_job_email_body(self, job: Dict) -> str:
+        """
+        Create HTML email body for job application
+        """
+        application_link = job.get('application_link', job.get('url', ''))
+        keywords = ', '.join(job.get('keywords', [])[:10])
+        
+        return f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #2c5282; border-bottom: 2px solid #2c5282; padding-bottom: 10px;">
+                    🎯 New Job Opportunity Match!
+                </h2>
+                
+                <div style="background: #f7fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h3 style="color: #2d3748; margin-top: 0;">
+                        {job.get('title', 'Software Position')} at {job.get('company', 'Technology Company')}
+                    </h3>
+                    <p><strong>📍 Location:</strong> {job.get('location', 'Sweden')}</p>
+                    <p><strong>💼 Employment:</strong> {job.get('employment_type', 'Full-time')}</p>
+                    {f"<p><strong>💰 Salary:</strong> {job.get('salary', '')}</p>" if job.get('salary') else ''}
+                    <p><strong>🏷️ Keywords:</strong> {keywords}</p>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <h4 style="color: #2d3748;">Job Description:</h4>
+                    <p style="background: #edf2f7; padding: 15px; border-radius: 6px; font-size: 14px;">
+                        {job.get('description', 'See full job details at application link')[:500]}
+                        {'...' if len(job.get('description', '')) > 500 else ''}
+                    </p>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{application_link}" 
+                       style="background: #3182ce; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
+                        🚀 APPLY NOW
+                    </a>
+                </div>
+                
+                <div style="background: #e6fffa; padding: 15px; border-radius: 6px; border-left: 4px solid #38b2ac;">
+                    <h4 style="color: #2c7a7b; margin-top: 0;">📎 Application Documents Attached</h4>
+                    <p style="margin-bottom: 0; color: #2d3748;">
+                        ✅ Customized CV<br>
+                        ✅ Tailored Cover Letter
+                    </p>
+                </div>
+                
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center; color: #718096; font-size: 12px;">
+                    <p>📧 Automated Job Match System - {datetime.now().strftime('%Y-%m-%d %H:%M')}</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
