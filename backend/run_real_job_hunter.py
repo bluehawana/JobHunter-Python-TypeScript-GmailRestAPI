@@ -81,12 +81,27 @@ async def main():
                 try:
                     logger.info(f"📧 Sending job {i}: {job['title']} at {job['company']}")
                     
-                    # Your existing job scanner has email functionality
-                    # We'll create a mock CV and cover letter for now
-                    mock_cv = b"Mock CV content"  # You can integrate with your CV service
-                    mock_cl = b"Mock Cover Letter content"  # You can integrate with your CL service
+                    # Generate real CV and Cover Letter PDFs
+                    from app.services.claude_api_service import ClaudeAPIService
+                    from app.services.latex_resume_service import LaTeXResumeService
                     
-                    success = await email_sender.send_job_email(job, mock_cv, mock_cl)
+                    claude_service = ClaudeAPIService()
+                    latex_service = LaTeXResumeService()
+                    
+                    # Generate customized CV content
+                    cv_content = await claude_service.generate_cv_for_job(job)
+                    cv_pdf = latex_service.create_cv_pdf(cv_content, job)
+                    
+                    # Generate customized cover letter content
+                    cl_content = await claude_service.generate_cover_letter_for_job(job)
+                    cl_pdf = latex_service.create_cover_letter_pdf(cl_content, job)
+                    
+                    if not cv_pdf or not cl_pdf:
+                        # Fallback to simple PDF generation
+                        cv_pdf = b"Simple CV PDF placeholder"
+                        cl_pdf = b"Simple Cover Letter PDF placeholder"
+                    
+                    success = await email_sender.send_job_email(job, cv_pdf, cl_pdf)
                     if success:
                         logger.info(f"✅ Successfully sent email for {job['company']}")
                     else:

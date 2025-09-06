@@ -353,19 +353,24 @@ LEGO Intelligence Active | Overleaf Integration Ready
             self.send_daily_summary()  # Still send summary even if no jobs
             return
         
-        # Step 2: Process each job using TRUE LEGO system
+        # Step 2: Process each job using TRUE Template system
         for job in jobs[:2]:  # Process first 2 jobs to avoid spam
             try:
-                # Use WORKING LEGO systems
-                from beautiful_pdf_generator import create_beautiful_multi_page_pdf
-                from exact_cover_letter_generator import create_exact_cover_letter
+                # Use NEW TRUE Template system with proper company extraction
+                from true_template_automation import TrueTemplateAutomation
                 
-                # Generate CV using LEGO intelligence
-                cv_pdf = create_beautiful_multi_page_pdf(job)
+                automation = TrueTemplateAutomation()
                 
-                # Generate Cover Letter using exact LaTeX template
-                cl_result = create_exact_cover_letter(job)
-                cl_pdf = cl_result.get('pdf_content', b'')
+                # Extract proper company information first
+                improved_job = automation._extract_proper_company(job)
+                
+                # Generate CV and Cover Letter using TRUE templates
+                cv_latex = await automation._generate_true_cv(improved_job)
+                cl_latex = await automation._generate_true_cover_letter(improved_job)
+                
+                # Compile to PDFs
+                cv_pdf = await automation._compile_latex_to_pdf(cv_latex, f"cv_{improved_job['company']}")
+                cl_pdf = await automation._compile_latex_to_pdf(cl_latex, f"cl_{improved_job['company']}")
                 
                 if cv_pdf and cl_pdf:
                     # Step 3: Send application with BOTH CV and Cover Letter

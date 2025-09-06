@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Dashboard from './pages/Dashboard';
 import JobSearch from './pages/JobSearch';
+import JobCreate from './pages/JobCreate';
 import ApplicationManager from './pages/ApplicationManager';
 import DocumentGenerator from './pages/DocumentGenerator';
 import Layout from './components/Layout';
@@ -48,6 +49,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="job-search" element={<JobSearch />} />
+            <Route path="jobs/new" element={<JobCreate />} />
             <Route path="applications" element={<ApplicationManager />} />
             <Route path="documents" element={<DocumentGenerator />} />
           </Route>

@@ -22,17 +22,25 @@ sys.path.append(str(Path(__file__).parent))
 
 # Load environment variables
 def load_env_file():
-    try:
-        with open('.env', 'r') as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith('#') and '=' in line:
-                    key, value = line.split('=', 1)
-                    if '#' in value:
-                        value = value.split('#')[0].strip()
-                    os.environ[key] = value
-    except FileNotFoundError:
-        pass
+    # Try multiple locations for .env file
+    env_paths = ['.env', 'backend/.env', '../.env']
+    
+    for env_path in env_paths:
+        try:
+            with open(env_path, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#') and '=' in line:
+                        key, value = line.split('=', 1)
+                        if '#' in value:
+                            value = value.split('#')[0].strip()
+                        os.environ[key] = value
+                print(f"✅ Loaded environment from: {env_path}")
+                return
+        except FileNotFoundError:
+            continue
+    
+    print("⚠️ No .env file found in any expected location")
 
 load_env_file()
 
@@ -102,25 +110,32 @@ class TrueTemplateAutomation:
             logger.error(f"❌ TRUE Template error: {e}")
     
     def _extract_proper_company(self, job: dict) -> dict:
-        """PROPER company name extraction"""
+        """PROPER company name extraction with enhanced patterns"""
         improved_job = job.copy()
         
         email_subject = job.get('email_subject', '')
-        body = job.get('body', '')
+        body = job.get('raw_content', job.get('body', job.get('description', '')))
         sender = job.get('sender', '')
         
-        # Better company extraction patterns
-        company_name = "Technology Company"
+        # Start with existing company if it's good
+        existing_company = job.get('company', '')
+        company_name = existing_company if existing_company and existing_company != "Technology Company" else "Technology Company"
         
-        # Check sender domain first
+        # Check sender domain first (but be more selective)
         if '@' in sender:
-            domain = sender.split('@')[1].split('.')[0]
-            if domain not in ['linkedin', 'indeed', 'glassdoor', 'gmail']:
-                company_name = domain.title()
+            domain_parts = sender.split('@')[1].split('.')
+            domain = domain_parts[0] if domain_parts else ''
+            
+            # Skip common job sites and generic domains
+            if domain and domain not in ['linkedin', 'indeed', 'glassdoor', 'gmail', 'yahoo', 'hotmail', 'noreply', 'no-reply', 'mail', 'email']:
+                # Check if it's a real company domain
+                if len(domain) > 2 and not domain.isdigit():
+                    company_name = domain.title()
         
-        # Known companies mapping
+        # Enhanced known companies mapping (including Swedish companies)
         content_lower = f"{email_subject} {body}".lower()
         known_companies = {
+            # Tech companies
             'volvo': 'Volvo Group',
             'ericsson': 'Ericsson',
             'spotify': 'Spotify Technology',
@@ -128,44 +143,119 @@ class TrueTemplateAutomation:
             'skf': 'SKF Group',
             'hasselblad': 'Hasselblad',
             'polestar': 'Polestar',
-            'zenseact': 'Zenseact (Volvo)',
-            'cevt': 'CEVT (China Euro Vehicle Technology)',
+            'zenseact': 'Zenseact',
+            'cevt': 'CEVT',
             'stena': 'Stena Line',
             'opera': 'Opera Software',
             'king': 'King Digital Entertainment',
             'mojang': 'Mojang Studios',
-            'dice': 'DICE (EA)',
-            'massive': 'Massive Entertainment'
+            'dice': 'DICE',
+            'massive': 'Massive Entertainment',
+            'saab': 'Saab AB',
+            'scania': 'Scania',
+            'electrolux': 'Electrolux',
+            'h&m': 'H&M Group',
+            'ikea': 'IKEA',
+            'telia': 'Telia Company',
+            'telenor': 'Telenor',
+            'nordea': 'Nordea Bank',
+            'seb': 'SEB Bank',
+            'handelsbanken': 'Handelsbanken',
+            'swedbank': 'Swedbank',
+            'axis': 'Axis Communications',
+            'fingerprint': 'Fingerprint Cards',
+            'tobii': 'Tobii',
+            'paradox': 'Paradox Interactive',
+            'mojang': 'Mojang Studios',
+            'embark': 'Embark Studios',
+            'avalanche': 'Avalanche Studios',
+            'sharkmob': 'Sharkmob',
+            'ecarx': 'ECARX',
+            'synteda': 'Synteda',
+            'addcell': 'AddCell',
+            'pembio': 'Pembio AB'
         }
         
+        # Check for known companies first
         for keyword, full_name in known_companies.items():
             if keyword in content_lower:
                 company_name = full_name
                 break
         
-        # Extract from Swedish job patterns
+        # Enhanced Swedish job patterns
+        all_content = f"{email_subject} {body}"
+        
+        # Pattern 1: "Company söker/letar efter/vill anställa"
         swedish_patterns = [
-            r'([A-ZÅÄÖ][a-zåäöA-Z\s&]+?)\s+(?:söker|letar efter|vill anställa)',
-            r'Bli\s+en\s+del\s+av\s+([A-ZÅÄÖ][a-zåäöA-Z\s&]+?)(?:\s|!)',
-            r'([A-ZÅÄÖ][a-zåäöA-Z\s&]+?)\s+expanderar',
+            r'([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)\s+(?:söker|letar efter|vill anställa|rekryterar)',
+            r'Bli\s+en\s+del\s+av\s+([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)(?:\s|!|\.|,)',
+            r'([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)\s+(?:expanderar|växer|utvecklas)',
+            r'Jobba\s+på\s+([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)(?:\s|!|\.|,)',
+            r'Vi\s+på\s+([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)(?:\s|!|\.|,)',
+            r'([A-ZÅÄÖ][a-zåäöA-Z\s&\.]+?)\s+(?:AB|AS|ASA|Ltd|Limited|Inc|Corporation|Corp|Group|Sweden|Norge|Norway|Denmark)',
         ]
         
         for pattern in swedish_patterns:
-            match = re.search(pattern, email_subject + " " + body, re.IGNORECASE)
-            if match:
-                potential = match.group(1).strip()
-                if 3 < len(potential) < 40 and not any(word in potential.lower() for word in ['söker', 'nu', 'fler', 'talanger']):
+            matches = re.findall(pattern, all_content, re.IGNORECASE)
+            for match in matches:
+                potential = match.strip()
+                # Filter out common false positives
+                if (3 < len(potential) < 50 and 
+                    not any(word in potential.lower() for word in ['söker', 'nu', 'fler', 'talanger', 'vi', 'du', 'dig', 'ditt', 'din', 'denna', 'detta', 'här', 'där', 'när', 'som', 'att', 'och', 'eller', 'men', 'för', 'till', 'från', 'med', 'på', 'av', 'om', 'under', 'över', 'genom', 'utan', 'mellan', 'efter', 'före', 'sedan', 'redan', 'bara', 'endast', 'också', 'även', 'inte', 'aldrig', 'alltid', 'ofta', 'ibland', 'kanske', 'troligen', 'möjligen']) and
+                    not potential.lower().startswith(('the ', 'a ', 'an ', 'this ', 'that ', 'these ', 'those '))):
                     company_name = potential
                     break
+            if company_name != "Technology Company" and company_name != existing_company:
+                break
+        
+        # English patterns for international companies
+        english_patterns = [
+            r'([A-Z][a-zA-Z\s&\.]+?)\s+(?:is hiring|is looking|seeks|is seeking|wants|needs)',
+            r'Join\s+([A-Z][a-zA-Z\s&\.]+?)(?:\s|!|\.|,)',
+            r'Work\s+at\s+([A-Z][a-zA-Z\s&\.]+?)(?:\s|!|\.|,)',
+            r'([A-Z][a-zA-Z\s&\.]+?)\s+(?:team|company|corporation|group|technologies|solutions)',
+            r'We\s+at\s+([A-Z][a-zA-Z\s&\.]+?)(?:\s|!|\.|,)',
+            r'([A-Z][a-zA-Z\s&\.]+?)\s+(?:AB|AS|ASA|Ltd|Limited|Inc|Corporation|Corp|Group|Technologies|Solutions)',
+        ]
+        
+        for pattern in english_patterns:
+            matches = re.findall(pattern, all_content, re.IGNORECASE)
+            for match in matches:
+                potential = match.strip()
+                if (3 < len(potential) < 50 and 
+                    not any(word in potential.lower() for word in ['the job', 'this role', 'your team', 'our team', 'a team', 'the team', 'we are', 'you are', 'they are', 'it is', 'there is', 'here is']) and
+                    not potential.lower().startswith(('the ', 'a ', 'an ', 'this ', 'that ', 'these ', 'those ', 'our ', 'your ', 'their '))):
+                    company_name = potential
+                    break
+            if company_name != "Technology Company" and company_name != existing_company:
+                break
+        
+        # Clean up company name
+        if company_name and company_name != "Technology Company":
+            # Remove common suffixes that might be captured
+            company_name = re.sub(r'\s+(söker|letar|vill|is|are|team|company).*$', '', company_name, flags=re.IGNORECASE)
+            company_name = company_name.strip()
         
         improved_job['company'] = company_name
         
-        # Better job title extraction
-        if 'söker nu fler talanger till' in email_subject.lower():
-            title_match = re.search(r'söker nu fler talanger till\s+(.+)', email_subject, re.IGNORECASE)
-            if title_match:
-                improved_job['title'] = title_match.group(1).strip()
+        # Enhanced job title extraction
+        title_patterns = [
+            r'söker nu fler talanger till\s+(.+?)(?:\s|!|\.|,|$)',
+            r'(?:position|tjänst|roll):\s*(.+?)(?:\s|!|\.|,|$)',
+            r'Vi söker\s+(?:en|ett)?\s*(.+?)(?:\s|!|\.|,|till)',
+            r'Jobba som\s+(.+?)(?:\s|!|\.|,|hos)',
+            r'([A-Z][a-zA-Z\s]+(?:Developer|Engineer|Architect|Manager|Lead|Specialist|Consultant))',
+        ]
         
+        for pattern in title_patterns:
+            match = re.search(pattern, email_subject, re.IGNORECASE)
+            if match:
+                title = match.group(1).strip()
+                if len(title) > 5 and len(title) < 80:
+                    improved_job['title'] = title
+                    break
+        
+        logger.info(f"🏢 Extracted company: '{company_name}' for job: '{improved_job.get('title', 'Unknown')}'")
         return improved_job
     
     async def _generate_true_cv(self, job: dict) -> str:
@@ -256,107 +346,23 @@ PROJECTS_CONTENT
 \\end{document}"""
         
         # Use Claude to customize ONLY the variable parts
+        job_title = job['title']
+        job_company = job['company']
+        job_description = job.get('description', '')
+        
         claude_prompt = f"""
-        Customize Hongzhi Li's CV for this job by filling in these specific sections:
+        Customize Hongzhi Li's CV for this specific job:
         
-        JOB: {job['title']} at {job['company']}
-        DESCRIPTION: {job.get('description', '')}
+        JOB: {job_title} at {job_company}
+        DESCRIPTION: {job_description}
         
-        1. ROLE_TITLE: Choose from "Fullstack Developer", "Backend Developer", "DevOps Engineer", "Software Developer"
+        Please provide a customized LaTeX CV that:
+        1. Uses appropriate role title (Fullstack Developer, Backend Developer, DevOps Engineer, or Software Developer)
+        2. Customizes the profile summary to match the job requirements
+        3. Reorders technical skills by relevance to the job
+        4. Emphasizes relevant experience and projects
         
-        2. PROFILE_SUMMARY_CONTENT: Customize this exact text for the job:
-        "Experienced Fullstack Developer with over 5 years of hands-on experience in Java/J2EE development with modern web technologies. Proven expertise in building scalable full-stack applications using Spring Boot, Angular/React frontend integration, and comprehensive database management across SQL and NoSQL platforms. Strong background in RESTful API development, microservices architecture, and end-to-end application development. Demonstrated ability to work across the entire technology stack from frontend user interfaces to backend services and database optimization. Currently serving as IT/Infrastructure Specialist at ECARX, bringing deep technical knowledge to complex software solutions and collaborative development environments."
-        
-        3. TECHNICAL_SKILLS_CONTENT: Use this EXACT format but reorder by relevance:
-        \\begin{itemize}[noitemsep]
-        \\item \\textbf{Programming Languages:} Java/J2EE, JavaScript, C\\#/.NET Core, Python, Bash, PowerShell
-        \\item \\textbf{Frontend Frameworks:} Angular, ReactJS, React Native, Vue.js, HTML5, CSS3
-        \\item \\textbf{Backend Frameworks:} Spring, Spring Boot, Spring MVC, .NET Core, ASP.NET, Node.js
-        \\item \\textbf{API Development:} RESTful APIs, GraphQL, Microservices Architecture
-        \\item \\textbf{Databases:} PostgreSQL, MySQL, MongoDB, AWS RDS, Azure Cosmos DB, S3
-        \\item \\textbf{Testing:} Unit Testing, Integration Testing, Automated Testing, JUnit, Jest
-        \\item \\textbf{Cloud Platforms:} AWS, Azure, GCP
-        \\item \\textbf{Containerization:} Docker, Kubernetes, Azure Kubernetes Service (AKS)
-        \\item \\textbf{Version Control:} Git, GitHub, GitLab
-        \\item \\textbf{CI/CD:} Jenkins, GitHub Actions, GitLab CI
-        \\item \\textbf{Agile Methodologies:} Scrum, Kanban, Sprint Planning, Code Reviews
-        \\item \\textbf{Performance Optimization:} Application scaling, Database optimization, Caching strategies
-        \\item \\textbf{Security:} Application security, Data protection, Authentication/Authorization
-        \\end{itemize}
-        
-        4. EXPERIENCE_CONTENT: Use this EXACT experience section:
-        \\subsection*{ECARX | IT/Infrastructure Specialist}
-        \\textit{October 2024 - Present | Gothenburg, Sweden}
-        \\begin{itemize}[noitemsep]
-        \\item Leading infrastructure optimization and system integration projects for automotive technology solutions
-        \\item Providing IT support and infrastructure support to development teams for enhanced productivity
-        \\item Implementing cost optimization project by migrating from AKS to local Kubernetes cluster, reducing operational expenses
-        \\item Implementing modern monitoring solutions using Grafana and advanced scripting for system reliability
-        \\item Managing complex network systems and providing technical solution design for enterprise-level applications
-        \\end{itemize}
-        
-        \\subsection*{Synteda | Azure Fullstack Developer \\& Integration Specialist (Freelance)}
-        \\textit{August 2023 - September 2024 | Gothenburg, Sweden}
-        \\begin{itemize}[noitemsep]
-        \\item Developed comprehensive talent management system using C\\# and .NET Core with cloud-native architecture
-        \\item Built complete office management platform from scratch, architecting both frontend and backend components
-        \\item Implemented RESTful APIs and microservices for scalable application architecture
-        \\item Integrated SQL and NoSQL databases with optimized query performance and data protection measures
-        \\end{itemize}
-        
-        \\subsection*{IT-Högskolan | Backend Developer (Part-time)}
-        \\textit{January 2023 - May 2023 | Gothenburg, Sweden}
-        \\begin{itemize}[noitemsep]
-        \\item Migrated "Omstallningsstod.se" adult education platform using Spring Boot backend services
-        \\item Developed RESTful APIs for frontend integration and implemented secure data handling
-        \\item Collaborated with UI/UX designers to ensure seamless frontend-backend integration
-        \\item Implemented automated tests as part of delivery process
-        \\end{itemize}
-        
-        \\subsection*{Senior Material (Europe) AB | Platform Architect \\& Project Coordinator}
-        \\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
-        \\begin{itemize}[noitemsep]
-        \\item Led migration of business-critical applications with microservices architecture
-        \\item Developed backend services with Spring Boot and designed RESTful APIs for frontend consumption
-        \\item Collaborated with development teams to optimize applications for maximum speed and scalability
-        \\item Participated in Agile ceremonies including sprint planning, reviews, and retrospectives
-        \\end{itemize}
-        
-        \\subsection*{AddCell (CTH Startup) | DevOps Engineer}
-        \\textit{September 2022 - November 2022 | Gothenburg, Sweden}
-        \\begin{itemize}[noitemsep]
-        \\item Developed cloud-native applications using serverless computing architecture
-        \\item Implemented GraphQL APIs for efficient data fetching and frontend integration
-        \\item Worked with SQL and NoSQL databases for optimal data storage and retrieval
-        \\end{itemize}
-        
-        \\subsection*{Pembio AB | Fullstack Developer}
-        \\textit{October 2020 - September 2021 | Lund, Sweden}
-        \\begin{itemize}[noitemsep]
-        \\item Developed Pembio.com platform backend with Java and Spring Boot in microservices architecture
-        \\item Built frontend features using Vue.js framework and integrated with backend APIs
-        \\item Developed RESTful APIs and implemented comprehensive database integration
-        \\item Participated in Agile development processes and collaborated with cross-functional teams
-        \\item Implemented automated testing strategies and ensured application security
-        \\end{itemize}
-        
-        5. PROJECTS_CONTENT: Include ALL hobby projects with this EXACT format:
-        \\section*{Hobby Projects}
-        \\subsection{AndroidAuto\\_AI\\_Bot}
-        \\textit{June 2025 -- Present} \\\\
-        \\textbf{AndroidAuto, EdgeTTS, TwitterAPI, LLM, Python, Kotelin}
-        \\begin{itemize}
-        \\item Designed an in-car AI voice assistant for Android Auto, activated via a custom wake-word \\texttt{"Hi Car"}, as a smarter alternative to Google Assistant
-        \\item Integrated Large Language Models (LLMs) for natural language understanding and real-time conversational responses
-        \\item Enabled real-time querying of public Twitter/X content (e.g., Elon Musk, Donald Trump) via Twitter API, with responses converted to speech using Edge TTS
-        \\item Built a text-to-speech (TTS) pipeline to vocalize responses from the LLM and external APIs for hands-free, eyes-free user experience
-        \\item Designed for Android Auto with a distraction-free, voice-only interface and on-device wake-word detection
-        \\item Supports conversational queries, personalized information access, and live updates while commuting
-        \\end{itemize}
-        
-        [Continue with ALL other projects exactly as provided...]
-        
-        Return the complete LaTeX template with all placeholders filled in using the EXACT content provided.
+        Return the complete LaTeX document ready for compilation.
         """
         
         try:
@@ -372,13 +378,34 @@ PROJECTS_CONTENT
                 
         except Exception as e:
             logger.error(f"❌ Claude error: {e}")
-            return self._manual_true_cv_customization(job, cv_template)    def 
-_manual_true_cv_customization(self, job: dict, template: str) -> str:
-        """Manual customization using TRUE template"""
-        job_title = job.get('title', '').lower()
+            return self._manual_true_cv_customization(job, cv_template)
+    
+    def _manual_true_cv_customization(self, job: dict, template: str) -> str:
+        """LEGO BRICKS customization - dynamically build CV based on job requirements"""
         
-        # Determine role
-        if 'backend' in job_title:
+        # Import LEGO bricks system
+        from cv_lego_bricks import CVLegoBricks
+        
+        # Initialize LEGO bricks
+        lego_bricks = CVLegoBricks()
+        
+        # Determine application type from job details
+        job_title = job.get('title', '').lower()
+        job_description = job.get('description', '').lower()
+        
+        application_type = 'android_focused'  # Default based on ECARX success
+        if job.get('android_focus') or 'android' in job_title or 'mobile' in job_title or 'infotainment' in job_title:
+            application_type = 'android_focused'
+        elif 'fullstack' in job_title or 'full stack' in job_title:
+            application_type = 'fullstack'
+        
+        # Build CV components using LEGO bricks
+        cv_components = lego_bricks.build_cv_for_job(job, application_type)
+        
+        # Determine role title based on job and application type
+        if application_type == 'android_focused':
+            role = "Android Developer & Automotive Technology Specialist"
+        elif 'backend' in job_title:
             role = "Backend Developer"
         elif 'devops' in job_title or 'infrastructure' in job_title:
             role = "DevOps Engineer"
@@ -387,32 +414,12 @@ _manual_true_cv_customization(self, job: dict, template: str) -> str:
         else:
             role = "Software Developer"
         
-        # Replace placeholders with EXACT content
+        # Replace placeholders with LEGO BRICK content
         customized = template.replace('ROLE_TITLE', role)
         
-        # Profile summary
-        profile = """Experienced Fullstack Developer with over 5 years of hands-on experience in Java/J2EE development with modern web technologies. Proven expertise in building scalable full-stack applications using Spring Boot, Angular/React frontend integration, and comprehensive database management across SQL and NoSQL platforms. Strong background in RESTful API development, microservices architecture, and end-to-end application development. Demonstrated ability to work across the entire technology stack from frontend user interfaces to backend services and database optimization. Currently serving as IT/Infrastructure Specialist at ECARX, bringing deep technical knowledge to complex software solutions and collaborative development environments."""
-        
-        customized = customized.replace('PROFILE_SUMMARY_CONTENT', profile)
-        
-        # Technical skills - EXACT format
-        skills = """\\begin{itemize}[noitemsep]
-\\item \\textbf{Programming Languages:} Java/J2EE, JavaScript, C\\#/.NET Core, Python, Bash, PowerShell
-\\item \\textbf{Frontend Frameworks:} Angular, ReactJS, React Native, Vue.js, HTML5, CSS3
-\\item \\textbf{Backend Frameworks:} Spring, Spring Boot, Spring MVC, .NET Core, ASP.NET, Node.js
-\\item \\textbf{API Development:} RESTful APIs, GraphQL, Microservices Architecture
-\\item \\textbf{Databases:} PostgreSQL, MySQL, MongoDB, AWS RDS, Azure Cosmos DB, S3
-\\item \\textbf{Testing:} Unit Testing, Integration Testing, Automated Testing, JUnit, Jest
-\\item \\textbf{Cloud Platforms:} AWS, Azure, GCP
-\\item \\textbf{Containerization:} Docker, Kubernetes, Azure Kubernetes Service (AKS)
-\\item \\textbf{Version Control:} Git, GitHub, GitLab
-\\item \\textbf{CI/CD:} Jenkins, GitHub Actions, GitLab CI
-\\item \\textbf{Agile Methodologies:} Scrum, Kanban, Sprint Planning, Code Reviews
-\\item \\textbf{Performance Optimization:} Application scaling, Database optimization, Caching strategies
-\\item \\textbf{Security:} Application security, Data protection, Authentication/Authorization
-\\end{itemize}"""
-        
-        customized = customized.replace('TECHNICAL_SKILLS_CONTENT', skills)
+        # Use LEGO BRICKS for dynamic content
+        customized = customized.replace('PROFILE_SUMMARY_CONTENT', cv_components['profile'])
+        customized = customized.replace('TECHNICAL_SKILLS_CONTENT', cv_components['skills'])
         
         # Experience - EXACT content
         experience = """\\subsection*{ECARX | IT/Infrastructure Specialist}
@@ -470,10 +477,15 @@ _manual_true_cv_customization(self, job: dict, template: str) -> str:
 \\item Implemented automated testing strategies and ensured application security
 \\end{itemize}"""
         
-        customized = customized.replace('EXPERIENCE_CONTENT', experience)
+        customized = customized.replace('EXPERIENCE_CONTENT', cv_components['experience'])
         
-        # Projects - ALL of them
-        projects = """\\section*{Hobby Projects}
+        # Use LEGO BRICKS for projects
+        customized = customized.replace('PROJECTS_CONTENT', cv_components['projects'])
+        
+        return customized
+        
+        # OLD HARDCODED PROJECTS (kept for reference but not used)
+        old_projects = """\\section*{Hobby Projects}
 \\subsection{AndroidAuto\\_AI\\_Bot}
 \\textit{June 2025 -- Present} \\\\
 \\textbf{AndroidAuto, EdgeTTS, TwitterAPI, LLM, Python, Kotelin}
@@ -552,10 +564,9 @@ _manual_true_cv_customization(self, job: dict, template: str) -> str:
 \\item Dynamic city lookup and caching mechanism for optimized API usage and response speed
 \\end{itemize}"""
         
-        customized = customized.replace('PROJECTS_CONTENT', projects)
-        
-        return customized 
-   async def _generate_true_cover_letter(self, job: dict) -> str:
+        # This old projects content is no longer used - LEGO bricks handle it above
+    
+    async def _generate_true_cover_letter(self, job: dict) -> str:
         """Generate cover letter using YOUR EXACT template"""
         
         # YOUR EXACT COVER LETTER TEMPLATE

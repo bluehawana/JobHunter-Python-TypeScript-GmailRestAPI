@@ -38,6 +38,7 @@ import {
 } from '@mui/icons-material';
 import axios from 'axios';
 import GmailConnection from '../components/GmailConnection';
+import JobUrlProcessor from '../components/JobUrlProcessor';
 
 interface DashboardStats {
   total_jobs_found: number;
@@ -148,6 +149,36 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleSaveJobUrl = async () => {
+    if (!jobUrl.trim()) {
+      alert('Please enter a job URL');
+      return;
+    }
+
+    setApplyLoading(true);
+    try {
+      const response = await axios.post('http://localhost:8000/api/v1/save-job-url', {
+        job_url: jobUrl
+      });
+
+      // Show success message
+      alert(`💾 Job URL saved successfully!\n\nJob: ${response.data.extracted_data.title}\nCompany: ${response.data.extracted_data.company}\nSource: ${response.data.extracted_data.source}\n\nJob has been added to your system for later processing.`);
+      
+      // Clear URL input
+      setJobUrl('');
+      
+      // Refresh dashboard data
+      fetchDashboardData();
+      
+    } catch (error: any) {
+      console.error('Error saving job URL:', error);
+      const errorMessage = error.response?.data?.detail || 'Failed to save job URL. Please try again.';
+      alert(`❌ Save failed: ${errorMessage}`);
+    } finally {
+      setApplyLoading(false);
+    }
+  };
+
   const handleInstantApply = async () => {
     if (!jobUrl.trim()) {
       alert('Please enter a job URL');
@@ -233,6 +264,15 @@ const Dashboard: React.FC = () => {
       <Box mb={4}>
         <GmailConnection />
       </Box>
+
+      {/* Job URL Processor */}
+      <JobUrlProcessor 
+        onApplicationGenerated={(jobDetails) => {
+          // Refresh dashboard stats when application is generated
+          fetchDashboardStats();
+        }}
+      />
+
 
       {/* Stats Grid */}
       <Grid container spacing={3} mb={4}>

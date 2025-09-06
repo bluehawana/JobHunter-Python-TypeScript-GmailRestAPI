@@ -11,8 +11,11 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 import json
 import re
-import json
 from google.oauth2.credentials import Credentials
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Add app directory to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'app'))
