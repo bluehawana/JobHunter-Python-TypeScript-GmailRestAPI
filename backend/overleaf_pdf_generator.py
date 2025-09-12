@@ -101,12 +101,11 @@ class OverleafPDFGenerator:
         latex_content = r"""
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{geometry}
 \usepackage{enumitem}
-\usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage{hyperref}
-\usepackage{fontawesome}
 
 % Page setup
 \geometry{margin=0.75in}
@@ -124,12 +123,12 @@ class OverleafPDFGenerator:
     citecolor=darkblue
 }
 
-% Section formatting
-\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
-\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+% Simple default section formatting (ATS-friendly)
 
 % Custom commands
 \newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+% ATS-friendly bullets and margins
+\setlist[itemize]{label=-, leftmargin=*}
 
 \begin{document}
 \pagestyle{empty} % no page number
@@ -139,6 +138,8 @@ class OverleafPDFGenerator:
 {\LARGE \textbf{Hongzhi Li}}\\[10pt]
 {\Large \textit{ROLE_TITLE_PLACEHOLDER}}\\[10pt]
 \textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\\[6pt]
+Phone: +46 728 384 299 | Email: hongzhili01@gmail.com | Location: Gothenburg, Sweden | LinkedIn: linkedin.com/in/hzl | GitHub: github.com/bluehawana
 \end{center}
 
 % Personal Profile

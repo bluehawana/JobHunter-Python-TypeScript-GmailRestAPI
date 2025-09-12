@@ -16,7 +16,8 @@ logger = logging.getLogger(__name__)
 class CompanyInfoExtractor:
     def __init__(self):
         """Initialize with Claude API for accurate information extraction"""
-        self.claude_api_key = os.getenv('ANTHROPIC_AUTH_TOKEN')
+        # Prefer ANTHROPIC_AUTH_TOKEN, fall back to ANTHROPIC_API_KEY for compatibility
+        self.claude_api_key = os.getenv('ANTHROPIC_AUTH_TOKEN') or os.getenv('ANTHROPIC_API_KEY')
         self.claude_base_url = os.getenv('ANTHROPIC_BASE_URL', 'https://anyrouter.top')
         
         # Your FIXED contact information - NEVER changes
@@ -87,9 +88,15 @@ class CompanyInfoExtractor:
             }}
             """
             
+            if not self.claude_api_key:
+                logger.warning("⚠️ Claude API key not configured; skipping API extraction")
+                return {'success': False, 'error': 'Claude API key missing'}
+
             headers = {
                 'Authorization': f'Bearer {self.claude_api_key}',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                # Required for Anthropic official API
+                'anthropic-version': os.getenv('ANTHROPIC_VERSION', '2023-06-01')
             }
             
             data = {
