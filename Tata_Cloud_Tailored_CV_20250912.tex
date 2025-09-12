@@ -1,12 +1,11 @@
 
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{geometry}
 \usepackage{enumitem}
-\usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage{hyperref}
-\usepackage{fontawesome}
 
 % Page setup
 \geometry{margin=0.75in}
@@ -24,12 +23,12 @@
     citecolor=darkblue
 }
 
-% Section formatting
-\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
-\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+% Simple default section formatting (ATS-friendly)
 
 % Custom commands
 \newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+% ATS-friendly bullets and margins
+\setlist[itemize]{label=-, leftmargin=*}
 
 \begin{document}
 \pagestyle{empty} % no page number
@@ -38,25 +37,26 @@
 \begin{center}
 {\LARGE \textbf{Hongzhi Li}}\\[10pt]
 {\Large \textit{DevOps Engineer \& Cloud Infrastructure Specialist}}\\[10pt]
-\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:+46728384299}{+46 728 384 299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\\[6pt]
+Phone: +46 728 384 299 | Email: hongzhili01@gmail.com | Location: Gothenburg, Sweden | LinkedIn: linkedin.com/in/hzl | GitHub: github.com/bluehawana
 \end{center}
 
 % Personal Profile
 \section*{Profile Summary}
-DevOps Engineer and Infrastructure Specialist with 5+ years building, automating, and operating cloud-native systems in enterprise environments. Deep expertise across AWS, CI/CD (Jenkins/GitHub Actions), Kubernetes/Docker, and Infrastructure as Code (Terraform). Experienced in setting up monitoring/alerting (Prometheus/Grafana/Loki), incident response and recovery playbooks, and SDLC/release governance with engineering and management teams. Based in Gothenburg; open to Oslo/Gothenburg hybrid setups and immediate start.
+Experienced DevOps Engineer and Infrastructure Specialist with over 5 years of expertise in cloud technologies, system optimization, and automated deployment pipelines. Currently serving as IT/Infrastructure Specialist at ECARX with proven track record in Kubernetes, AWS, Docker, and infrastructure automation. Specialized in infrastructure optimization roles for companies like Tata.
 
 % Areas of Expertise
 \section*{Core Technical Skills}
 \begin{itemize}[noitemsep]
-\item \textbf{Cloud (AWS-first):} EC2, ALB/NLB, VPC, IAM, RDS, S3, CloudFront (CDN), Route53, CloudWatch
-\item \textbf{IaC \& Config:} Terraform (modules, workspaces), CloudFormation, Ansible; GitOps workflows
-\item \textbf{Containers/Orchestration:} Docker, Kubernetes (AKS/EKS/on-prem), Helm, Kustomize
-\item \textbf{CI/CD:} Jenkins (multibranch, shared libs), GitHub Actions, GitLab CI; blue/green, canary
-\item \textbf{Monitoring/Logging:} Prometheus, Grafana, Loki, Alertmanager; SLOs, dashboards, alerting
-\item \textbf{Networking/HA:} Nginx/HAProxy, load balancing, TLS, CDN, autoscaling, high availability design
-\item \textbf{Systems:} Linux administration (Ubuntu/CentOS), systemd, shell scripting, performance tuning
-\item \textbf{Programming:} Python, Bash, PowerShell; tooling, automation, internal CLIs
-\item \textbf{Git Expertise:} Rebase/merge workflows, GitFlow/trunk-based, code review, submodules
+\item \textbf{Cloud Platforms:} AWS, Azure, GCP, Alibaba Cloud ECS, Infrastructure as Code
+\item \textbf{Containerization:} Docker, Kubernetes, Azure Kubernetes Service (AKS), Container Orchestration
+\item \textbf{CI/CD:} Jenkins, GitHub Actions, GitLab CI, Automated Testing, Deployment Pipelines
+\item \textbf{Infrastructure:} System Integration, Network Management, Cost Optimization, Performance Monitoring
+\item \textbf{Monitoring \& Observability:} Prometheus, Grafana, Advanced Scripting, System Reliability, Performance Analysis, Infrastructure Metrics, GitLab Runner Optimization
+\item \textbf{Programming:} Python, Bash, PowerShell, Java, JavaScript, Go, Infrastructure Automation
+\item \textbf{Databases:} PostgreSQL, MySQL, MongoDB, AWS RDS, Azure Cosmos DB, Database Optimization
+\item \textbf{Security:} Application security, Data protection, Authentication/Authorization, Network Security
 \end{itemize}
 
 % Experience
@@ -65,23 +65,22 @@ DevOps Engineer and Infrastructure Specialist with 5+ years building, automating
 \subsection*{ECARX | IT/Infrastructure Specialist}
 \textit{October 2024 - Present | Gothenburg, Sweden}
 \begin{itemize}[noitemsep]
-\item Built and maintained CI/CD pipelines (Jenkins/GitHub Actions) for microservices; standardized pipeline templates and secrets management
-\item Designed monitoring/alerting with Prometheus, Grafana, and Loki; created service SLO dashboards and weekly reliability reports
-\item Set up incident management framework: on-call rotation, runbooks, recovery playbooks, and postmortem templates
-\item Partnered with development to define SDLC (GitFlow, code review, versioning); introduced trunk-based deployments where appropriate
-\item Drove release planning with PM/engineering; automated release notes and change approvals to reduce lead time
-\item Migrated from AKS to on-prem Kubernetes, reducing cost; implemented IaC with Terraform modules for repeatable environments
-\item Administered Linux servers (systemd, networking, hardening); configured Nginx/HAProxy, ALB, and CloudFront for load balancing/CDN
-\item Advocated and trained teams on DevOps best practices, Git proficiency, and incident readiness
+\item Leading infrastructure optimization and system integration projects for automotive technology solutions
+\item Implementing cost optimization project by migrating from AKS to local Kubernetes cluster, reducing operational expenses by 40\%
+\item Deployed comprehensive monitoring stack using Prometheus and Grafana to observe high-performance local cluster servers, tracking CPU usage, I/O performance, memory utilization, and network throughput
+\item Conducted detailed performance analysis comparing on-premises GitLab runner environment with Azure Kubernetes Service (AKS), identifying 25\% performance improvement in CI/CD pipeline execution times
+\item Implemented advanced Grafana dashboards for real-time infrastructure observability, enabling proactive issue detection and system optimization
+\item Managing complex network systems and providing technical solution design for enterprise-level applications
+\item Providing IT support and infrastructure support to development teams for enhanced productivity
 \end{itemize}
 
 \subsection*{Synteda | Azure Fullstack Developer \& Integration Specialist (Freelance)}
 \textit{August 2023 - September 2024 | Gothenburg, Sweden}
 \begin{itemize}[noitemsep]
-\item Provisioned greenfield cloud infrastructure from scratch using Terraform, Azure DevOps, and containerized services
-\item Implemented CI/CD (build, test, deploy) with environment promotion and approvals; added automated rollbacks
-\item Established service observability with Grafana/Prometheus and log aggregation; created latency/error SLIs
-\item Contributed to SDLC playbooks and release calendars; coordinated releases across multiple teams
+\item Developed comprehensive talent management system using C\# and .NET Core with cloud-native architecture
+\item Built complete office management platform from scratch, architecting both frontend and backend components
+\item Implemented RESTful APIs and microservices for scalable application architecture
+\item Integrated SQL and NoSQL databases with optimized query performance and data protection measures
 \end{itemize}
 
 
@@ -143,9 +142,9 @@ DevOps Engineer and Infrastructure Specialist with 5+ years building, automating
 \section*{Additional Information}
 \begin{itemize}
 \item \textbf{Languages:} Fluent in English and Mandarin
-\item \textbf{Location:} Based in Gothenburg; open to relocation within Nordics
-\item \textbf{Interests:} Reliability engineering, automation, performance tuning, developer experience
+\item \textbf{Interests:} Vehicle technology, energy sector, electrical charging systems, and battery technology
 \item \textbf{Personal Website:} \href{https://www.bluehawana.com}{bluehawana.com}
+\item \textbf{Customer Websites:} \href{https://www.senior798.eu}{senior798.eu}, \href{https://www.mibo.se}{mibo.se}, \href{https://www.omstallningsstod.se}{omstallningsstod.se}
 \end{itemize}
 
 \end{document}
