@@ -1,0 +1,156 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fontawesome}
+
+% Page setup
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightgray}{RGB}{128,128,128}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    urlcolor=darkblue,
+    citecolor=darkblue
+}
+
+% Section formatting
+\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+% Custom commands
+\newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+
+\begin{document}
+\pagestyle{empty} % no page number
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{IT Infrastructure Specialist / Technical Support Engineer}}\\[10pt]
+\textcolor{darkblue}{\href{mailto:hongzhili01@google.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\end{center}
+
+% Personal Profile
+\section*{Profile Summary}
+IT Infrastructure Specialist with 5+ years of experience in Azure cloud environments, system performance optimization, and technical support. Currently at ECARX in the automotive sector, managing hybrid cloud infrastructure and achieving significant performance improvements. Previous experience at Senior Material Europe AB in Eskilstuna provided exposure to international business operations and cross-functional project coordination. Strong background in documentation, process improvement, and cross-cultural team collaboration. Passionate about sustainable technology and eager to contribute to Volvo Energy's electrification journey with proven Azure expertise and a customer-focused support mindset.
+
+% Areas of Expertise
+\section*{Core Technical Skills}
+\begin{itemize}[noitemsep]
+\item \textbf{Cloud Infrastructure:} Azure (AKS, DevOps, App Services), hybrid cloud architectures, on-premise systems
+\item \textbf{System Optimization:} Performance tuning, infrastructure migration, monitoring (Prometheus/Grafana)
+\item \textbf{Support \& Documentation:} Technical documentation, knowledge sharing, training material development
+\item \textbf{Development Background:} Python, Java, JavaScript, C\#, Spring Boot, RESTful APIs
+\item \textbf{DevOps Tools:} Docker, Kubernetes, GitLab CI/CD, automated testing, deployment pipelines
+\item \textbf{Databases:} PostgreSQL, MySQL, MongoDB, SQL optimization
+\item \textbf{Project Management:} Agile methodologies, cross-functional coordination, stakeholder communication
+\item \textbf{Languages:} Fluent English and Mandarin Chinese, Swedish (B2 level)
+\end{itemize}
+
+% Experience
+\section*{Professional Experience}
+\subsection*{ECARX Sweden AB | Senior Infrastructure \& Performance Engineering Specialist}
+\textit{October 2024 - Present | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Leading Azure AKS to on-premise migration project, achieving 3.5x performance improvement through system optimization
+\item Managing hybrid cloud infrastructure combining Azure services with high-performance computing requirements
+\item Implementing monitoring solutions with Prometheus/Grafana for system health and performance tracking
+\item Creating technical documentation and conducting knowledge-sharing sessions for engineering teams
+\item Collaborating with cross-functional teams including hardware engineers and DevOps specialists
+\item Supporting automotive testing platforms and coordinating validation processes for development teams
+\item Providing technical solution design for high-performance development environments
+\end{itemize}
+
+\subsection*{Senior Material (Europe) AB | Platform Architect \& Project Coordinator}
+\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\begin{itemize}[noitemsep]
+\item Coordinated migration of business applications to microservices architecture
+\item Developed backend services with Spring Boot and RESTful APIs for improved system integration
+\item Collaborated with international teams, bridging communication between Chinese suppliers and Swedish operations
+\item Participated in Agile ceremonies and managed project timelines for application modernization
+\item Created process documentation and training materials for new system implementations
+\item Supported business operations through technical problem-solving and stakeholder communication
+\end{itemize}
+
+\subsection*{Synteda | Azure Integration Specialist (Freelance)}
+\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Deployed applications on Azure cloud infrastructure using various Azure services
+\item Built RESTful APIs and microservices for scalable application architecture
+\item Integrated SQL and NoSQL databases with performance optimization
+\item Provided technical support and documentation for client projects
+\end{itemize}
+
+\subsection*{IT-Högskolan | DevOps Support (Part-time)}
+\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Provided infrastructure support for development teams
+\item Supported platform backend migration using Spring Boot
+\item Implemented automated testing and deployment pipelines
+\item Created documentation for deployment processes and API integration
+\end{itemize}
+
+\section*{Relevant Projects}
+
+\subsection{Azure Infrastructure Optimization - ECARX}
+\textbf{Azure AKS, Kubernetes, Docker, Monitoring Tools}
+\begin{itemize}[noitemsep]
+  \item Architected hybrid cloud solution balancing Azure services with on-premise infrastructure
+  \item Implemented comprehensive monitoring and alerting system
+  \item Documented infrastructure setup and created runbooks for incident response
+\end{itemize}
+
+\subsection{Microservices Migration - Senior Material}
+\textbf{Spring Boot, RESTful APIs, PostgreSQL, Documentation}
+\begin{itemize}[noitemsep]
+  \item Led technical coordination for application modernization project
+  \item Created comprehensive documentation and training materials
+  \item Facilitated knowledge transfer between international teams
+\end{itemize}
+
+\subsection{Cloud API Platform}
+\textbf{Azure, Spring Boot, MySQL, Heroku}
+\begin{itemize}[noitemsep]
+  \item Built weather tracking application with cloud deployment
+  \item Implemented caching mechanisms for optimized performance
+  \item Demo: \href{https://weather.bluehawana.com}{weather.bluehawana.com}
+\end{itemize}
+
+\vspace{6pt}
+\section*{Education}
+\textbf{IT Högskolan}\\
+\textit{Bachelor's Degree in .NET Cloud Development} | 2021-2023\\
+\textbf{Mölndal Campus}\\
+\textit{Bachelor's Degree in Java Integration} | 2019-2021\\
+\textbf{University of Gothenburg}\\
+\textit{Master's Degree in International Business and Trade} | 2016-2019\\
+
+\vspace{6pt}
+\section*{Certifications}
+\begin{itemize}[noitemsep]
+\item AWS Certified Solutions Architect - Associate (Aug 2022)
+\item Microsoft Certified: Azure Fundamentals (Jun 2022)
+\item AWS Certified Developer - Associate (Nov 2022)
+\end{itemize}
+
+\vspace{6pt}
+\section*{Additional Information}
+\begin{itemize}[noitemsep]
+\item \textbf{Languages:} Fluent in English and Mandarin Chinese, Swedish (B2 level)
+\item \textbf{Interests:} Sustainable technology, electric vehicles, cloud architecture optimization
+\item \textbf{Soft Skills:} Customer service excellence, cross-cultural communication, problem-solving
+\item \textbf{Availability:} Ready for on-call support responsibilities as required
+\item \textbf{Location:} Based in Gothenburg, Sweden with valid work permit
+\end{itemize}
+
+\end{document}

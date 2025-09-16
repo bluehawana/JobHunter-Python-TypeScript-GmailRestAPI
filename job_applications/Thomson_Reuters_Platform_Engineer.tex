@@ -1,0 +1,163 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fontawesome}
+
+% Page setup
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightgray}{RGB}{128,128,128}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    urlcolor=darkblue,
+    citecolor=darkblue
+}
+
+% Section formatting
+\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+% Custom commands
+\newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+
+\begin{document}
+\pagestyle{empty} % no page number
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{Platform Engineer / Infrastructure Specialist}}\\[10pt]
+\textcolor{darkblue}{\href{mailto:hongzhili01@google.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\end{center}
+
+% Personal Profile
+\section*{Profile Summary}
+Platform Engineer with 5+ years of software development experience, currently specializing in infrastructure and developer platform optimization at ECARX. Proven expertise in building and maintaining Kubernetes-based platforms, Infrastructure as Code (IaC), and hybrid cloud environments. Successfully led Azure AKS to on-premise migration achieving 3.5x performance improvements while implementing comprehensive monitoring and toolchain solutions. Strong background in DevOps culture, microservices ecosystems, and enabling engineering productivity through self-service platforms. Passionate about accelerating developer workflows, reducing cognitive overhead, and implementing best practices that enable teams to ship code quickly and reliably.
+
+% Areas of Expertise
+\section*{Core Technical Skills}
+\begin{itemize}[noitemsep]
+\item \textbf{Platform Engineering:} Kubernetes, Docker, Infrastructure as Code (IaC), hybrid cloud platforms
+\item \textbf{Cloud Infrastructure:} Azure (AKS, DevOps, App Services), AWS, hybrid cloud architectures
+\item \textbf{Monitoring \& Observability:} Prometheus, Grafana, logging systems, metrics, traces, alerts
+\item \textbf{DevOps \& CI/CD:} GitLab CI/CD, Azure DevOps, automated pipelines, deployment automation
+\item \textbf{Development:} Python, Java, JavaScript, C\#, Spring Boot, microservices architecture
+\item \textbf{Toolchain Development:} Developer tooling, self-service platforms, productivity automation
+\item \textbf{Documentation:} Technical writing, best practices documentation, knowledge sharing
+\item \textbf{Collaboration:} Code reviews, pair programming, design discussions, cross-team coordination
+\item \textbf{Performance Optimization:} System tuning, scalability improvements, reliability engineering
+\item \textbf{Languages:} Fluent English and Mandarin Chinese, Swedish (B2 level)
+\end{itemize}
+
+% Experience
+\section*{Professional Experience}
+\subsection*{ECARX Sweden AB | Senior Infrastructure \& Performance Engineering Specialist}
+\textit{October 2024 - Present | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Leading platform engineering initiatives for hybrid cloud infrastructure, achieving 3.5x performance improvements in developer build times
+\item Building and maintaining Kubernetes-based platforms supporting global development teams across multiple regions
+\item Implementing Infrastructure as Code (IaC) practices for scalable, reproducible infrastructure deployment
+\item Developing self-service toolchains enabling developers to deploy from zero to production with minimal cognitive overhead
+\item Establishing comprehensive monitoring and observability stack using Prometheus/Grafana for logs, metrics, traces, and alerts
+\item Driving engineering productivity by providing guidance, best practices, and working closely with product teams
+\item Creating documentation and gradually promoting best practices across 15+ development teams
+\item Mentoring engineers on platform optimization, code reviews, and architectural decisions
+\end{itemize}
+
+\subsection*{Synteda | Platform \& Infrastructure Specialist (Freelance)}
+\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Designed and implemented Azure-based platform solutions for multiple client projects
+\item Built CI/CD pipelines and deployment automation reducing time-to-production for development teams
+\item Implemented containerized applications using Docker and Kubernetes for scalable platform deployment
+\item Created developer tooling and documentation to improve engineering productivity and reduce deployment complexity
+\end{itemize}
+
+\subsection*{Senior Material (Europe) AB | Platform Architect \& DevOps Engineer}
+\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\begin{itemize}[noitemsep]
+\item Led platform transformation initiative migrating monolithic applications to microservices architecture
+\item Implemented DevOps practices including automated testing, continuous integration, and deployment pipelines
+\item Built developer tools and processes enabling faster, more reliable software delivery
+\item Collaborated with international teams to establish platform standards and best practices
+\item Created comprehensive technical documentation for platform usage and development workflows
+\end{itemize}
+
+\subsection*{IT-Högskolan | DevOps Platform Support (Part-time)}
+\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Supported platform infrastructure for development teams using modern DevOps practices
+\item Implemented automated deployment pipelines and platform tooling for microservices applications
+\item Assisted in establishing platform engineering practices and developer productivity improvements
+\end{itemize}
+
+\section*{Platform Engineering Projects}
+
+\subsection{Hybrid Cloud Platform Migration}
+\textbf{Kubernetes, Azure AKS, Infrastructure as Code, Monitoring}
+\begin{itemize}[noitemsep]
+  \item Architected hybrid cloud platform combining Azure AKS with on-premise Kubernetes infrastructure
+  \item Implemented comprehensive observability stack with Prometheus, Grafana, and centralized logging
+  \item Built self-service deployment tools enabling developers to manage services across multiple environments
+  \item Achieved 3.5x performance improvement while maintaining 99.97\% platform reliability
+\end{itemize}
+
+\subsection{Developer Productivity Platform}
+\textbf{CI/CD, Automation, Toolchain Development, Documentation}
+\begin{itemize}[noitemsep]
+  \item Created self-service platform enabling zero-to-production deployments with minimal configuration
+  \item Built automated toolchains for testing, building, and deploying microservices applications
+  \item Implemented comprehensive documentation and best practices for developer onboarding
+  \item Reduced average deployment time from hours to minutes through platform automation
+\end{itemize}
+
+\subsection{Multi-Regional Platform Architecture}
+\textbf{Microservices, Global Infrastructure, Performance Optimization}
+\begin{itemize}[noitemsep]
+  \item Designed platform architecture supporting multi-regional deployment and data locality
+  \item Implemented performance monitoring and optimization across global infrastructure
+  \item Built tooling for managing services across different geographical regions
+  \item Demo: \href{https://weather.bluehawana.com}{weather.bluehawana.com}
+\end{itemize}
+
+\vspace{6pt}
+\section*{Education}
+\textbf{IT Högskolan}\\
+\textit{Bachelor's Degree in .NET Cloud Development} | 2021-2023\\
+Focus: Cloud Platforms, DevOps, Infrastructure Engineering\\
+\textbf{Mölndal Campus}\\
+\textit{Bachelor's Degree in Java Integration} | 2019-2021\\
+Focus: Software Development, Platform Architecture, Microservices\\
+\textbf{University of Gothenburg}\\
+\textit{Master's Degree in International Business and Trade} | 2016-2019\\
+
+\vspace{6pt}
+\section*{Certifications}
+\begin{itemize}[noitemsep]
+\item AWS Certified Solutions Architect - Associate (Aug 2022)
+\item Microsoft Certified: Azure Fundamentals (Jun 2022)
+\item AWS Certified Developer - Associate (Nov 2022)
+\end{itemize}
+
+\vspace{6pt}
+\section*{Additional Information}
+\begin{itemize}[noitemsep]
+\item \textbf{Platform Philosophy:} Passionate about enabling developers through automation and self-service tooling
+\item \textbf{DevOps Culture:} Strong advocate for code reviews, pair programming, and collaborative development
+\item \textbf{Technical Innovation:} Continuously exploring new platform technologies and engineering practices
+\item \textbf{Knowledge Sharing:} Active in documenting and promoting platform engineering best practices
+\item \textbf{Global Collaboration:} Experience working with distributed teams across multiple time zones
+\item \textbf{Problem Solving:} Enjoy tackling complex infrastructure challenges requiring tight team collaboration
+\end{itemize}
+
+\end{document}

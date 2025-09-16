@@ -1,0 +1,175 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fontawesome}
+
+% Page setup
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightgray}{RGB}{128,128,128}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    urlcolor=darkblue,
+    citecolor=darkblue
+}
+
+% Section formatting
+\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+% Custom commands
+\newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+
+\begin{document}
+\pagestyle{empty} % no page number
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{Integration Architect / Cloud Solutions Engineer}}\\[10pt]
+\textcolor{darkblue}{\href{mailto:hongzhili01@google.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\end{center}
+
+% Personal Profile
+\section*{Profile Summary}
+Integration Architect with unique dual industry expertise combining 5+ years of IT experience in automotive sector with prior corporate finance and banking background. Currently leading Azure infrastructure transformation at ECARX in the automotive sector, achieving 3.5x performance improvements through strategic architectural decisions. Previous experience as Corporate Finance Specialist and Marketing Manager in Chinese banking industry provides deep understanding of financial workflows, regulatory requirements, and banking operations. This rare combination of automotive technology and financial services experience positions me uniquely for Volvo Financial Services, understanding both the technical complexity of automotive systems and the business criticality of financial operations. Proven expertise in microservices architecture, event-driven patterns, and API gateway implementations with hands-on experience in Azure Functions integrated with Kafka for building serverless applications.
+
+% Areas of Expertise
+\section*{Core Technical Skills}
+\begin{itemize}[noitemsep]
+\item \textbf{Azure Integration:} Azure Functions, Logic Apps, API Management, Service Bus, Event Grid
+\item \textbf{Event Streaming:} Apache Kafka with Azure Functions (triggers and bindings), event-driven architectures
+\item \textbf{Architectural Patterns:} Microservices, Event-driven, Serverless, API Gateway, RESTful APIs
+\item \textbf{Cloud Platforms:} Azure (AKS, DevOps, App Services, Storage, Networking, Security), AWS, Hybrid Cloud
+\item \textbf{Development:} Python, Java, C\#, JavaScript, Spring Boot, .NET Core
+\item \textbf{DevOps \& CI/CD:} Azure DevOps, GitLab CI/CD, Docker, Kubernetes, Infrastructure as Code
+\item \textbf{Databases:} Azure SQL, PostgreSQL, MySQL, MongoDB, CosmosDB
+\item \textbf{Monitoring:} Prometheus, Grafana, Azure Monitor, Application Insights
+\item \textbf{Security:} OAuth2, JWT, Azure AD, API security best practices
+\item \textbf{Languages:} Fluent English and Mandarin Chinese, Swedish (B2 level)
+\end{itemize}
+
+% Experience
+\section*{Professional Experience}
+\subsection*{ECARX Sweden AB | Senior Infrastructure \& Performance Engineering Specialist}
+\textit{October 2024 - Present | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Architecting Azure-based integration solutions for automotive platforms, implementing event-driven patterns with Kafka and Azure Functions
+\item Leading Azure AKS to hybrid cloud migration, designing scalable integration architecture supporting global operations
+\item Implementing serverless applications using Azure Functions with Kafka triggers and bindings for real-time event processing
+\item Designing microservices architecture with API gateway patterns for secure, scalable service integration
+\item Establishing monitoring and observability practices using Prometheus/Grafana integrated with Azure Monitor
+\item Mentoring engineering teams on Azure best practices, integration patterns, and architectural decisions
+\item Collaborating with cross-functional teams to ensure adherence to architectural standards and design principles
+\end{itemize}
+
+\subsection*{Synteda | Azure Integration Specialist (Freelance)}
+\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Designed and implemented Azure-based integration solutions using Azure Functions and Logic Apps
+\item Built event-driven architectures connecting multiple systems through Azure Service Bus and Event Grid
+\item Developed RESTful APIs with Azure API Management for secure, scalable service exposure
+\item Implemented serverless computing patterns for cost-effective, scalable solutions
+\item Integrated Azure Functions with external event streams for real-time data processing
+\end{itemize}
+
+\subsection*{Senior Material (Europe) AB | Platform Architect \& Integration Lead}
+\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\begin{itemize}[noitemsep]
+\item Led microservices architecture transformation, designing integration patterns for distributed systems
+\item Implemented API-first approach using Spring Boot and RESTful services for system integration
+\item Designed secure API gateway architecture for managing external and internal service communications
+\item Coordinated with international teams, ensuring integration solutions met global scalability requirements
+\item Created comprehensive technical documentation for integration patterns and architectural decisions
+\end{itemize}
+
+\subsection*{IT-Högskolan | DevOps Integration Support (Part-time)}
+\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Supported cloud integration initiatives using Azure services and CI/CD pipelines
+\item Implemented automated deployment pipelines for microservices architectures
+\item Assisted in API development and integration patterns for distributed systems
+\end{itemize}
+
+\subsection*{Banking Industry China | Corporate Finance Specialist \& Marketing Manager}
+\textit{2014 - 2018 | China}
+\begin{itemize}[noitemsep]
+\item Managed corporate finance operations including loan processing, credit analysis, and risk assessment
+\item Designed financial workflows and process optimization for banking operations
+\item Led digital transformation initiatives for banking services and customer relationship management
+\item Coordinated between IT and business teams for financial system implementations
+\item Developed deep understanding of financial regulations, compliance requirements, and banking operations
+\item Managed marketing strategies for financial products, understanding customer needs in financial services
+\end{itemize}
+
+\section*{Integration Architecture Projects}
+
+\subsection{Event-Driven Architecture with Kafka and Azure Functions}
+\textbf{Azure Functions, Apache Kafka, Event Streaming, Serverless}
+\begin{itemize}[noitemsep]
+  \item Designed serverless event processing system using Azure Functions with Kafka triggers and bindings
+  \item Implemented real-time data streaming pipeline processing automotive telemetry data
+  \item Built scalable, cost-effective solution handling millions of events daily with automatic scaling
+  \item Integrated with Azure Monitor for comprehensive observability and alerting
+\end{itemize}
+
+\subsection{Hybrid Cloud Integration Platform}
+\textbf{Azure, Microservices, API Gateway, Security}
+\begin{itemize}[noitemsep]
+  \item Architected hybrid cloud integration platform connecting on-premise and Azure resources
+  \item Implemented API gateway pattern using Azure API Management for secure service exposure
+  \item Designed authentication and authorization using Azure AD and OAuth2
+  \item Achieved 99.97\% uptime with comprehensive monitoring and fault tolerance
+\end{itemize}
+
+\subsection{Global Microservices Architecture}
+\textbf{Spring Boot, Docker, Kubernetes, RESTful APIs}
+\begin{itemize}[noitemsep]
+  \item Designed distributed microservices architecture supporting global operations
+  \item Implemented service mesh patterns for inter-service communication
+  \item Built comprehensive API documentation and integration guidelines
+  \item Demo: \href{https://weather.bluehawana.com}{weather.bluehawana.com}
+\end{itemize}
+
+\vspace{6pt}
+\section*{Education}
+\textbf{IT Högskolan}\\
+\textit{Bachelor's Degree in .NET Cloud Development} | 2021-2023\\
+Focus: Cloud Architecture, Integration Patterns, Distributed Systems\\
+\textbf{Mölndal Campus}\\
+\textit{Bachelor's Degree in Java Integration} | 2019-2021\\
+Focus: Enterprise Integration, API Development, Microservices\\
+\textbf{University of Gothenburg}\\
+\textit{Master's Degree in International Business and Trade} | 2016-2019\\
+
+\vspace{6pt}
+\section*{Certifications}
+\begin{itemize}[noitemsep]
+\item AWS Certified Solutions Architect - Associate (Aug 2022)
+\item Microsoft Certified: Azure Fundamentals (Jun 2022)
+\item AWS Certified Developer - Associate (Nov 2022)
+\end{itemize}
+
+\vspace{6pt}
+\section*{Additional Information}
+\begin{itemize}[noitemsep]
+\item \textbf{Dual Industry Expertise:} Rare combination of automotive technology and financial services experience
+\item \textbf{Technical Interests:} Event-driven architectures, serverless computing, cloud-native patterns
+\item \textbf{Business Domain Knowledge:} Deep understanding of both automotive systems and financial operations
+\item \textbf{Open Source:} Active contributor to integration and cloud-native projects
+\item \textbf{Mentorship:} Experience providing technical guidance and architectural reviews
+\item \textbf{Global Collaboration:} Proven ability to work with distributed teams across time zones
+\item \textbf{Cross-Industry Insights:} Ability to apply automotive innovation patterns to financial services
+\end{itemize}
+
+\end{document}

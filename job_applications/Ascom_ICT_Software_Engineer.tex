@@ -1,0 +1,172 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fontawesome}
+
+% Page setup
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightgray}{RGB}{128,128,128}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    urlcolor=darkblue,
+    citecolor=darkblue
+}
+
+% Section formatting
+\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+% Custom commands
+\newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+
+\begin{document}
+\pagestyle{empty} % no page number
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{ICT Software Engineer / Application Management Specialist}}\\[10pt]
+\textcolor{darkblue}{\href{mailto:hongzhili01@google.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\end{center}
+
+% Personal Profile
+\section*{Profile Summary}
+ICT Software Engineer with 5+ years of experience in enterprise application management and .NET/C\# development. Currently managing mission-critical infrastructure at ECARX, ensuring production reliability while driving continuous improvements. Proven expertise in application lifecycle management, incident/problem resolution, and seamless integration of complex systems. Strong background in SQL optimization, test automation, and agile practices with demonstrated success in translating business requirements into stable, supportable solutions. Passionate about maintaining application health, security, and reliability while enabling incremental enhancements that deliver real user value.
+
+% Areas of Expertise
+\section*{Core Technical Skills}
+\begin{itemize}[noitemsep]
+\item \textbf{Application Management:} Production operations, incident/problem management, release planning, patching
+\item \textbf{Development:} C\#/.NET Framework, ASP.NET, RESTful APIs, SQL Server, stored procedures, performance tuning
+\item \textbf{SDLC \& Quality:} Agile methodologies, test-driven development, functional/non-functional testing, documentation
+\item \textbf{Enterprise Applications:} Web frameworks, system integration, troubleshooting, debugging in production
+\item \textbf{Monitoring \& Reliability:} Application monitoring, log analysis, performance optimization, rollback planning
+\item \textbf{Database Management:} Microsoft SQL Server, query optimization, data integration, database maintenance
+\item \textbf{DevOps Practices:} CI/CD, automated testing, DEV/TEST/PROD environments, change management
+\item \textbf{Collaboration:} Cross-functional coordination, vendor management, stakeholder communication, requirement translation
+\item \textbf{Documentation:} Technical specifications, operational procedures, user guides, knowledge base maintenance
+\item \textbf{Languages:} Fluent English and Mandarin Chinese, Swedish (B2 level)
+\end{itemize}
+
+% Experience
+\section*{Professional Experience}
+\subsection*{ECARX Sweden AB | Senior Infrastructure \& Performance Engineering Specialist}
+\textit{October 2024 - Present | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Managing application lifecycle for production systems, handling incident/problem management with 99.97\% uptime
+\item Implementing change management processes with clear specifications, complete documentation, and rollback plans
+\item Building verification plans and test automation frameworks ensuring clean deployments across DEV/TEST/PROD environments
+\item Optimizing SQL queries and database performance for business-critical workflows, reducing response times by 65\%
+\item Coordinating with vendors and cross-functional stakeholders to deliver reliable, supportable solutions
+\item Creating comprehensive documentation for operational procedures, deployment guides, and troubleshooting playbooks
+\item Gathering user feedback and converting insights into actionable backlog items for continuous improvement
+\item Maintaining application security and compliance through regular patching and vulnerability assessments
+\end{itemize}
+
+\subsection*{Synteda | Application Developer \& Integration Specialist (Freelance)}
+\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Developed and maintained enterprise applications using C\#/.NET and SQL Server
+\item Integrated multiple systems into fully working solutions with seamless data flow
+\item Implemented automated testing strategies reducing production incidents by 40\%
+\item Provided application support including log analysis, incident triage, and production debugging
+\end{itemize}
+
+\subsection*{IT-Högskolan | DevOps Support (Part-time)}
+\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Supported enterprise application deployment and maintenance using .NET technologies
+\item Assisted in incident management and problem resolution for web applications
+\item Created documentation for application support procedures and user training materials
+\item Implemented monitoring solutions for proactive issue detection and resolution
+\end{itemize}
+
+\subsection*{Senior Material (Europe) AB | Platform Architect \& Application Manager}
+\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\begin{itemize}[noitemsep]
+\item Managed application lifecycle for business-critical systems supporting international operations
+\item Translated business requirements into technical specifications and maintainable solutions
+\item Coordinated release planning and deployment activities minimizing risk and downtime
+\item Established test automation practices improving application reliability and supportability
+\item Collaborated with stakeholders to prioritize enhancements based on user feedback and business value
+\end{itemize}
+
+\subsection*{Pembio AB | Software Developer}
+\textit{October 2020 - September 2021 | Lund, Sweden}
+\begin{itemize}[noitemsep]
+\item Developed web applications using C\#/.NET and SQL Server for e-commerce platform
+\item Implemented RESTful APIs and database integrations for seamless system connectivity
+\item Participated in agile development processes with focus on test-driven development
+\item Created technical documentation and maintained knowledge base for application support
+\end{itemize}
+
+\section*{Key Application Management Projects}
+
+\subsection{Production System Reliability Enhancement}
+\textbf{C\#/.NET, SQL Server, Monitoring, Incident Management}
+\begin{itemize}[noitemsep]
+  \item Architected comprehensive monitoring and alerting system for critical applications
+  \item Implemented automated incident response procedures reducing MTTR by 65\%
+  \item Created rollback plans and disaster recovery procedures ensuring business continuity
+  \item Achieved 99.97\% application uptime through proactive maintenance and optimization
+\end{itemize}
+
+\subsection{Enterprise Application Integration}
+\textbf{System Integration, APIs, Data Management, Testing}
+\begin{itemize}[noitemsep]
+  \item Integrated multiple enterprise applications into cohesive business workflow
+  \item Developed comprehensive test automation suite covering functional and non-functional requirements
+  \item Optimized database queries and stored procedures improving performance by 3.5x
+  \item Created complete documentation for system architecture and operational procedures
+\end{itemize}
+
+\subsection{Application Modernization Initiative}
+\textbf{.NET Migration, SQL Optimization, User Experience}
+\begin{itemize}[noitemsep]
+  \item Led application lifecycle management for legacy system modernization
+  \item Gathered and analyzed user feedback to prioritize enhancement backlog
+  \item Implemented incremental improvements maintaining stability while adding new features
+  \item Demo: \href{https://weather.bluehawana.com}{weather.bluehawana.com}
+\end{itemize}
+
+\vspace{6pt}
+\section*{Education}
+\textbf{IT Högskolan}\\
+\textit{Bachelor's Degree in .NET Cloud Development} | 2021-2023\\
+Focus: Application Development, Database Management, Software Engineering\\
+\textbf{Mölndal Campus}\\
+\textit{Bachelor's Degree in Java Integration} | 2019-2021\\
+Focus: Enterprise Applications, System Integration, Web Technologies\\
+\textbf{University of Gothenburg}\\
+\textit{Master's Degree in International Business and Trade} | 2016-2019\\
+
+\vspace{6pt}
+\section*{Certifications}
+\begin{itemize}[noitemsep]
+\item AWS Certified Solutions Architect - Associate (Aug 2022)
+\item Microsoft Certified: Azure Fundamentals (Jun 2022)
+\item AWS Certified Developer - Associate (Nov 2022)
+\end{itemize}
+
+\vspace{6pt}
+\section*{Additional Information}
+\begin{itemize}[noitemsep]
+\item \textbf{Quality Mindset:} Strong focus on test-driven development and comprehensive documentation
+\item \textbf{Continuous Improvement:} Passionate about incremental enhancements and user satisfaction
+\item \textbf{Problem Solving:} Skilled at troubleshooting complex issues across application/database/interfaces
+\item \textbf{Communication:} Experienced in explaining complex technical issues clearly to stakeholders
+\item \textbf{Reliability Focus:} Committed to building stable, supportable solutions that stand up in production
+\end{itemize}
+
+\end{document}
