@@ -1,0 +1,66 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Define colors
+\definecolor{darkblue}{RGB}{0,51,102}
+
+% Section formatting
+\titleformat{\section}{\large\bfseries\raggedright\color{black}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}[runin]{\bfseries}{}{0em}{}[:]
+
+% Remove paragraph indentation
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\pagestyle{empty} % no page number
+
+\begin{letter}{\color{darkblue}
+Thomson Reuters - Pagero AB\\
+Platform Engineering Team\\
+Västra Hamngatan 1\\
+SE-411 17 Gothenburg, Sweden}
+
+\vspace{30pt}
+
+\opening{Dear Hiring Manager,}
+
+\vspace{8pt}
+
+I am excited to apply for the Platform Engineer position at Thomson Reuters - Pagero. Your vision of providing a self-service platform where product teams can develop, manage, and monitor their services aligns perfectly with my passion for accelerating engineering productivity through innovative tooling and infrastructure automation.
+
+What makes me particularly suited for this role is my hands-on experience building platforms that enable developers to ship code quickly and reliably. At ECARX, I've led a comprehensive platform transformation including Azure AKS to hybrid cloud migration, achieving 3.5x performance improvements while building self-service toolchains that reduce cognitive overhead for our 15+ development teams. I've implemented the exact type of observability stack you're looking for—Prometheus/Grafana for metrics, centralized logging, distributed tracing, and intelligent alerting that gives developers relevant information about their systems.
+
+Your focus on hybrid cloud environments and multi-regional support resonates with my current work. I've architected platforms that support global operations, implementing Infrastructure as Code practices that enable teams to adapt their services for multi-regional data locality and processing. My approach to platform engineering centers on abstracting developer intent from implementation details—creating that crucial path from zero to production that your team envisions.
+
+The collaborative culture at Pagero excites me greatly. I thrive in environments where code reviews, pair programming, and design discussions are natural ways to share knowledge. Currently, I work across diverse technical ecosystems and enjoy exploring new technologies while documenting and promoting best practices. My experience spans multiple software ecosystems, from automotive embedded systems to cloud-native microservices, giving me the adaptability to tackle complex problems requiring tight collaboration with product teams.
+
+I'm eager to bring my platform engineering expertise to Thomson Reuters - Pagero, contributing to your mission of building the world's largest open business network while enabling your 100+ engineers to focus on what they build best—innovative solutions that help customers navigate global business complexity.
+
+\vspace{10pt}
+
+\closing{
+Sincerely,\\
+\vspace{15pt}
+Harvad (Hongzhi) Li
+}
+
+\vspace{20pt}
+
+{\color{darkblue}\rule{\linewidth}{0.6pt}}
+\vspace{4pt}
+
+{\color{darkblue}
+Ebbe Lieberathsgatan 27\\
+412 65 Göteborg, Sweden\\
+hongzhili01@gmail.com | 0728384299\\
+LinkedIn: \href{https://www.linkedin.com/in/hzl/}{linkedin.com/in/hzl} | GitHub: \href{https://github.com/bluehawana}{github.com/bluehawana}
+}
+
+\end{letter}
+
+\end{document}
