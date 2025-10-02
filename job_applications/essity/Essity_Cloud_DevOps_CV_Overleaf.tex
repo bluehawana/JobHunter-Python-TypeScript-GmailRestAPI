@@ -1,0 +1,168 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fontawesome}
+
+% Page setup
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightgray}{RGB}{128,128,128}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    urlcolor=darkblue,
+    citecolor=darkblue
+}
+
+% Section formatting
+\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+% Custom commands
+\newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+
+\begin{document}
+\pagestyle{empty} % no page number
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{Cloud DevOps Engineer \& Site Reliability Specialist}}\\[10pt]
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728 384 299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\end{center}
+
+% Personal Profile
+\section*{Profile Summary}
+Cloud DevOps Engineer with 5+ years of hands-on expertise in Azure, AWS, and GCP cloud platforms. Proven track record in site reliability engineering, DevOps, and DevSecOps practices within multinational organizations. Currently serving as IT/Infrastructure Specialist at ECARX Sweden AB, leading infrastructure optimization projects including Azure AKS to on-premise HPC migration achieving 259\% performance improvement (3.59x faster than Azure HB120rs\_v3 flagship VM) while reducing costs by 40\%. Architected 4-node Dell HPC cluster with Kubernetes, achieving record-breaking 7m47s Android AOSP 15 builds through CPU/memory/I/O tuning. Strong software development background in Python, C\#, and Go with high expertise in Docker, Terraform, Azure DevOps pipelines, Helm Charts, and multi-staging CI/CD deployments. AWS and Azure certified with passion for sustainable technology and climate-neutral initiatives.
+
+% Areas of Expertise
+\section*{Core Technical Skills}
+\begin{itemize}[noitemsep]
+\item \textbf{Cloud Platforms (5+ years):} Microsoft Azure (primary - App Services, Functions, SQL Database, DevOps, AKS), AWS (EC2, Lambda, S3), GCP; Multi-cloud architecture and migration
+\item \textbf{DevOps Toolchains:} Docker, Terraform (IaC), Azure DevOps, Git, Helm Charts, Kubernetes (AKS/EKS/GKE)
+\item \textbf{CI/CD Expertise:} Azure DevOps Pipelines (multi-staging), GitHub Actions, GitLab CI, Jenkins; Automated testing and deployment
+\item \textbf{Programming Languages:} Python, C\#/.NET, Go, Bash/PowerShell, JavaScript; Infrastructure automation and tooling
+\item \textbf{Site Reliability Engineering:} Prometheus, Grafana, System monitoring, Performance optimization, Incident response
+\item \textbf{DevSecOps:} Security scanning, Vulnerability management, Compliance automation, Secret management
+\item \textbf{Container Orchestration:} Kubernetes, Azure Kubernetes Service (AKS), Docker Swarm, Container security
+\item \textbf{Databases:} Azure SQL Database, PostgreSQL, MySQL, MongoDB, Azure Cosmos DB, Database performance tuning
+\item \textbf{Network \& Security:} Multi/hybrid cloud connectivity, VPN, SSL/TLS, OAuth2, JWT, Cyber Security compliance
+\item \textbf{Performance \& Optimization:} HPC infrastructure, system-level optimization, load balancing, caching strategies
+\end{itemize}
+
+% Experience
+\section*{Professional Experience}
+
+\subsection*{ECARX Sweden AB | IT/Infrastructure Specialist}
+\textit{October 2024 - Present | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item \textbf{HPC Infrastructure Leadership:} Led Azure AKS to on-premise HPC migration, architecting 4-node Dell HPC cluster achieving 259\% performance improvement (3.59x faster) compared to Azure HB120rs\_v3 flagship VM while reducing operational costs by 40\%
+\item \textbf{Performance Engineering:} Achieved record-breaking 7 minutes 47 seconds Android AOSP 15 clean builds through systematic CPU/memory/I/O tuning, build cache optimization, and targeted parallelization strategies
+\item \textbf{Monitoring \& Observability:} Deployed comprehensive monitoring stack using Prometheus, Grafana, Loki, and Alertmanager for real-time infrastructure observability with SLO-driven capacity planning and proactive alerting
+\item \textbf{DevOps Excellence:} Implementing CI/CD pipelines with GitLab Runner, achieving 25\% improvement in pipeline execution times through infrastructure automation and containerization
+\item \textbf{Infrastructure as Code:} Implementing Terraform modules for automated infrastructure provisioning, disaster recovery, and multi-environment deployments
+\item \textbf{Multi-staging Pipelines:} Designed Azure DevOps multi-staging CI/CD pipelines with dev, staging, and production environments including security scanning and compliance checks
+\item \textbf{Hybrid Cloud Architecture:} Architected pragmatic hybrid approach combining AKS for elasticity with on-premise HPC for cost/performance-critical workloads
+\item \textbf{Technical Leadership:} Providing architectural guidance and DevOps best practices to cross-functional teams including hardware engineers, visualization specialists, and development teams
+\end{itemize}
+
+\subsection*{Synteda | Azure Fullstack Developer \& Integration Specialist (Contract)}
+\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Developed cloud-native applications deployed on Azure infrastructure using C\# and .NET Core
+\item Built RESTful APIs and microservices architecture with Azure Functions and App Services
+\item Implemented Azure SQL Database with optimized performance and automated backups
+\item Created CI/CD pipelines using Azure DevOps with automated testing and deployment
+\item Integrated Docker containerization for consistent deployment across environments
+\end{itemize}
+
+\subsection*{IT-Högskolan | Backend Developer (Part-time)}
+\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Migrated legacy applications to microservices architecture on Azure with Docker containerization
+\item Developed RESTful APIs using Spring Boot with comprehensive testing and documentation
+\item Implemented automated tests and CI/CD pipelines for continuous delivery
+\item Collaborated with UI/UX designers ensuring seamless frontend-backend integration
+\end{itemize}
+
+\subsection*{Senior Material (Europe) AB | Platform Architect \& Project Coordinator}
+\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\begin{itemize}[noitemsep]
+\item Led cloud transformation initiative migrating monolithic applications to microservices on Azure
+\item Architected scalable solutions using Spring Boot backend with Docker and Kubernetes
+\item Designed RESTful APIs with Azure API Management for global deployment
+\item Implemented infrastructure as code practices and DevOps automation
+\item Collaborated with cross-functional teams ensuring security and compliance standards
+\end{itemize}
+
+\section*{Selected DevOps \& Cloud Projects}
+
+\subsection{HPC Infrastructure: Azure to On-Premise Migration}
+\textbf{Dell HPC Cluster, Kubernetes, Terraform, Prometheus, Grafana, Loki, Alertmanager}
+\begin{itemize}[noitemsep]
+\item Architected and deployed 4-node Dell HPC cluster with Kubernetes, achieving 259\% performance improvement (3.59x) over Azure HB120rs\_v3 flagship VM
+\item Systematic performance tuning: CPU affinity optimization, memory bandwidth maximization, I/O subsystem tuning, and NUMA-aware scheduling
+\item Implemented comprehensive observability stack (Prometheus/Grafana/Loki/Alertmanager) with SLO-driven capacity planning
+\item Reduced operational costs by 40\% while delivering superior performance for automotive development workloads
+\end{itemize}
+
+\subsection{Azure DevOps Multi-Stage Pipeline Implementation}
+\textbf{Azure DevOps, Terraform, Helm Charts, Docker, C\#, Python}
+\begin{itemize}[noitemsep]
+\item Designed and implemented multi-staging CI/CD pipeline with dev, staging, and production environments
+\item Automated infrastructure provisioning using Terraform modules and Helm Charts for Kubernetes deployments
+\item Integrated security scanning, automated testing, and compliance checks into deployment pipeline
+\item Achieved zero-downtime deployments with blue-green deployment strategy
+\end{itemize}
+
+\subsection{Cloud-Native Job Automation Platform}
+\textbf{Python, Azure, AWS, Docker, GitHub Actions, REST APIs}
+\begin{itemize}[noitemsep]
+\item Built automated job hunting pipeline with Gmail API integration and NLP-based resume customization
+\item Deployed on Azure with CI/CD automation using GitHub Actions and Docker containers
+\item Implemented monitoring and alerting for system reliability and performance optimization
+\item Demo: \href{https://jobs.bluehawana.com}{jobs.bluehawana.com}
+\end{itemize}
+
+\subsection{Multi-Cloud Weather Tracking Application}
+\textbf{Spring Boot, Alibaba Cloud ECS, Azure, MySQL, Terraform, Docker}
+\begin{itemize}[noitemsep]
+\item Weather tracking application deployed across multiple cloud providers for high availability
+\item Infrastructure as Code using Terraform for automated provisioning and disaster recovery
+\item Integrated with OpenCageData and Open-Meteo APIs for real-time weather data
+\item Demo: \href{https://weather.bluehawana.com}{weather.bluehawana.com}
+\end{itemize}
+
+\section*{Education}
+\textbf{IT Högskolan} - Bachelor's Degree in .NET Cloud Development | 2021-2023\\
+\textbf{Mölndal Campus} - Bachelor's Degree in Java Integration | 2019-2021\\
+\textbf{University of Gothenburg} - Master's Degree in International Business | 2016-2019
+
+\section*{Cloud Certifications}
+\begin{itemize}[noitemsep]
+\item AWS Certified Solutions Architect - Associate (Aug 2022)
+\item AWS Certified Developer - Associate (Nov 2022)
+\item Microsoft Certified: Azure Fundamentals (Jun 2022)
+\item \textbf{Currently Preparing:} Azure Developer Associate (AZ-204)
+\end{itemize}
+
+\vspace{6pt}
+\section*{Additional Qualifications}
+\begin{itemize}[noitemsep]
+\item \textbf{Languages:} Fluent in English and Mandarin Chinese for effective global communication
+\item \textbf{Sustainability Focus:} Passionate about leveraging technology for environmental impact and climate-neutral solutions
+\item \textbf{Automotive Experience:} Over 1 year in automotive technology sector with infrastructure and DevOps expertise
+\item \textbf{Security Compliance:} Knowledge of cyber security best practices and regulatory compliance
+\item \textbf{Global Collaboration:} Proven ability to collaborate effectively within global distributed teams across multiple time zones
+\end{itemize}
+
+\end{document}

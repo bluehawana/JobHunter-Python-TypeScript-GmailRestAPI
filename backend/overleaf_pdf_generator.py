@@ -19,6 +19,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+
 class OverleafPDFGenerator:
     def __init__(self):
         # Cloudflare R2 credentials (if available)
@@ -26,7 +27,7 @@ class OverleafPDFGenerator:
         self.r2_secret_key = os.getenv('R2_SECRET_ACCESS_KEY')
         self.r2_bucket = os.getenv('R2_BUCKET_NAME', 'latex-temp-files')
         self.r2_endpoint = os.getenv('R2_ENDPOINT_URL')
-        
+
         # Initialize R2 client if credentials and boto3 available
         self.r2_client = None
         if HAS_BOTO3 and all([self.r2_access_key, self.r2_secret_key, self.r2_endpoint]):
@@ -37,14 +38,15 @@ class OverleafPDFGenerator:
                 aws_secret_access_key=self.r2_secret_key,
                 region_name='auto'
             )
-    
+
     def upload_to_r2(self, latex_content: str, filename: str) -> str:
         """Upload LaTeX content to Cloudflare R2 and return public URL"""
         try:
             if not self.r2_client:
-                logger.warning("R2 credentials not configured, falling back to local compilation")
+                logger.warning(
+                    "R2 credentials not configured, falling back to local compilation")
                 return None
-            
+
             # Upload to R2
             self.r2_client.put_object(
                 Bucket=self.r2_bucket,
@@ -52,49 +54,50 @@ class OverleafPDFGenerator:
                 Body=latex_content.encode('utf-8'),
                 ContentType='text/plain'
             )
-            
+
             # Return public URL
             public_url = f"https://{self.r2_bucket}.{self.r2_endpoint.replace('https://', '')}/{filename}"
             logger.info(f"✅ Uploaded LaTeX to R2: {public_url}")
             return public_url
-            
+
         except Exception as e:
             logger.error(f"❌ Failed to upload to R2: {e}")
             return None
-    
+
     def create_overleaf_pdf(self, job: Dict[str, Any], latex_content: str = "") -> bytes:
         """Generate PDF using Overleaf's compilation service"""
         try:
             # Generate LaTeX content with LEGO intelligence
             latex_template = self._generate_latex_content(job)
-            
+
             # Create unique filename
             timestamp = int(time.time())
             filename = f"resume_{timestamp}.tex"
-            
+
             # Try to upload to R2 first
             public_url = self.upload_to_r2(latex_template, filename)
-            
+
             if public_url:
                 # Use Overleaf API with public URL
                 overleaf_url = f"https://www.overleaf.com/docs?snip_uri={public_url}"
                 logger.info(f"🚀 Overleaf compilation URL: {overleaf_url}")
-                
+
                 # Unfortunately, Overleaf doesn't provide direct PDF download API
                 # But we can provide the URL for manual compilation
                 # For automation, we'll fall back to local compilation
-                logger.info("📝 Overleaf URL generated - falling back to local compilation for automation")
-                
+                logger.info(
+                    "📝 Overleaf URL generated - falling back to local compilation for automation")
+
                 # Clean up R2 file after a delay (optional)
                 # self._schedule_cleanup(filename)
-            
+
             # Fall back to local LaTeX compilation
             return self._compile_latex_locally(latex_template)
-            
+
         except Exception as e:
             logger.error(f"❌ Error in Overleaf PDF generation: {e}")
             return b""
-    
+
     def _generate_latex_content(self, job: Dict[str, Any]) -> str:
         """Generate LaTeX content with LEGO intelligence"""
         # Your exact LaTeX template
@@ -206,36 +209,42 @@ PROJECTS_PLACEHOLDER
 
 \end{document}
 """
-        
+
         # LEGO intelligence - same as before
         job_title = job.get('title', '').lower()
         job_description = job.get('description', '').lower()
         company = job.get('company', 'Company')
-        
+
         # Determine role focus
-        is_devops = any(keyword in job_title + job_description for keyword in 
-                       ['devops', 'infrastructure', 'kubernetes', 'docker', 'aws', 'cloud', 'ci/cd'])
-        is_backend = any(keyword in job_title + job_description for keyword in 
-                        ['backend', 'api', 'microservices', 'spring', 'java', 'database']) and not is_devops
-        
-        # Extract accurate company information first
-        from company_info_extractor import CompanyInfoExtractor
-        
-        extractor = CompanyInfoExtractor()
-        company_result = extractor.extract_and_validate_company_info(job)
-        
-        if company_result['success']:
-            accurate_company_name = company_result['company_info']['company_name']
-            logger.info(f"✅ Using accurate company name: {accurate_company_name}")
-        else:
+        is_devops = any(keyword in job_title + job_description for keyword in
+                        ['devops', 'infrastructure', 'kubernetes', 'docker', 'aws', 'cloud', 'ci/cd'])
+        is_backend = any(keyword in job_title + job_description for keyword in
+                         ['backend', 'api', 'microservices', 'spring', 'java', 'database']) and not is_devops
+
+        # Extract accurate company information first (optional)
+        try:
+            from company_info_extractor import CompanyInfoExtractor
+
+            extractor = CompanyInfoExtractor()
+            company_result = extractor.extract_and_validate_company_info(job)
+
+            if company_result['success']:
+                accurate_company_name = company_result['company_info']['company_name']
+                logger.info(
+                    f"✅ Using accurate company name: {accurate_company_name}")
+            else:
+                accurate_company_name = company
+                logger.warning(
+                    f"⚠️ Using fallback company name: {accurate_company_name}")
+        except Exception as e:
+            logger.warning(f"⚠️ Company extraction skipped: {e}")
             accurate_company_name = company
-            logger.warning(f"⚠️ Using fallback company name: {accurate_company_name}")
-        
+
         # LEGO role positioning
         if is_devops:
             role_title = "DevOps Engineer \\& Cloud Infrastructure Specialist"
             profile_summary = f"""Experienced DevOps Engineer and Infrastructure Specialist with over 5 years of expertise in cloud technologies, system optimization, and automated deployment pipelines. Currently serving as IT/Infrastructure Specialist at ECARX with proven track record in Kubernetes, AWS, Docker, and infrastructure automation. Specialized in infrastructure optimization roles for companies like {accurate_company_name}."""
-            
+
             skills = [
                 r"\item \textbf{Cloud Platforms:} AWS, Azure, GCP, Alibaba Cloud ECS, Infrastructure as Code",
                 r"\item \textbf{Containerization:} Docker, Kubernetes, Azure Kubernetes Service (AKS), Container Orchestration",
@@ -249,7 +258,7 @@ PROJECTS_PLACEHOLDER
         elif is_backend:
             role_title = "Backend Developer \\& API Specialist"
             profile_summary = f"""Experienced Backend Developer with over 5 years of expertise in API development, microservices architecture, and database optimization. Currently serving as IT/Infrastructure Specialist at ECARX with proven track record in Spring Boot, RESTful APIs, and scalable backend systems. Specialized in backend development roles for companies like {accurate_company_name}."""
-            
+
             skills = [
                 r"\item \textbf{Programming Languages:} Java/J2EE, C\#/.NET Core, Python, JavaScript, TypeScript, Go",
                 r"\item \textbf{Backend Frameworks:} Spring Boot, Spring MVC, .NET Core, Node.js, FastAPI, Express.js",
@@ -263,7 +272,7 @@ PROJECTS_PLACEHOLDER
         else:
             role_title = "Senior Fullstack Developer"
             profile_summary = f"""Experienced Fullstack Developer with over 5 years of hands-on experience in Java/J2EE development with modern web technologies. Currently serving as IT/Infrastructure Specialist at ECARX with proven track record in building scalable applications. Specialized in end-to-end development roles for companies like {accurate_company_name}."""
-            
+
             skills = [
                 r"\item \textbf{Programming Languages:} Java/J2EE, JavaScript, C\#/.NET Core, Python, TypeScript, Bash",
                 r"\item \textbf{Frontend Frameworks:} Angular, ReactJS, React Native, Vue.js, HTML5, CSS3",
@@ -274,7 +283,7 @@ PROJECTS_PLACEHOLDER
                 r"\item \textbf{DevOps:} Docker, Kubernetes, Jenkins, GitHub Actions, GitLab CI",
                 r"\item \textbf{Methodologies:} Agile, Scrum, Kanban, Sprint Planning, Code Reviews"
             ]
-        
+
         # Additional experience and projects (same as before)
         additional_experience = r"""
 \subsection*{IT-Högskolan | Backend Developer (Part-time)}
@@ -295,7 +304,7 @@ PROJECTS_PLACEHOLDER
 \item Participated in Agile development processes and collaborated with cross-functional teams
 \end{itemize}
 """
-        
+
         projects = r"""
 \subsection{Weather\_Anywhere.CLOUD\_API\_Encoding}
 \textit{Feb 2024 -- Present} \\
@@ -315,54 +324,63 @@ PROJECTS_PLACEHOLDER
 \item Demo: https://jobs.bluehawana.com
 \end{itemize}
 """
-        
+
         # Replace placeholders
-        latex_content = latex_content.replace("ROLE_TITLE_PLACEHOLDER", role_title)
-        latex_content = latex_content.replace("PROFILE_SUMMARY_PLACEHOLDER", profile_summary)
-        latex_content = latex_content.replace("SKILLS_PLACEHOLDER", "\n".join(skills))
-        latex_content = latex_content.replace("ADDITIONAL_EXPERIENCE_PLACEHOLDER", additional_experience)
+        latex_content = latex_content.replace(
+            "ROLE_TITLE_PLACEHOLDER", role_title)
+        latex_content = latex_content.replace(
+            "PROFILE_SUMMARY_PLACEHOLDER", profile_summary)
+        latex_content = latex_content.replace(
+            "SKILLS_PLACEHOLDER", "\n".join(skills))
+        latex_content = latex_content.replace(
+            "ADDITIONAL_EXPERIENCE_PLACEHOLDER", additional_experience)
         latex_content = latex_content.replace("PROJECTS_PLACEHOLDER", projects)
-        
+
         return latex_content
-    
+
     def _compile_latex_locally(self, latex_content: str) -> bytes:
         """Fallback: compile LaTeX locally using pdflatex"""
         try:
             import subprocess
-            
+
             with tempfile.TemporaryDirectory() as temp_dir:
                 tex_file = os.path.join(temp_dir, "resume.tex")
                 pdf_file = os.path.join(temp_dir, "resume.pdf")
-                
+
                 # Write LaTeX content
                 with open(tex_file, 'w', encoding='utf-8') as f:
                     f.write(latex_content)
-                
+
                 # Compile LaTeX (run twice for references)
                 for _ in range(2):
                     result = subprocess.run(
-                        ['pdflatex', '-interaction=nonstopmode', '-output-directory', temp_dir, tex_file],
+                        ['pdflatex', '-interaction=nonstopmode',
+                            '-output-directory', temp_dir, tex_file],
                         capture_output=True, text=True
                     )
-                    
+
                     if result.returncode != 0:
-                        logger.error(f"LaTeX compilation failed: {result.stderr}")
+                        logger.error(
+                            f"LaTeX compilation failed: {result.stderr}")
                         return b""
-                
+
                 # Read PDF
                 if os.path.exists(pdf_file):
                     with open(pdf_file, 'rb') as f:
                         return f.read()
-                        
+
         except Exception as e:
             logger.error(f"❌ Local LaTeX compilation failed: {e}")
             return b""
 
 # Convenience function for backward compatibility
+
+
 def create_overleaf_pdf(job: Dict[str, Any], latex_content: str = "") -> bytes:
     """Create PDF using Overleaf API or local compilation"""
     generator = OverleafPDFGenerator()
     return generator.create_overleaf_pdf(job, latex_content)
+
 
 if __name__ == "__main__":
     # Test the Overleaf PDF generator
@@ -371,10 +389,10 @@ if __name__ == "__main__":
         'company': 'Spotify',
         'description': 'Kubernetes, AWS, Docker, infrastructure automation, CI/CD pipelines, monitoring'
     }
-    
+
     generator = OverleafPDFGenerator()
     pdf_content = generator.create_overleaf_pdf(test_job)
-    
+
     if pdf_content:
         with open('test_overleaf_resume.pdf', 'wb') as f:
             f.write(pdf_content)
