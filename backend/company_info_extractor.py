@@ -13,13 +13,16 @@ import json
 
 logger = logging.getLogger(__name__)
 
+
 class CompanyInfoExtractor:
     def __init__(self):
         """Initialize with Claude API for accurate information extraction"""
         # Prefer ANTHROPIC_AUTH_TOKEN, fall back to ANTHROPIC_API_KEY for compatibility
-        self.claude_api_key = os.getenv('ANTHROPIC_AUTH_TOKEN') or os.getenv('ANTHROPIC_API_KEY')
-        self.claude_base_url = os.getenv('ANTHROPIC_BASE_URL', 'https://anyrouter.top')
-        
+        self.claude_api_key = os.getenv(
+            'ANTHROPIC_AUTH_TOKEN') or os.getenv('ANTHROPIC_API_KEY')
+        self.claude_base_url = os.getenv(
+            'ANTHROPIC_BASE_URL', 'https://anyrouter.top')
+
         # Your FIXED contact information - NEVER changes
         self.your_contact = {
             'name': 'Hongzhi Li',
@@ -30,7 +33,7 @@ class CompanyInfoExtractor:
             'city': 'Göteborg',
             'country': 'Sweden'
         }
-    
+
     def extract_company_info_with_claude(self, job_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Use Claude API to extract and validate company information with 100% accuracy
@@ -47,7 +50,7 @@ class CompanyInfoExtractor:
             Contact Person: {job_data.get('contact_person', 'Not provided')}
             Additional Info: {job_data.get('additional_info', 'Not provided')}
             """
-            
+
             prompt = f"""
             CRITICAL TASK: Extract company contact information with 100% accuracy from this job posting.
             This information will be used in a formal cover letter - ANY MISTAKES ARE UNACCEPTABLE.
@@ -87,9 +90,10 @@ class CompanyInfoExtractor:
                 "validation_notes": "any concerns or clarifications"
             }}
             """
-            
+
             if not self.claude_api_key:
-                logger.warning("⚠️ Claude API key not configured; skipping API extraction")
+                logger.warning(
+                    "⚠️ Claude API key not configured; skipping API extraction")
                 return {'success': False, 'error': 'Claude API key missing'}
 
             headers = {
@@ -98,42 +102,47 @@ class CompanyInfoExtractor:
                 # Required for Anthropic official API
                 'anthropic-version': os.getenv('ANTHROPIC_VERSION', '2023-06-01')
             }
-            
+
             data = {
                 'model': 'claude-3-7-sonnet-20250219',
                 'messages': [{'role': 'user', 'content': prompt}],
                 'max_tokens': 1500,
                 'temperature': 0.1  # Low temperature for accuracy
             }
-            
+
             response = requests.post(
                 f'{self.claude_base_url}/v1/messages',
                 headers=headers,
                 json=data,
                 timeout=30
             )
-            
+
             if response.status_code == 200:
                 result = response.json()
                 claude_response = result['content'][0]['text']
-                
+
                 # Extract JSON from Claude's response
                 try:
                     # Find JSON in the response
-                    json_match = re.search(r'\{.*\}', claude_response, re.DOTALL)
+                    json_match = re.search(
+                        r'\{.*\}', claude_response, re.DOTALL)
                     if json_match:
                         company_info = json.loads(json_match.group())
-                        
+
                         # Validate confidence score
                         confidence = company_info.get('confidence_score', 0)
                         if isinstance(confidence, str):
-                            confidence = int(confidence) if confidence.isdigit() else 5
-                        
+                            confidence = int(
+                                confidence) if confidence.isdigit() else 5
+
                         if confidence < 7:
-                            logger.warning(f"⚠️ Low confidence ({confidence}/10) in company info extraction")
-                            logger.warning(f"Validation notes: {company_info.get('validation_notes', 'None')}")
-                        
-                        logger.info(f"✅ Claude extracted company info with confidence: {confidence}/10")
+                            logger.warning(
+                                f"⚠️ Low confidence ({confidence}/10) in company info extraction")
+                            logger.warning(
+                                f"Validation notes: {company_info.get('validation_notes', 'None')}")
+
+                        logger.info(
+                            f"✅ Claude extracted company info with confidence: {confidence}/10")
                         return {
                             'success': True,
                             'company_info': company_info,
@@ -141,9 +150,10 @@ class CompanyInfoExtractor:
                             'source': 'claude_api'
                         }
                     else:
-                        logger.error("❌ No valid JSON found in Claude response")
+                        logger.error(
+                            "❌ No valid JSON found in Claude response")
                         return {'success': False, 'error': 'Invalid JSON response'}
-                        
+
                 except json.JSONDecodeError as e:
                     logger.error(f"❌ JSON parsing error: {e}")
                     logger.error(f"Claude response: {claude_response}")
@@ -151,11 +161,11 @@ class CompanyInfoExtractor:
             else:
                 logger.error(f"❌ Claude API failed: {response.status_code}")
                 return {'success': False, 'error': f'API error: {response.status_code}'}
-                
+
         except Exception as e:
             logger.error(f"❌ Company info extraction failed: {e}")
             return {'success': False, 'error': str(e)}
-    
+
     def fallback_company_extraction(self, job_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Fallback method using pattern matching and validation
@@ -176,7 +186,7 @@ class CompanyInfoExtractor:
                 'confidence_score': 3,
                 'validation_notes': 'Fallback extraction - manual verification required'
             }
-            
+
             # Try to extract location details
             location = job_data.get('location', '')
             if location:
@@ -196,19 +206,20 @@ class CompanyInfoExtractor:
                 elif 'copenhagen' in location.lower():
                     company_info['city'] = 'Copenhagen'
                     company_info['country'] = 'Denmark'
-            
-            logger.warning("⚠️ Using fallback company extraction - manual verification required")
+
+            logger.warning(
+                "⚠️ Using fallback company extraction - manual verification required")
             return {
                 'success': True,
                 'company_info': company_info,
                 'confidence': 3,
                 'source': 'fallback'
             }
-            
+
         except Exception as e:
             logger.error(f"❌ Fallback extraction failed: {e}")
             return {'success': False, 'error': str(e)}
-    
+
     def validate_and_format_company_info(self, company_info: Dict[str, Any]) -> Dict[str, str]:
         """
         Final validation and formatting of company information
@@ -217,20 +228,20 @@ class CompanyInfoExtractor:
         try:
             # Clean and validate each field
             validated_info = {}
-            
+
             # Company name - critical accuracy
             company_name = company_info.get('company_name', '').strip()
             if not company_name or company_name == 'Not provided':
                 logger.error("❌ CRITICAL: Company name is missing!")
                 company_name = "COMPANY NAME REQUIRED - MANUAL INPUT NEEDED"
             validated_info['company_name'] = company_name
-            
+
             # Address formatting
             address = company_info.get('company_address', '').strip()
             postal_code = company_info.get('postal_code', '').strip()
             city = company_info.get('city', '').strip()
             country = company_info.get('country', '').strip()
-            
+
             # Format address for LaTeX
             address_lines = []
             if address and address != 'Not provided':
@@ -244,13 +255,14 @@ class CompanyInfoExtractor:
                 address_lines.append(city)
             if country and country != 'Not provided' and country.lower() != 'sweden':
                 address_lines.append(country)
-            
-            validated_info['formatted_address'] = '\\\\'.join(address_lines) if address_lines else 'ADDRESS REQUIRED'
-            
+
+            validated_info['formatted_address'] = '\\\\'.join(
+                address_lines) if address_lines else 'ADDRESS REQUIRED'
+
             # HR contact information
             hr_name = company_info.get('hr_name', '').strip()
             hr_title = company_info.get('hr_title', '').strip()
-            
+
             if hr_name and hr_name != 'Not provided':
                 if hr_title and hr_title != 'Not provided':
                     validated_info['greeting'] = f"Dear {hr_name}, {hr_title}"
@@ -258,21 +270,24 @@ class CompanyInfoExtractor:
                     validated_info['greeting'] = f"Dear {hr_name}"
             else:
                 validated_info['greeting'] = "Dear Hiring Manager"
-            
+
             # Additional contact info
-            validated_info['company_phone'] = company_info.get('phone', 'Not provided')
-            validated_info['company_email'] = company_info.get('email', 'Not provided')
-            validated_info['department'] = company_info.get('department', 'Not provided')
-            
+            validated_info['company_phone'] = company_info.get(
+                'phone', 'Not provided')
+            validated_info['company_email'] = company_info.get(
+                'email', 'Not provided')
+            validated_info['department'] = company_info.get(
+                'department', 'Not provided')
+
             # Your contact info (NEVER changes)
             validated_info['your_name'] = self.your_contact['name']
             validated_info['your_email'] = self.your_contact['email']
             validated_info['your_phone'] = self.your_contact['phone']
             validated_info['your_address'] = f"{self.your_contact['address']}\\\\{self.your_contact['postal_code']} {self.your_contact['city']}"
-            
+
             logger.info("✅ Company information validated and formatted")
             return validated_info
-            
+
         except Exception as e:
             logger.error(f"❌ Company info validation failed: {e}")
             return {
@@ -284,38 +299,41 @@ class CompanyInfoExtractor:
                 'your_phone': self.your_contact['phone'],
                 'your_address': f"{self.your_contact['address']}\\\\{self.your_contact['postal_code']} {self.your_contact['city']}"
             }
-    
+
     def extract_and_validate_company_info(self, job_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Main method: Extract and validate company information with multiple verification steps
         Returns validated company info ready for cover letter generation
         """
-        logger.info(f"🔍 Extracting company info for: {job_data.get('company', 'Unknown')}")
-        
+        logger.info(
+            f"🔍 Extracting company info for: {job_data.get('company', 'Unknown')}")
+
         # Step 1: Try Claude API extraction
         claude_result = self.extract_company_info_with_claude(job_data)
-        
+
         if claude_result['success'] and claude_result['confidence'] >= 7:
             logger.info("✅ High-confidence Claude extraction successful")
             company_info = claude_result['company_info']
         elif claude_result['success'] and claude_result['confidence'] >= 5:
-            logger.warning("⚠️ Medium-confidence Claude extraction - review recommended")
+            logger.warning(
+                "⚠️ Medium-confidence Claude extraction - review recommended")
             company_info = claude_result['company_info']
         else:
-            logger.warning("⚠️ Claude extraction failed or low confidence - using fallback")
+            logger.warning(
+                "⚠️ Claude extraction failed or low confidence - using fallback")
             fallback_result = self.fallback_company_extraction(job_data)
             if fallback_result['success']:
                 company_info = fallback_result['company_info']
             else:
                 logger.error("❌ All extraction methods failed!")
                 return {'success': False, 'error': 'Company info extraction failed'}
-        
+
         # Step 2: Validate and format
         validated_info = self.validate_and_format_company_info(company_info)
-        
+
         # Step 3: Final quality check
         quality_score = self._calculate_quality_score(validated_info)
-        
+
         result = {
             'success': True,
             'company_info': validated_info,
@@ -323,18 +341,20 @@ class CompanyInfoExtractor:
             'extraction_method': claude_result.get('source', 'fallback'),
             'confidence': claude_result.get('confidence', 3)
         }
-        
+
         if quality_score < 7:
-            logger.warning(f"⚠️ Low quality score ({quality_score}/10) - manual review recommended")
+            logger.warning(
+                f"⚠️ Low quality score ({quality_score}/10) - manual review recommended")
             result['warning'] = 'Manual review recommended due to low quality score'
-        
-        logger.info(f"✅ Company info extraction complete - Quality: {quality_score}/10")
+
+        logger.info(
+            f"✅ Company info extraction complete - Quality: {quality_score}/10")
         return result
-    
+
     def _calculate_quality_score(self, validated_info: Dict[str, str]) -> int:
         """Calculate quality score based on completeness and accuracy indicators"""
         score = 10
-        
+
         # Deduct points for missing or placeholder information
         if 'REQUIRED' in validated_info.get('company_name', ''):
             score -= 5
@@ -344,8 +364,9 @@ class CompanyInfoExtractor:
             score -= 1  # Not critical, but specific name is better
         if 'ERROR' in str(validated_info):
             score -= 4
-        
+
         return max(1, score)
+
 
 if __name__ == "__main__":
     # Test company info extraction
@@ -356,25 +377,28 @@ if __name__ == "__main__":
         'url': 'https://jobs.opera.com/jobs/6060392-devops-engineer',
         'description': 'DevOps Engineer position at Opera in Oslo, Norway...'
     }
-    
+
     print("🔍 Testing Company Info Extraction...")
     extractor = CompanyInfoExtractor()
     result = extractor.extract_and_validate_company_info(test_job)
-    
+
     if result['success']:
-        print(f"✅ Extraction successful - Quality: {result['quality_score']}/10")
+        print(
+            f"✅ Extraction successful - Quality: {result['quality_score']}/10")
         print(f"📊 Method: {result['extraction_method']}")
         print(f"🎯 Confidence: {result['confidence']}/10")
-        
+
         company_info = result['company_info']
         print(f"\n📋 Company Information:")
         print(f"   Company: {company_info['company_name']}")
-        print(f"   Address: {company_info['formatted_address'].replace('\\\\', ', ')}")
+        formatted_addr = company_info['formatted_address'].replace(
+            '\\\\', ', ')
+        print(f"   Address: {formatted_addr}")
         print(f"   Greeting: {company_info['greeting']}")
-        
+
         if 'warning' in result:
             print(f"\n⚠️ Warning: {result['warning']}")
     else:
         print(f"❌ Extraction failed: {result.get('error', 'Unknown error')}")
-    
+
     print("\n🎉 Company info extraction test complete!")

@@ -1,0 +1,64 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Define colors
+\definecolor{darkblue}{RGB}{0,51,102}
+
+% Section formatting
+\titleformat{\section}{\large\bfseries\raggedright\color{black}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}[runin]{\bfseries}{}{0em}{}[:]
+
+% Remove paragraph indentation
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\pagestyle{empty} % no page number
+
+% Recipient address
+{\color{darkblue}
+Essity\\
+Cloud DevOps Engineering Team\\
+Munich, Germany}
+
+\vspace{30pt}
+
+% Opening
+\textbf{Dear Hiring Manager,}
+
+\vspace{8pt}
+
+I am writing to express my strong interest in the Cloud DevOps Engineer position at Essity. With over 5 years of experience in cloud technologies, DevOps, and site reliability engineering, I am excited to contribute to Essity's mission of sustainable hygiene and health solutions.
+
+At ECARX, I led our cloud infrastructure transformation, architecting a hybrid approach that balanced cost and performance. Our 4-node Dell HPC cluster delivers 259\% better performance than Azure's HB120rs\_v3 flagship VM while reducing costs by 40\%. This required deep systems engineering—CPU affinity optimization, memory tuning, and NUMA-aware scheduling—instrumented with Prometheus, Grafana, and Alertmanager for SLO-driven capacity planning. Your requirement for Azure DevOps CI/CD multi-staging pipelines aligns perfectly with my experience implementing dev, staging, and production environments with automated testing, security scanning, and zero-downtime deployments. My software development background in Python, C\#, and Go enables me to bridge development and operations effectively, while my AWS certifications and current Azure Developer Associate (AZ-204) preparation demonstrate my commitment to cloud excellence.
+
+What particularly resonates with me about Essity is your commitment to sustainability and the "Business Ambition for 1.5 Degrees" initiative. I am passionate about leveraging technology to create positive environmental impact, and I would be honored to contribute my DevOps and cloud expertise to help Essity achieve climate neutrality by 2050 while delivering high-quality hygiene and health solutions with maximum resource efficiency.
+
+I am eager to bring my DevOps expertise, cloud architecture knowledge, and passion for sustainable technology to Essity's team in Munich. Thank you for considering my application. I look forward to the opportunity to discuss how I can contribute to Essity's continued success.
+
+\vspace{10pt}
+
+% Closing
+Sincerely,
+
+\vspace{15pt}
+
+Harvad (Hongzhi) Li
+
+\vspace{20pt}
+
+{\color{darkblue}\rule{\linewidth}{0.6pt}}
+
+\vspace{4pt}
+
+{\color{darkblue}
+Ebbe Lieberathsgatan 27\\
+412 65 Göteborg, Sweden\\
+hongzhili01@gmail.com | 0728 384 299\\
+LinkedIn: \href{https://www.linkedin.com/in/hzl/}{linkedin.com/in/hzl} | GitHub: \href{https://github.com/bluehawana}{github.com/bluehawana}}
+
+\end{document}

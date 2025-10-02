@@ -1,0 +1,79 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fontawesome}
+
+% Page setup
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightgray}{RGB}{128,128,128}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    urlcolor=darkblue,
+    citecolor=darkblue
+}
+
+% Section formatting
+\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+% Custom commands
+\newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+
+\begin{document}
+\pagestyle{empty} % no page number
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{JOB_TITLE_PLACEHOLDER}}\\[10pt]
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728 384 299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\end{center}
+
+% Personal Profile
+\section*{Profile Summary}
+PROFILE_SUMMARY_PLACEHOLDER
+
+% Areas of Expertise
+\section*{Core Technical Skills}
+SKILLS_PLACEHOLDER
+
+% Experience
+\section*{Professional Experience}
+EXPERIENCE_PLACEHOLDER
+
+\section*{Selected Projects}
+PROJECTS_PLACEHOLDER
+
+\section*{Education}
+\textbf{IT Högskolan} - Bachelor's Degree in .NET Cloud Development | 2021-2023\\
+\textbf{Mölndal Campus} - Bachelor's Degree in Java Integration | 2019-2021\\
+\textbf{University of Gothenburg} - Master's Degree in International Business | 2016-2019
+
+\section*{Cloud Certifications}
+\begin{itemize}[noitemsep]
+\item AWS Certified Solutions Architect - Associate (Aug 2022)
+\item AWS Certified Developer - Associate (Nov 2022)
+\item Microsoft Certified: Azure Fundamentals (Jun 2022)
+\item \textbf{Currently Preparing:} Azure Developer Associate (AZ-204)
+\end{itemize}
+
+\vspace{6pt}
+\section*{Additional Qualifications}
+\begin{itemize}[noitemsep]
+\item \textbf{Languages:} Fluent in English and Mandarin Chinese for effective global communication
+\item \textbf{Security Compliance:} Knowledge of cyber security best practices and regulatory compliance
+\item \textbf{Global Collaboration:} Proven ability to collaborate effectively within global distributed teams across multiple time zones
+\end{itemize}
+
+\end{document}
