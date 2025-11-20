@@ -1,0 +1,125 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fontawesome}
+
+% Page setup
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightgray}{RGB}{128,128,128}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    urlcolor=darkblue,
+    citecolor=darkblue
+}
+
+% Section formatting
+\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+% Custom commands
+\newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+
+\begin{document}
+\pagestyle{empty} % no page number
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{Software Engineer | Automotive & Embedded Systems Enthusiast}}\\[10pt]
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\end{center}
+
+% Personal Profile
+\section*{Profile Summary}
+Passionate Software Engineer with 5+ years of experience in automotive technology and mobile application development. Currently specializing in high-performance automotive solutions at ECARX, with a strong focus on Android Auto, system optimization, and embedded systems. Deeply committed to "turning passion into reality" through innovative software engineering. Actively expanding expertise in C++ and native AOSP development to contribute to mission-critical safety and security systems. Proven ability to solve complex problems, from optimizing build times by 3.5x to architecting hybrid cloud solutions. Fluent in English and Mandarin, with a collaborative mindset and a drive to keep people safe through technology.
+
+% Areas of Expertise
+\section*{Core Technical Skills}
+\begin{itemize}[noitemsep]
+\item \textbf{Software Development:} Android (Kotlin/Java), C++ (Learning), Python, C\#, Bash
+\item \textbf{Automotive Technology:} Android Auto, In-vehicle Infotainment (IVI), AOSP, Automotive UX/UI
+\item \textbf{System & Performance:} Performance Optimization, System-level Programming, Hardware Optimization
+\item \textbf{Cloud & DevOps:} Azure, AWS, Docker, Kubernetes, CI/CD, Hybrid Cloud Architecture
+\item \textbf{Architecture:} MVVM, Microservices, RESTful APIs, Event-driven Architecture
+\item \textbf{Tools & Platforms:} Git, Android Studio, Linux, Jira, Confluence
+\item \textbf{Languages:} Fluent English and Mandarin Chinese, Swedish (B2 level)
+\end{itemize}
+
+% Experience
+\section*{Working Experience}
+\subsection*{ECARX | Senior Infrastructure \& Performance Engineering Specialist}
+\textit{October 2024 - Present | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Leading migration of high-performance computing tasks to Azure AKS, achieving a \textbf{3.5x performance improvement} in Android AOSP build times.
+\item Spearheaded system-level performance tuning, resulting in record-breaking Android 15 AOSP clean build times (7.78 min), outperforming flagship cloud instances by 48\%.
+\item Collaborating with cross-functional teams (hardware, DevOps, system architects) to design next-generation automotive development platforms.
+\item Participating in automotive testing validation using physical emulators and coordinating in-vehicle validation processes.
+\item Managing complex automotive network systems and providing technical solutions for high-performance development environments.
+\end{itemize}
+
+\subsection*{Synteda | Mobile App Developer \& Azure Integration Specialist (Freelance)}
+\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Developed and deployed secure native Android applications hosted on Azure cloud infrastructure.
+\item Implemented robust RESTful APIs and microservices for scalable application architecture.
+\item Integrated SQL and NoSQL databases with optimized performance for data synchronization.
+\end{itemize}
+
+\subsection*{IT-Högskolan | Mobile DevOps Support (Part-time)}
+\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Provided DevOps support for development teams, ensuring seamless API connectivity and deployment pipeline optimization.
+\item Implemented automated testing and deployment support for backend services.
+\end{itemize}
+
+\subsection*{Senior Material (Europe) AB | Mobile Platform Architect}
+\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\begin{itemize}[noitemsep]
+\item Led migration of business-critical applications to microservices architecture.
+\item Architected mobile-first backend services optimized for performance and reliability.
+\end{itemize}
+
+\section*{Relevant Projects}
+
+\subsection{AndroidAuto\_AI\_Bot}
+\textit{June 2025 -- Present} \\
+\textbf{Android Auto, Kotlin, Python, Automotive APIs}
+\begin{itemize}[noitemsep]
+  \item Designed an in-car AI voice assistant for Android Auto with custom wake-word detection, focusing on distraction-free, safety-compliant interfaces.
+  \item Implemented real-time TTS/STT pipelines and integrated with automotive safety standards.
+\end{itemize}
+
+\subsection{AndroidAuto\_CarTVPlayer\_KOTLIN}
+\textit{March 2025 -- Present} \\
+\textbf{Kotlin, Android Auto SDK, Native Android}
+\begin{itemize}[noitemsep]
+  \item Built a native Android Auto media player using pure Kotlin and automotive-grade UI/UX patterns.
+  \item Integrated voice command processing and optimized for in-vehicle performance and safety.
+\end{itemize}
+
+\vspace{6pt}
+\section*{Education}
+\textbf{IT Högskolan} | Bachelor's in .NET Cloud Development | 2021-2023\\
+\textbf{Mölndal Campus} | Bachelor's in Java Integration | 2019-2021\\
+\textbf{University of Gothenburg} | Master's in International Business and Trade | 2016-2019
+
+\vspace{6pt}
+\section*{Certifications \& Continuous Learning}
+\begin{itemize}
+\item \textbf{Currently Learning:} C++ for Native Android Development, AOSP Build System (Soong/Make)
+\item AWS Certified Solutions Architect - Associate (Aug 2022)
+\item Microsoft Certified: Azure Fundamentals (Jun 2022)
+\end{itemize}
+
+\end{document}
