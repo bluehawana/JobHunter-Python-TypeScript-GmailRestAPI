@@ -1,0 +1,104 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fontawesome}
+
+% Page setup
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightgray}{RGB}{128,128,128}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    urlcolor=darkblue,
+    citecolor=darkblue
+}
+
+% Section formatting
+\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+% Custom commands
+\newcommand{\contactitem}[2]{\textcolor{darkblue}{#1} #2}
+
+\begin{document}
+\pagestyle{empty} % no page number
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{Junior Software Engineer | C\#, .NET & React Specialist}}\\[10pt]
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\end{center}
+
+% Personal Profile
+\section*{Profile Summary}
+Aspiring Junior Software Engineer with a dedicated focus on the Microsoft technology stack and modern web development. Holding a Bachelor's degree in .NET Cloud Development, I have built a strong foundation in \textbf{C\#, .NET, React, and TypeScript}. I am passionate about creating efficient, maintainable software and am eager to apply my skills in \textbf{Azure} cloud solutions to the exciting field of AGV and AMR automation at Kollmorgen. I thrive in collaborative environments and am committed to continuous learning and high code quality.
+
+% Areas of Expertise
+\section*{Core Technical Skills}
+\begin{itemize}[noitemsep]
+\item \textbf{Primary Languages:} C\#, TypeScript
+\item \textbf{Frameworks & Libraries:} .NET (Core/5+), React
+\item \textbf{Cloud & Tools:} Azure, Git
+\item \textbf{Languages:} Fluent English (Spoken & Written)
+\end{itemize}
+
+% Experience
+\section*{Working Experience}
+\subsection*{Synteda | Software Developer (Freelance)}
+\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Developed software solutions using \textbf{C\#} and \textbf{.NET} technologies.
+\item Implemented responsive user interfaces with \textbf{React} and \textbf{TypeScript}.
+\item Utilized \textbf{Azure} for cloud-based application deployment and management.
+\end{itemize}
+
+\subsection*{IT-Högskolan | DevOps Support (Part-time)}
+\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Supported development teams working with \textbf{.NET} ecosystems.
+\item Assisted in setting up CI/CD pipelines within \textbf{Azure DevOps}.
+\end{itemize}
+
+\section*{Relevant Projects}
+
+\subsection{Crypto\_Wallet\_Xamarin}
+\textit{2024 -- Present} \\
+\textbf{C\#, .NET, Mobile Development}
+\begin{itemize}[noitemsep]
+  \item Built a secure cryptocurrency wallet application using \textbf{C\#} and the \textbf{.NET} framework.
+  \item Demonstrated strong understanding of object-oriented programming and state management in C\#.
+\end{itemize}
+
+\subsection{Gothenburg\_TaxiPooling}
+\textit{May 2025 -- Present} \\
+\textbf{TypeScript, React Native (React-based)}
+\begin{itemize}[noitemsep]
+  \item Developed a frontend application using \textbf{TypeScript} and React patterns.
+  \item Focused on clean component architecture and efficient data handling.
+\end{itemize}
+
+\vspace{6pt}
+\section*{Education}
+\textbf{IT Högskolan} | Bachelor's in .NET Cloud Development | 2021-2023\\
+\textit{Key Coursework: C#, .NET Core, Azure, Cloud Architecture}\\
+\textbf{Mölndal Campus} | Bachelor's in Java Integration | 2019-2021\\
+\textbf{University of Gothenburg} | Master's in International Business and Trade | 2016-2019
+
+\vspace{6pt}
+\section*{Certifications}
+\begin{itemize}
+\item Microsoft Certified: Azure Fundamentals (Jun 2022)
+\end{itemize}
+
+\end{document}
