@@ -25,13 +25,18 @@ Jobs are filtered through multiple layers to ensure relevance:
 - **Industry Focus**: Prioritizes specific sectors or technologies
 - **Job Type**: Full-time, contract, freelance preferences
 
-### ✨ Application Customization
-Each application is personalized using AI-powered customization:
+### ✨ AI-Powered Application Customization
+Each application is personalized using **MiniMax M2** AI intelligence:
+- **🎯 Intelligent Role Detection**: AI analyzes job descriptions with 95% confidence to determine role type (DevOps, Full-Stack, Android, etc.)
+- **🧠 Smart Template Selection**: Automatically selects the most appropriate CV template from curated collection
+- **🔍 Keyword Extraction**: AI identifies key technologies and skills (Kubernetes, Jenkins, AWS, Python, etc.)
+- **📊 Confidence Scoring**: Provides transparency with confidence levels for each analysis
 - **Resume Tailoring**: Highlights relevant experience for each role
 - **Cover Letter Generation**: Creates role-specific cover letters using LaTeX templates
 - **Skills Emphasis**: Adjusts skill presentation based on job requirements
 - **Achievement Matching**: Selects most relevant accomplishments
 - **Keyword Optimization**: Ensures ATS compatibility
+- **Fallback System**: Gracefully falls back to keyword matching if AI is unavailable
 
 ### 📄 PDF Document Generation
 The system uses LaTeX for professional document creation:
@@ -65,13 +70,15 @@ The automation system operates intelligently:
 
 ## 🚀 Features
 
+- **🤖 AI-Powered Job Analysis**: MiniMax M2 integration for intelligent role detection with 95% confidence
 - **Automated Job Application Management**: End-to-end automation from job discovery to application submission
 - **Gmail Integration**: Seamless email management using Gmail REST API
 - **Document Management**: Dynamic PDF generation with LaTeX templates
 - **Dashboard Analytics**: Real-time insights into application success rates
 - **User Authentication**: Secure OAuth-based login system
 - **Multi-platform Job Aggregation**: Comprehensive job discovery across platforms
-- **AI-Powered Customization**: Intelligent resume and cover letter tailoring
+- **Intelligent Template Selection**: AI automatically selects the best CV template based on job requirements
+- **Smart Keyword Extraction**: Automatically identifies key technologies and skills from job descriptions
 - **Working Hours Scheduling**: Professional timing for automated applications
 
 ## 🏗️ Architecture
@@ -101,6 +108,9 @@ JobHunter/
 - **Pydantic** - Data validation
 - **Gmail REST API** - Email integration
 - **JWT** - Authentication
+- **MiniMax M2 AI** - Intelligent job analysis and template selection
+- **Anthropic SDK** - AI model integration
+- **LaTeX** - Professional PDF document generation
 
 ### Frontend
 - **TypeScript** - Type-safe JavaScript
@@ -114,6 +124,8 @@ JobHunter/
 - Node.js 16 or higher
 - Gmail API credentials
 - PostgreSQL/SQLite database
+- MiniMax M2 API key (for AI-powered job analysis)
+- LaTeX distribution (for PDF generation)
 
 ## 🚀 Quick Start
 
@@ -176,6 +188,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 GMAIL_CLIENT_ID=your-gmail-client-id
 GMAIL_CLIENT_SECRET=your-gmail-client-secret
 GMAIL_REDIRECT_URI=http://localhost:8000/auth/gmail/callback
+
+# MiniMax M2 AI (for intelligent job analysis)
+ANTHROPIC_API_KEY=your-minimax-jwt-token
+ANTHROPIC_BASE_URL=https://api.minimax.io/anthropic
+MINIMAX_API_KEY=your-minimax-jwt-token
 ```
 
 ### Gmail API Setup
@@ -185,6 +202,25 @@ GMAIL_REDIRECT_URI=http://localhost:8000/auth/gmail/callback
 3. Enable Gmail API
 4. Create OAuth 2.0 credentials
 5. Add your credentials to the `.env` file
+
+### MiniMax M2 AI Setup
+
+1. Sign up at [MiniMax Platform](https://platform.minimaxi.com/)
+2. Create an API key (JWT token)
+3. Add to `.env` file:
+   ```env
+   ANTHROPIC_API_KEY=your-minimax-jwt-token
+   ANTHROPIC_BASE_URL=https://api.minimax.io/anthropic
+   ```
+4. The system will automatically use AI for job analysis with 95% confidence
+5. Falls back to keyword matching if AI is unavailable
+
+**AI Features:**
+- 🎯 Intelligent role detection (DevOps, Full-Stack, Android, etc.)
+- 🔍 Automatic keyword extraction from job descriptions
+- 📊 Confidence scoring for transparency
+- 🧠 Smart template selection based on job requirements
+- 💡 Detailed reasoning for each analysis decision
 
 ## 📚 API Documentation
 
