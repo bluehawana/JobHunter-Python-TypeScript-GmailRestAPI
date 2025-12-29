@@ -14,49 +14,54 @@ class CVTemplateManager:
     ROLE_CATEGORIES = {
         'android_developer': {
             'keywords': ['android', 'kotlin', 'java', 'mobile', 'aosp', 'automotive', 'infotainment'],
-            'template_path': 'job_applications/ecarx_android_developer',  # Ecarx Android developer resume
+            'template_path': 'templates/cv_templates/android_developer_template.tex',
             'priority': 1
         },
         'devops_cloud': {
             'keywords': ['devops', 'cloud', 'aws', 'azure', 'gcp', 'kubernetes', 'docker', 'terraform', 'ci/cd', 'infrastructure'],
-            'template_path': 'job_applications/nasdaq_devops_cloud',
+            'template_path': 'templates/cv_templates/devops_cloud_template.tex',
             'priority': 2
         },
         'incident_management_sre': {
             'keywords': ['incident', 'sre', 'site reliability', 'on-call', 'monitoring', 'observability', 'mttr', 'production support'],
-            'template_path': 'job_applications/tata_incident_management',
+            'template_path': 'templates/cv_templates/incident_management_template.tex',
             'priority': 3
         },
         'fullstack_developer': {
             'keywords': ['fullstack', 'full-stack', 'full stack', 'react', 'vue', 'angular', 'node.js', 'frontend', 'backend'],
-            'template_path': 'job_applications/doit_international',
+            'template_path': 'templates/cv_templates/devops_cloud_template.tex',  # Reuse devops template for now
             'priority': 4
+        },
+        'ai_product_engineer': {
+            'keywords': ['ai', 'machine learning', 'llm', 'gpt', 'product engineer', 'artificial intelligence', 'ml'],
+            'template_path': 'templates/cv_templates/ai_product_engineer_template.tex',
+            'priority': 5
         },
         'ict_software_engineer': {
             'keywords': ['ict', 'software engineer', 'application', '.net', 'c#', 'java', 'spring boot'],
-            'template_path': 'job_applications/Ascom_ICT_Software_Engineer.tex',
-            'priority': 5
+            'template_path': 'templates/cv_templates/devops_cloud_template.tex',  # Reuse devops template for now
+            'priority': 6
         },
         'platform_engineer': {
             'keywords': ['platform engineer', 'platform', 'infrastructure', 'internal tools', 'developer experience'],
-            'template_path': 'job_applications/Thomson_Reuters_Platform_Engineer.tex',
-            'priority': 6
+            'template_path': 'templates/cv_templates/devops_cloud_template.tex',  # Reuse devops template for now
+            'priority': 7
         },
         'integration_architect': {
             'keywords': ['integration', 'architect', 'api', 'microservices', 'system integration', 'middleware'],
-            'template_path': 'job_applications/VFS_Integration_Architect.tex',
-            'priority': 7
+            'template_path': 'templates/cv_templates/devops_cloud_template.tex',  # Reuse devops template for now
+            'priority': 8
         },
         'backend_developer': {
             'keywords': ['backend', 'api', 'database', 'server', 'microservices', 'rest', 'graphql'],
-            'template_path': 'job_applications/Telia_Backend_Developer.tex',
-            'priority': 8
+            'template_path': 'templates/cv_templates/devops_cloud_template.tex',  # Reuse devops template for now
+            'priority': 9
         }
     }
     
-    def __init__(self, templates_dir: str = 'job_applications'):
-        # Get absolute path relative to this file's location
-        base_dir = Path(__file__).parent
+    def __init__(self, templates_dir: str = 'templates/cv_templates'):
+        # Get absolute path relative to project root
+        base_dir = Path(__file__).parent.parent  # Go up to project root
         self.templates_dir = base_dir / templates_dir
     
     def analyze_job_role(self, job_description: str) -> str:
@@ -96,16 +101,14 @@ class CVTemplateManager:
     def get_template_path(self, role_category: str) -> Optional[Path]:
         """Get the template path for a given role category"""
         if role_category in self.ROLE_CATEGORIES:
-            template_path = self.ROLE_CATEGORIES[role_category]['template_path']
-            full_path = Path(template_path)
+            template_path_str = self.ROLE_CATEGORIES[role_category]['template_path']
             
-            # Check if it's a directory or file
-            if full_path.is_dir():
-                # Look for CV tex file in directory
-                cv_files = list(full_path.glob('*_CV.tex'))
-                if cv_files:
-                    return cv_files[0]
-            elif full_path.exists():
+            # Get absolute path from project root
+            base_dir = Path(__file__).parent.parent  # Go up to project root
+            full_path = base_dir / template_path_str
+            
+            # Check if file exists
+            if full_path.exists() and full_path.is_file():
                 return full_path
         
         return None
