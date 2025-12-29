@@ -240,7 +240,7 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
     
     skills_items = "\n".join([f"\\item {skill}" for skill in skills])
     
-    # Build LaTeX with Tata/ALTEN styling
+    # Build LaTeX with modern Overleaf styling
     latex = r"""\documentclass[11pt,a4paper]{article}
 \usepackage{geometry}
 \usepackage{enumitem}
@@ -253,6 +253,7 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
 \pagestyle{empty}
 
 \definecolor{titlecolor}{RGB}{0,102,204}
+\definecolor{darkblue}{RGB}{0,102,204}
 
 \titleformat{\section}{\Large\bfseries\color{titlecolor}}{}{0em}{}[\titlerule]
 \titlespacing*{\section}{0pt}{12pt}{6pt}
@@ -263,10 +264,9 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
 \begin{document}
 
 \begin{center}
-{\Huge\bfseries Harvad Lee}\\[6pt]
-{\Large """ + role_type + r"""}\\[10pt]
-hongzhili01@gmail.com | +46 72 838 4299 | Gothenburg, Sweden\\
-linkedin.com/in/hzl | github.com/bluehawana
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{""" + role_type + r"""}}\\[10pt]
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:+46728384299}{+46 72 838 4299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
 \end{center}
 
 \vspace{8pt}
