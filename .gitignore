@@ -123,3 +123,6 @@ backend/deploy_fixed_dashboard.sh
 
 # Job applications - contains personal information
 job_applications/
+
+# Allow CV templates folder (version controlled)
+!templates/cv_templates/
