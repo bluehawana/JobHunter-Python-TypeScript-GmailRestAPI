@@ -199,6 +199,15 @@ def build_tata_cv_latex():
 \item H3C Server and Network Equipment Technical Training
 \end{itemize}
 
+\section*{Community Involvement}
+\begin{itemize}[noitemsep]
+\item Active member of AWS User Group Gothenburg
+\item Participant in CNCF Gothenburg community events
+\item CNCF Scholarship Recipient - CKAD Training \& Exam Voucher
+\item Engaged with Cloud Native Computing Foundation initiatives
+\item Member of Kubernetes Community Gothenburg
+\end{itemize}
+
 \section*{Additional Information}
 \begin{itemize}[noitemsep]
 \item \textbf{Languages:} English (Fluent), Swedish (B2), Chinese (Native)

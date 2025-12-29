@@ -18,12 +18,14 @@ from gemini_content_polisher import GeminiContentPolisher
 from smart_latex_editor import SmartLaTeXEditor
 from cv_templates import CVTemplateManager
 from ai_analyzer import AIAnalyzer
+from ai_resume_prompts import AIResumePrompts
 
 lego_api = Blueprint('lego_api', __name__)
 
 # Initialize managers
 template_manager = CVTemplateManager()
 ai_analyzer = AIAnalyzer()
+ai_prompts = AIResumePrompts()
 
 # LEGO Bricks definitions
 PROFILE_BRICKS = {
@@ -478,34 +480,106 @@ hongzhili01@gmail.com\\
 
 
 def fetch_job_from_url(url: str) -> str:
-    """Fetch job description from URL"""
+    """Fetch job description from URL using ScraperAPI"""
     try:
         import requests
         from bs4 import BeautifulSoup
+        from urllib.parse import urlparse, parse_qs, quote
         
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
-        }
+        parsed_url = urlparse(url)
+        is_indeed = 'indeed' in parsed_url.netloc.lower()
+        is_linkedin = 'linkedin' in parsed_url.netloc.lower()
         
-        response = requests.get(url, headers=headers, timeout=10)
+        # Handle Indeed URL - extract job key
+        if is_indeed:
+            query_params = parse_qs(parsed_url.query)
+            job_key = query_params.get('vjk', [None])[0] or query_params.get('jk', [None])[0]
+            if job_key:
+                url = f"{parsed_url.scheme}://{parsed_url.netloc}/viewjob?jk={job_key}"
+                print(f"📌 Converted Indeed URL: {url}")
+        
+        # Check for ScraperAPI key
+        api_key = os.environ.get('SCRAPERAPI_KEY', '')
+        
+        # Use ScraperAPI for Indeed and LinkedIn (they block VPS IPs)
+        if (is_indeed or is_linkedin) and api_key:
+            scraper_url = f"http://api.scraperapi.com?api_key={api_key}&url={quote(url)}"
+            print(f"🔄 Using ScraperAPI for {parsed_url.netloc}")
+            response = requests.get(scraper_url, timeout=60)
+        else:
+            # Direct request (works for other sites, may fail for Indeed/LinkedIn without proxy)
+            if is_indeed or is_linkedin:
+                print(f"⚠️ No SCRAPERAPI_KEY configured - direct request may be blocked")
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            }
+            response = requests.get(url, headers=headers, timeout=15)
+        
         response.raise_for_status()
         
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Remove script and style elements
-        for script in soup(["script", "style"]):
-            script.decompose()
+        # Remove unwanted elements
+        for element in soup(['script', 'style', 'nav', 'footer', 'header', 'aside', 'form']):
+            element.decompose()
         
-        # Get text
-        text = soup.get_text()
+        text = ""
+        
+        # Indeed-specific parsing
+        if is_indeed:
+            # Look for job description container
+            job_desc = soup.find('div', {'id': 'jobDescriptionText'})
+            if job_desc:
+                text = job_desc.get_text(separator='\n', strip=True)
+            
+            # Get title and company
+            title_elem = soup.find('h1', class_=lambda x: x and 'jobTitle' in str(x).lower()) or soup.find('h1')
+            company_elem = soup.find(attrs={'data-testid': 'inlineHeader-companyName'}) or soup.find(class_=lambda x: x and 'company' in str(x).lower())
+            
+            if title_elem:
+                text = f"Job Title: {title_elem.get_text(strip=True)}\n" + text
+            if company_elem:
+                text = f"Company: {company_elem.get_text(strip=True)}\n" + text
+        
+        # LinkedIn-specific parsing
+        elif is_linkedin:
+            job_containers = soup.find_all(['div', 'section'], class_=lambda x: x and 'description' in str(x).lower())
+            for container in job_containers:
+                text += container.get_text(separator='\n', strip=True) + '\n'
+        
+        # Fallback: get all text
+        if not text or len(text) < 100:
+            text = soup.get_text(separator='\n', strip=True)
         
         # Clean up text
-        lines = (line.strip() for line in text.splitlines())
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-        text = '\n'.join(chunk for chunk in chunks if chunk)
+        lines = [line.strip() for line in text.splitlines() if line.strip() and len(line.strip()) > 2]
+        # Remove duplicates
+        seen = set()
+        unique_lines = []
+        for line in lines:
+            if line not in seen:
+                seen.add(line)
+                unique_lines.append(line)
         
+        text = '\n'.join(unique_lines)
+        
+        # Truncate if too long
+        if len(text) > 10000:
+            text = text[:10000] + "\n\n[Content truncated...]"
+        
+        if len(text) < 50:
+            print(f"⚠️ Retrieved very little content ({len(text)} chars)")
+            return ""
+        
+        print(f"✓ Successfully fetched {len(text)} characters")
         return text
         
+    except requests.exceptions.Timeout:
+        print(f"Error: Request timed out for URL: {url}")
+        return ""
+    except requests.exceptions.HTTPError as e:
+        print(f"Error: HTTP error {e.response.status_code} for URL: {url}")
+        return ""
     except Exception as e:
         print(f"Error fetching URL: {e}")
         return ""
@@ -526,7 +600,10 @@ def analyze_job():
         if job_url and not job_description:
             job_description = fetch_job_from_url(job_url)
             if not job_description:
-                return jsonify({'error': 'Could not fetch job description from URL'}), 400
+                return jsonify({
+                    'error': 'Could not fetch job description from URL. Indeed and LinkedIn often block automated access. Please try copying and pasting the job description text directly into the text area instead.',
+                    'suggestion': 'Copy the job description from the website and paste it in the text area'
+                }), 400
         
         analysis = analyze_job_description(job_description, job_url)
         
@@ -665,3 +742,255 @@ def regenerate_application():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/ai-prompts/resume-rewrite', methods=['POST'])
+def ai_prompt_resume_rewrite():
+    """Generate AI prompt for resume rewriting"""
+    try:
+        data = request.json
+        resume_text = data.get('resumeText', '')
+        
+        if not resume_text:
+            return jsonify({'error': 'Resume text required'}), 400
+        
+        prompt = ai_prompts.resume_rewrite(resume_text)
+        
+        return jsonify({
+            'success': True,
+            'prompt': prompt,
+            'promptType': 'resume_rewrite',
+            'description': 'Rewrite resume to improve interview chances with measurable achievements and ATS optimization'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/ai-prompts/role-targeting', methods=['POST'])
+def ai_prompt_role_targeting():
+    """Generate AI prompt for identifying high-paying roles"""
+    try:
+        data = request.json
+        experience_text = data.get('experienceText', '')
+        
+        if not experience_text:
+            return jsonify({'error': 'Experience text required'}), 400
+        
+        prompt = ai_prompts.role_targeting(experience_text)
+        
+        return jsonify({
+            'success': True,
+            'prompt': prompt,
+            'promptType': 'role_targeting',
+            'description': 'Identify 10 high-paying roles ranked by salary and market demand'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/ai-prompts/jd-match', methods=['POST'])
+def ai_prompt_jd_match():
+    """Generate AI prompt for JD-resume matching"""
+    try:
+        data = request.json
+        job_description = data.get('jobDescription', '')
+        resume_text = data.get('resumeText', '')
+        
+        if not job_description or not resume_text:
+            return jsonify({'error': 'Job description and resume text required'}), 400
+        
+        prompt = ai_prompts.jd_match_check(job_description, resume_text)
+        
+        return jsonify({
+            'success': True,
+            'prompt': prompt,
+            'promptType': 'jd_match',
+            'description': 'Compare keywords and optimize resume for ~90% alignment with job description'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/ai-prompts/interview-prep', methods=['POST'])
+def ai_prompt_interview_prep():
+    """Generate AI prompt for interview preparation"""
+    try:
+        data = request.json
+        position = data.get('position', '')
+        job_description = data.get('jobDescription', '')
+        
+        if not position:
+            return jsonify({'error': 'Position required'}), 400
+        
+        prompt = ai_prompts.interview_prep(position, job_description)
+        
+        return jsonify({
+            'success': True,
+            'prompt': prompt,
+            'promptType': 'interview_prep',
+            'description': '15 realistic interview questions with confident sample answers'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/ai-prompts/proof-projects', methods=['POST'])
+def ai_prompt_proof_projects():
+    """Generate AI prompt for proof-of-skill projects"""
+    try:
+        data = request.json
+        position = data.get('position', '')
+        job_description = data.get('jobDescription', '')
+        
+        if not position or not job_description:
+            return jsonify({'error': 'Position and job description required'}), 400
+        
+        prompt = ai_prompts.proof_projects(position, job_description)
+        
+        return jsonify({
+            'success': True,
+            'prompt': prompt,
+            'promptType': 'proof_projects',
+            'description': '3 small projects to complete this week that demonstrate required skills'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/ai-prompts/cover-letter', methods=['POST'])
+def ai_prompt_cover_letter():
+    """Generate AI prompt for cover letter creation"""
+    try:
+        data = request.json
+        job_description = data.get('jobDescription', '')
+        resume_text = data.get('resumeText', '')
+        company_name = data.get('companyName', '')
+        
+        if not all([job_description, resume_text, company_name]):
+            return jsonify({'error': 'Job description, resume text, and company name required'}), 400
+        
+        prompt = ai_prompts.cover_letter_generator(job_description, resume_text, company_name)
+        
+        return jsonify({
+            'success': True,
+            'prompt': prompt,
+            'promptType': 'cover_letter',
+            'description': 'Generate compelling cover letter that tells a story'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/ai-prompts/linkedin-optimization', methods=['POST'])
+def ai_prompt_linkedin():
+    """Generate AI prompt for LinkedIn profile optimization"""
+    try:
+        data = request.json
+        resume_text = data.get('resumeText', '')
+        target_roles = data.get('targetRoles', [])
+        
+        if not resume_text or not target_roles:
+            return jsonify({'error': 'Resume text and target roles required'}), 400
+        
+        prompt = ai_prompts.linkedin_optimization(resume_text, target_roles)
+        
+        return jsonify({
+            'success': True,
+            'prompt': prompt,
+            'promptType': 'linkedin_optimization',
+            'description': 'Optimize LinkedIn profile for recruiter searches'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/ai-prompts/salary-negotiation', methods=['POST'])
+def ai_prompt_salary():
+    """Generate AI prompt for salary negotiation research"""
+    try:
+        data = request.json
+        position = data.get('position', '')
+        experience_years = data.get('experienceYears', 0)
+        location = data.get('location', 'Sweden')
+        
+        if not position or not experience_years:
+            return jsonify({'error': 'Position and experience years required'}), 400
+        
+        prompt = ai_prompts.salary_negotiation(position, experience_years, location)
+        
+        return jsonify({
+            'success': True,
+            'prompt': prompt,
+            'promptType': 'salary_negotiation',
+            'description': 'Research salary ranges and negotiation strategy'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/ai-prompts/all', methods=['GET'])
+def list_ai_prompts():
+    """List all available AI prompt types"""
+    return jsonify({
+        'success': True,
+        'prompts': [
+            {
+                'type': 'resume_rewrite',
+                'endpoint': '/api/ai-prompts/resume-rewrite',
+                'description': 'Rewrite resume with measurable achievements and ATS optimization',
+                'requiredFields': ['resumeText']
+            },
+            {
+                'type': 'role_targeting',
+                'endpoint': '/api/ai-prompts/role-targeting',
+                'description': 'Identify 10 high-paying roles ranked by salary and demand',
+                'requiredFields': ['experienceText']
+            },
+            {
+                'type': 'jd_match',
+                'endpoint': '/api/ai-prompts/jd-match',
+                'description': 'Optimize resume for ~90% alignment with job description',
+                'requiredFields': ['jobDescription', 'resumeText']
+            },
+            {
+                'type': 'interview_prep',
+                'endpoint': '/api/ai-prompts/interview-prep',
+                'description': '15 realistic interview questions with sample answers',
+                'requiredFields': ['position'],
+                'optionalFields': ['jobDescription']
+            },
+            {
+                'type': 'proof_projects',
+                'endpoint': '/api/ai-prompts/proof-projects',
+                'description': '3 small projects to demonstrate required skills',
+                'requiredFields': ['position', 'jobDescription']
+            },
+            {
+                'type': 'cover_letter',
+                'endpoint': '/api/ai-prompts/cover-letter',
+                'description': 'Generate compelling cover letter that tells a story',
+                'requiredFields': ['jobDescription', 'resumeText', 'companyName']
+            },
+            {
+                'type': 'linkedin_optimization',
+                'endpoint': '/api/ai-prompts/linkedin-optimization',
+                'description': 'Optimize LinkedIn profile for recruiter searches',
+                'requiredFields': ['resumeText', 'targetRoles']
+            },
+            {
+                'type': 'salary_negotiation',
+                'endpoint': '/api/ai-prompts/salary-negotiation',
+                'description': 'Research salary ranges and negotiation strategy',
+                'requiredFields': ['position', 'experienceYears'],
+                'optionalFields': ['location']
+            }
+        ]
+    })

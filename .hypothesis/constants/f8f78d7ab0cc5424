@@ -1,0 +1,4 @@
+# file: /Users/harvadlee/Projects/JobHunter-Python-TypeScript-GmailRestAPI/backend/minimax_search/models.py
+# hypothesis_version: 6.141.1
+
+[0.0, 1.0, 200, 1000, '...', 'access_count', 'age_seconds', 'cached_at', 'company_name', 'company_names', 'content', 'cover_letter', 'created_at', 'cv', 'date_range', 'document', 'document_type', 'document_types', 'exact', 'file_path', 'from_cache', 'highlighted_text', 'job_description', 'match_type', 'matched_excerpts', 'max_results', 'metadata', 'modified_at', 'other', 'partial', 'query', 'relevance_score', 'result', 'results', 'role_title', 'search_time_ms', 'semantic', 'suggested_queries', 'total_count']

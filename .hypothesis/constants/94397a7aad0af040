@@ -1,0 +1,4 @@
+# file: /Users/harvadlee/Projects/JobHunter-Python-TypeScript-GmailRestAPI/backend/minimax_search/exceptions.py
+# hypothesis_version: 6.141.1
+
+['AUTHENTICATION_ERROR', 'NETWORK_ERROR', 'RATE_LIMIT_EXCEEDED', 'VALIDATION_ERROR']

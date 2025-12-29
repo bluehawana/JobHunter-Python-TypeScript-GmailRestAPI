@@ -1,0 +1,4 @@
+# file: /Users/harvadlee/Projects/JobHunter-Python-TypeScript-GmailRestAPI/backend/minimax_search/ranker.py
+# hypothesis_version: 6.141.1
+
+[0.3, 0.5, 1.0, 'exact_match_weight', 'partial_match_weight', 'semantic_weight']
