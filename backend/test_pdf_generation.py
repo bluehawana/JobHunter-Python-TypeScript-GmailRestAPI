@@ -1,84 +1,50 @@
 #!/usr/bin/env python3
-"""
-Simple test for PDF generation without external dependencies
-"""
-import asyncio
-import sys
-import os
+"""Test PDF generation on server"""
 
-# Add the app directory to Python path
-sys.path.append('/Users/bluehawana/Projects/Jobhunter/backend')
+import subprocess
+from pathlib import Path
+from cv_templates import CVTemplateManager
 
-from app.services.simple_latex_service import SimpleLaTeXService
+# Test template loading
+manager = CVTemplateManager()
+template = manager.load_template('android_developer')
 
-async def test_pdf_generation():
-    """Test PDF generation with a sample job"""
-    print("🧪 Testing PDF generation with simplified LaTeX templates...")
+if template:
+    print(f"✓ Template loaded: {len(template)} characters")
     
-    # Sample job data
-    sample_job = {
-        'title': 'Backend Developer',
-        'company': 'Test Company',
-        'description': 'We are looking for a backend developer with experience in Java Spring Boot and microservices architecture. Knowledge of AWS cloud platforms and Docker containerization is preferred.',
-        'keywords': ['java', 'spring boot', 'microservices', 'aws', 'docker', 'postgresql'],
-        'location': 'Gothenburg',
-        'source': 'test'
-    }
+    # Create test directory
+    test_dir = Path('test_pdf_output')
+    test_dir.mkdir(exist_ok=True)
     
-    try:
-        # Initialize LaTeX service
-        latex_service = SimpleLaTeXService()
-        
-        print(f"📄 Generating CV for {sample_job['company']} - {sample_job['title']}...")
-        
-        # Generate CV
-        cv_pdf = await latex_service.generate_customized_cv(sample_job)
-        
-        if cv_pdf and len(cv_pdf) > 0:
-            print(f"✅ CV PDF generated successfully: {len(cv_pdf)} bytes")
-            
-            # Save for inspection
-            cv_filename = f"test_cv_{sample_job['company']}.pdf"
-            with open(cv_filename, 'wb') as f:
-                f.write(cv_pdf)
-            print(f"💾 CV saved as: {cv_filename}")
-        else:
-            print("❌ CV PDF generation failed")
-            return False
-        
-        print(f"📄 Generating Cover Letter for {sample_job['company']} - {sample_job['title']}...")
-        
-        # Generate Cover Letter
-        cl_pdf = await latex_service.generate_customized_cover_letter(sample_job)
-        
-        if cl_pdf and len(cl_pdf) > 0:
-            print(f"✅ Cover Letter PDF generated successfully: {len(cl_pdf)} bytes")
-            
-            # Save for inspection
-            cl_filename = f"test_cover_letter_{sample_job['company']}.pdf"
-            with open(cl_filename, 'wb') as f:
-                f.write(cl_pdf)
-            print(f"💾 Cover Letter saved as: {cl_filename}")
-        else:
-            print("❌ Cover Letter PDF generation failed")
-            return False
-        
-        print("🎉 PDF generation test completed successfully!")
-        print("📂 Check the generated PDF files to verify they can be opened properly.")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Test failed with error: {e}")
-        import traceback
-        traceback.print_exc()
-        return False
-
-if __name__ == "__main__":
-    print("🚀 Starting PDF generation test...")
-    success = asyncio.run(test_pdf_generation())
+    # Save template
+    tex_file = test_dir / 'test.tex'
+    with open(tex_file, 'w', encoding='utf-8') as f:
+        f.write(template)
     
-    if success:
-        print("\n✅ All tests passed! PDF generation is working correctly.")
+    print(f"✓ Template saved to: {tex_file}")
+    
+    # Try to compile
+    print("\nAttempting PDF compilation...")
+    result = subprocess.run(
+        ['pdflatex', '-interaction=nonstopmode', '-output-directory', str(test_dir), str(tex_file)],
+        capture_output=True,
+        text=True,
+        timeout=30
+    )
+    
+    print(f"Return code: {result.returncode}")
+    
+    if result.returncode != 0:
+        print("\n❌ COMPILATION FAILED")
+        print("\nSTDERR:")
+        print(result.stderr)
+        print("\nSTDOUT (last 50 lines):")
+        print('\n'.join(result.stdout.split('\n')[-50:]))
     else:
-        print("\n❌ Tests failed. Please check the LaTeX installation and template issues.")
-        sys.exit(1)
+        pdf_file = test_dir / 'test.pdf'
+        if pdf_file.exists():
+            print(f"\n✓ PDF created successfully: {pdf_file}")
+        else:
+            print(f"\n❌ PDF not found at: {pdf_file}")
+else:
+    print("❌ Failed to load template")

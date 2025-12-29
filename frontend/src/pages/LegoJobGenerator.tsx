@@ -36,9 +36,23 @@ const LegoJobGenerator: React.FC = () => {
           jobUrl: jobUrl
         })
       });
-      
+
       const data = await response.json();
+
+      if (!response.ok) {
+        // Show detailed error message from server
+        const errorMsg = data.suggestion
+          ? `${data.error}\n\n💡 Suggestion: ${data.suggestion}`
+          : data.error || 'Failed to analyze job. Please try again.';
+        alert(errorMsg);
+        return;
+      }
+
       setAnalysis(data.analysis);
+      // If job description was fetched from URL, update the textarea
+      if (data.jobDescription && !jobInput) {
+        setJobInput(data.jobDescription);
+      }
       setStep('analysis');
     } catch (error) {
       console.error('Error analyzing job:', error);
@@ -60,7 +74,7 @@ const LegoJobGenerator: React.FC = () => {
           analysis: analysis
         })
       });
-      
+
       const data = await response.json();
       setGeneratedDocs(data.documents);
       setStep('generated');
@@ -84,7 +98,7 @@ const LegoJobGenerator: React.FC = () => {
           feedback: feedback
         })
       });
-      
+
       const data = await response.json();
       setGeneratedDocs(data.documents);
     } catch (error) {
@@ -146,7 +160,7 @@ const LegoJobGenerator: React.FC = () => {
       {step === 'analysis' && analysis && (
         <div className="analysis-section">
           <h2>📊 Job Analysis</h2>
-          
+
           <div className="analysis-card">
             <h3>Role Identified</h3>
             <div className="role-badge">{analysis.roleType}</div>
