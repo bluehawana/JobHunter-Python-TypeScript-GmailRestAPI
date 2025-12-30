@@ -184,8 +184,8 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     }
 
 
-def customize_template(template_content: str, company: str, title: str, role_type: str) -> str:
-    """Customize template by replacing placeholders and dynamic content"""
+def customize_template(template_content: str, company: str, title: str, role_type: str, job_description: str = "") -> str:
+    """Customize template by replacing placeholders and using AI to tailor content to job description"""
     import re
     
     # Clean up the title - remove extra whitespace and newlines
@@ -206,10 +206,94 @@ def customize_template(template_content: str, company: str, title: str, role_typ
         replacement = f'{{\\Large {clean_title}}}'
         template_content = template_content.replace(match.group(0), replacement, 1)
     
+    # AI-powered content customization if job description provided
+    if job_description and ai_analyzer.is_available():
+        try:
+            # Analyze job to extract key requirements
+            ai_result = ai_analyzer.analyze_job_description(job_description)
+            
+            if ai_result and ai_result.get('confidence', 0) > 0.5:
+                key_techs = ai_result.get('key_technologies', [])
+                role_category = ai_result.get('role_category', '')
+                
+                # Customize Professional Summary section
+                template_content = customize_profile_summary(
+                    template_content, 
+                    role_category, 
+                    key_techs,
+                    job_description
+                )
+                
+                print(f"✓ AI-customized content for {role_category} with {len(key_techs)} key technologies")
+        except Exception as e:
+            print(f"⚠ AI customization failed: {e}, using template as-is")
+    
     return template_content
 
 
-def build_lego_cv(role_type: str, company: str, title: str, role_category: str = None) -> str:
+def customize_profile_summary(template_content: str, role_category: str, key_technologies: list, job_description: str) -> str:
+    """Customize the Professional Summary section based on job requirements"""
+    import re
+    
+    # Extract current Professional Summary section
+    summary_pattern = r'(\\section\*\{Professional Summary\})(.*?)(\\section\*\{)'
+    match = re.search(summary_pattern, template_content, re.DOTALL)
+    
+    if not match:
+        # Try alternative section names
+        summary_pattern = r'(\\section\*\{Profile Summary\})(.*?)(\\section\*\{)'
+        match = re.search(summary_pattern, template_content, re.DOTALL)
+    
+    if match:
+        # Build customized summary based on role category
+        custom_summary = build_custom_summary(role_category, key_technologies, job_description)
+        
+        if custom_summary:
+            # Replace the summary content
+            template_content = template_content.replace(
+                match.group(0),
+                f"{match.group(1)}\n\n{custom_summary}\n\n{match.group(3)}"
+            )
+    
+    return template_content
+
+
+def build_custom_summary(role_category: str, key_technologies: list, job_description: str) -> str:
+    """Build a customized professional summary based on role and technologies"""
+    
+    # Base summaries for different role categories
+    summaries = {
+        'android_developer': """Android Developer with 5+ years building native mobile applications using Kotlin and Java. Expert in Android SDK, AOSP, and automotive infotainment systems. Strong background in building performant, user-centric mobile experiences with modern architecture patterns (MVVM, Clean Architecture). Proven track record delivering production applications with focus on code quality, testing, and maintainability.""",
+        
+        'devops_cloud': """DevOps Engineer with 5+ years building CI/CD pipelines, automating infrastructure, and managing cloud platforms. Expert in Kubernetes, Docker, Terraform, and cloud optimization across AWS and Azure. Proven track record in infrastructure automation, monitoring solutions, and platform reliability. Reduced cloud costs by 45% through strategic optimization and migration. Strong background in GitOps, infrastructure as code, and developer experience improvements.""",
+        
+        'incident_management_sre': """Incident Management Specialist and SRE Engineer with 5+ years managing production infrastructure, resolving critical incidents, and optimizing cloud operations. Currently at ECARX supporting 4 global offices with 24/7 on-call coverage. Expert in rapid incident response - restored 26 servers in 5 hours through systematic RCA. Proven expertise in Kubernetes, Terraform IaC, CI/CD automation, and comprehensive observability (Prometheus, Grafana, ELK). Reduced MTTR by 35% through proactive monitoring and automation.""",
+        
+        'fullstack_developer': """Full-stack Developer with 5+ years building scalable web applications and cloud infrastructure solutions. Strong frontend expertise in React, TypeScript, and modern JavaScript, combined with deep backend experience in Node.js, Python, and microservices. Proven track record collaborating with international teams, designing RESTful/GraphQL APIs, and delivering high-performance user experiences. Expert in cloud platforms (AWS, Azure, GCP) and DevOps practices.""",
+        
+        'ai_product_engineer': """AI Product Engineer with 5+ years building intelligent systems and LLM-powered applications. Expert in React/TypeScript/Python with hands-on experience integrating GPT-4, Claude, and other LLMs. Built production AI systems serving 1000+ users with 99.5% uptime. Proficient with AI coding tools (Cursor, Claude Code, Copilot). Passionate about "stitching" AI engines into products with hallucination-free outputs and robust guardrails.""",
+        
+        'platform_engineer': """Platform Engineer with 5+ years building internal developer platforms and infrastructure automation. Expert in Kubernetes, Terraform, and cloud-native technologies. Strong focus on developer experience, self-service platforms, and infrastructure reliability. Proven track record reducing deployment time by 60% through automation and improving platform adoption across engineering teams.""",
+        
+        'backend_developer': """Backend Developer with 5+ years building scalable APIs and microservices. Expert in Python, Java/Spring Boot, and Node.js with strong database optimization skills (PostgreSQL, MongoDB, Redis). Proven track record designing RESTful/GraphQL APIs handling millions of requests. Strong background in distributed systems, message queues (Kafka), and cloud platforms (AWS, Azure)."""
+    }
+    
+    # Get base summary for role category
+    base_summary = summaries.get(role_category, summaries['devops_cloud'])
+    
+    # If key technologies provided, emphasize them
+    if key_technologies:
+        tech_str = ', '.join(key_technologies[:8])  # Top 8 technologies
+        # Add technology emphasis to summary
+        base_summary = base_summary.replace(
+            'Expert in',
+            f'Expert in {tech_str} and'
+        )
+    
+    return base_summary
+
+
+def build_lego_cv(role_type: str, company: str, title: str, role_category: str = None, job_description: str = "") -> str:
     """Build CV using LEGO bricks based on role type - Template-based with customization"""
     
     # Try to load template first
@@ -219,8 +303,8 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
     
     # If template exists, use it as base and customize
     if template_content:
-        # Customize template with job-specific information
-        template_content = customize_template(template_content, company, title, role_type)
+        # Customize template with job-specific information and AI-powered content tailoring
+        template_content = customize_template(template_content, company, title, role_type, job_description)
         return template_content
     
     # Fallback to LEGO bricks generation if no template
@@ -629,8 +713,8 @@ def generate_lego_application():
         company = analysis.get('company', 'Company')
         title = analysis.get('title', 'Position')
         
-        # Build LaTeX documents
-        cv_latex = build_lego_cv(role_type, company, title, role_category)
+        # Build LaTeX documents with AI-powered content customization
+        cv_latex = build_lego_cv(role_type, company, title, role_category, job_description)
         cl_latex = build_lego_cover_letter(role_type, company, title, role_category)
         
         # Create output directory
