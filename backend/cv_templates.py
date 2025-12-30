@@ -11,50 +11,56 @@ class CVTemplateManager:
     """Manages CV templates for different roles"""
     
     # Role categories and their keywords
+    # Now using REAL templates from job_applications/ folder
     ROLE_CATEGORIES = {
         'android_developer': {
             'keywords': ['android', 'kotlin', 'java', 'mobile', 'aosp', 'automotive', 'infotainment'],
-            'template_path': 'templates/cv_templates/android_developer_template.tex',
+            'template_path': 'job_applications/ecarx_android_developer/Ecarx_Android_Developer_CV.tex',
             'priority': 1
         },
         'devops_cloud': {
             'keywords': ['devops', 'cloud', 'aws', 'azure', 'gcp', 'kubernetes', 'docker', 'terraform', 'ci/cd', 'infrastructure'],
-            'template_path': 'templates/cv_templates/devops_cloud_template.tex',
+            'template_path': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CV.tex',  # Pure Cloud/DevOps, NO banking
             'priority': 2
+        },
+        'devops_fintech': {
+            'keywords': ['fintech', 'financial', 'banking', 'payment', 'trading', 'nasdaq', 'finance', 'post-trade', 'settlement'],
+            'template_path': 'job_applications/nasdaq_devops_cloud/Nasdaq_DevOps_Cloud_Harvad_CV.tex',  # DevOps + FinTech experience
+            'priority': 1  # Higher priority than generic devops when fintech keywords present
         },
         'incident_management_sre': {
             'keywords': ['incident', 'sre', 'site reliability', 'on-call', 'monitoring', 'observability', 'mttr', 'production support'],
-            'template_path': 'templates/cv_templates/incident_management_template.tex',
+            'template_path': 'job_applications/tata_incident_management/Tata_Incident_Management_Harvad_CV.tex',
             'priority': 3
         },
         'fullstack_developer': {
-            'keywords': ['fullstack', 'full-stack', 'full stack', 'react', 'vue', 'angular', 'node.js', 'frontend', 'backend'],
-            'template_path': 'templates/cv_templates/devops_cloud_template.tex',  # Reuse devops template for now
-            'priority': 4
+            'keywords': ['fullstack', 'full-stack', 'full stack', 'react', 'vue', 'angular', 'node.js', 'frontend', 'backend', 'web developer', 'web application'],
+            'template_path': 'job_applications/doit_international/DoiT_FullStack_CV_20251119.tex',
+            'priority': 3  # Higher priority to compete with devops
         },
         'ai_product_engineer': {
-            'keywords': ['ai', 'machine learning', 'llm', 'gpt', 'product engineer', 'artificial intelligence', 'ml'],
-            'template_path': 'templates/cv_templates/ai_product_engineer_template.tex',
+            'keywords': ['ai', 'machine learning', 'llm', 'gpt', 'product engineer', 'artificial intelligence', 'ml', 'openai', 'claude'],
+            'template_path': 'job_applications/omnimodular_ai_product_engineer/Omnimodular_AI_Product_Engineer_CV.tex',  # NO banking content
             'priority': 5
         },
-        'ict_software_engineer': {
-            'keywords': ['ict', 'software engineer', 'application', '.net', 'c#', 'java', 'spring boot'],
-            'template_path': 'templates/cv_templates/devops_cloud_template.tex',  # Reuse devops template for now
+        'cloud_engineer': {
+            'keywords': ['cloud engineer', 'cloud infrastructure', 'cloud platform', 'cloud architecture', 'cloud migration'],
+            'template_path': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CV.tex',
             'priority': 6
         },
         'platform_engineer': {
             'keywords': ['platform engineer', 'platform', 'infrastructure', 'internal tools', 'developer experience'],
-            'template_path': 'templates/cv_templates/devops_cloud_template.tex',  # Reuse devops template for now
+            'template_path': 'job_applications/essity/Essity_Cloud_DevOps_CV_Overleaf.tex',
             'priority': 7
+        },
+        'backend_developer': {
+            'keywords': ['backend', 'api', 'database', 'server', 'microservices', 'rest', 'graphql', 'java', 'spring boot'],
+            'template_path': 'job_applications/eworks_java/eWorks_Complete_CV_20251120.tex',
+            'priority': 8
         },
         'integration_architect': {
             'keywords': ['integration', 'architect', 'api', 'microservices', 'system integration', 'middleware'],
-            'template_path': 'templates/cv_templates/devops_cloud_template.tex',  # Reuse devops template for now
-            'priority': 8
-        },
-        'backend_developer': {
-            'keywords': ['backend', 'api', 'database', 'server', 'microservices', 'rest', 'graphql'],
-            'template_path': 'templates/cv_templates/devops_cloud_template.tex',  # Reuse devops template for now
+            'template_path': 'job_applications/gothenburg_devops_cicd/Gothenburg_DevOps_CICD_Harvad_CV.tex',  # Fallback to DevOps
             'priority': 9
         }
     }

@@ -9,6 +9,7 @@ import sys
 import os
 import json
 import subprocess
+import re
 from datetime import datetime
 
 # Add parent directory to path
@@ -227,15 +228,20 @@ def customize_template(template_content: str, company: str, title: str, role_typ
                 print(f"✓ AI-customized content for {role_category} with {len(key_techs)} key technologies")
         except Exception as e:
             print(f"⚠ AI customization failed: {e}, using template as-is")
+            import traceback
+            traceback.print_exc()
     
     return template_content
 
 
 def customize_profile_summary(template_content: str, role_category: str, key_technologies: list, job_description: str) -> str:
-    """Customize the Professional Summary section based on job requirements"""
+    """
+    Comprehensive CV customization based on job requirements
+    Customizes: Profile Summary, Core Skills, Work Experience emphasis, Projects
+    """
     import re
     
-    # Extract current Professional Summary section
+    # 1. Customize Professional/Profile Summary section
     summary_pattern = r'(\\section\*\{Professional Summary\})(.*?)(\\section\*\{)'
     match = re.search(summary_pattern, template_content, re.DOTALL)
     
@@ -255,11 +261,90 @@ def customize_profile_summary(template_content: str, role_category: str, key_tec
                 f"{match.group(1)}\n\n{custom_summary}\n\n{match.group(3)}"
             )
     
+    # 2. Customize Core Skills section - reorder based on JD keywords
+    template_content = customize_skills_section(template_content, key_technologies)
+    
+    # 3. Add JD keyword emphasis comments for experience section
+    # This helps maintain relevance without rewriting entire experience
+    template_content = add_jd_context_comments(template_content, key_technologies, role_category)
+    
+    return template_content
+
+
+def customize_skills_section(template_content: str, key_technologies: list) -> str:
+    """
+    Reorder and emphasize skills based on JD keywords
+    Ensures ATS picks up the most relevant skills first
+    """
+    import re
+    
+    if not key_technologies:
+        return template_content
+    
+    # Extract Core Technical Skills/Competencies section
+    skills_pattern = r'(\\section\*\{Core Technical (?:Skills|Competencies)\})(.*?)(\\section\*\{)'
+    match = re.search(skills_pattern, template_content, re.DOTALL)
+    
+    if match:
+        skills_content = match.group(2)
+        
+        # Extract individual skill items - Match LaTeX \item lines
+        # Pattern: \item \textbf{Category:} content
+        # Note: colon is INSIDE the braces, followed by } then space then content
+        item_pattern = r'\\item\s+\\textbf\{[^}]+\}\s*[^\n]+'
+        items = re.findall(item_pattern, skills_content)
+        
+        if items and len(items) > 3:
+            # Score each skill item based on keyword matches
+            scored_items = []
+            for item in items:
+                score = 0
+                item_lower = item.lower()
+                for tech in key_technologies:
+                    if tech.lower() in item_lower:
+                        score += 1
+                scored_items.append((score, item))
+            
+            # Sort by score (descending) - most relevant skills first
+            scored_items.sort(key=lambda x: x[0], reverse=True)
+            
+            # Rebuild skills section with reordered items
+            reordered_items = [item for score, item in scored_items]
+            new_skills_content = '\n'.join(reordered_items)
+            
+            # Add comment about JD optimization
+            new_skills_section = f"{match.group(1)}\n% Skills reordered based on job requirements\n\\begin{{itemize}}[leftmargin=*, itemsep=2pt]\n{new_skills_content}\n\\end{{itemize}}\n\n{match.group(3)}"
+            
+            template_content = template_content.replace(match.group(0), new_skills_section)
+            print(f"✓ Reordered {len(items)} skill categories based on JD keywords")
+    
+    return template_content
+
+
+def add_jd_context_comments(template_content: str, key_technologies: list, role_category: str) -> str:
+    """
+    Add LaTeX comments highlighting JD-relevant sections
+    Helps maintain context about what's important for this specific job
+    """
+    if not key_technologies:
+        return template_content
+    
+    # Add comment at the top of Professional Experience section
+    tech_list = ', '.join(key_technologies[:10])
+    comment = f"% JD Keywords: {tech_list}\n% Role: {role_category}\n% This CV is optimized for ATS matching with the above keywords\n\n"
+    
+    # Insert comment before Professional Experience section
+    experience_pattern = r'(\\section\*\{Professional Experience\})'
+    template_content = re.sub(experience_pattern, f"{comment}\\1", template_content)
+    
     return template_content
 
 
 def build_custom_summary(role_category: str, key_technologies: list, job_description: str) -> str:
-    """Build a customized professional summary based on role and technologies"""
+    """
+    Build a customized professional summary based on role and technologies
+    Integrates with AI prompt strategies for maximum ATS and HR impact
+    """
     
     # Base summaries for different role categories
     summaries = {
@@ -281,16 +366,43 @@ def build_custom_summary(role_category: str, key_technologies: list, job_descrip
     # Get base summary for role category
     base_summary = summaries.get(role_category, summaries['devops_cloud'])
     
-    # If key technologies provided, emphasize them
+    # Strategy 1: Resume Rewrite - Use strong action verbs and measurable achievements
+    # Already built into base summaries with verbs like "built", "reduced", "delivered"
+    
+    # Strategy 3: JD Match - Emphasize key technologies from job description
     if key_technologies:
         tech_str = ', '.join(key_technologies[:8])  # Top 8 technologies
-        # Add technology emphasis to summary
+        # Add technology emphasis to summary for ATS keyword matching
         base_summary = base_summary.replace(
             'Expert in',
             f'Expert in {tech_str} and'
         )
     
     return base_summary
+
+
+def generate_ai_enhancement_prompts(job_description: str, customized_cv_text: str, company: str, position: str) -> dict:
+    """
+    Generate all 5 AI prompt strategies for comprehensive job application support
+    
+    Returns dict with prompts for:
+    1. Resume rewrite (get more interviews)
+    2. Role targeting (10 higher-paying roles)
+    3. JD match check (aim ~90% match)
+    4. Interview prep (15 questions + answers)
+    5. Proof projects (complete this week)
+    """
+    
+    return {
+        'resume_rewrite': ai_prompts.resume_rewrite(customized_cv_text),
+        'role_targeting': ai_prompts.role_targeting(customized_cv_text),
+        'jd_match': ai_prompts.jd_match_check(job_description, customized_cv_text),
+        'interview_prep': ai_prompts.interview_prep(position, job_description),
+        'proof_projects': ai_prompts.proof_projects(position, job_description),
+        'cover_letter': ai_prompts.cover_letter_generator(job_description, customized_cv_text, company),
+        'linkedin_optimization': ai_prompts.linkedin_optimization(customized_cv_text, [position]),
+        'salary_negotiation': ai_prompts.salary_negotiation(position, 5, 'Sweden')
+    }
 
 
 def build_lego_cv(role_type: str, company: str, title: str, role_category: str = None, job_description: str = "") -> str:
@@ -584,14 +696,27 @@ def fetch_job_from_url(url: str) -> str:
         # Check for ScraperAPI key
         api_key = os.environ.get('SCRAPERAPI_KEY', '')
         
-        # Use ScraperAPI for Indeed and LinkedIn (they block VPS IPs)
-        if (is_indeed or is_linkedin) and api_key:
+        # LinkedIn requires premium scraping or manual copy-paste
+        if is_linkedin:
+            if api_key:
+                # Use ScraperAPI with premium LinkedIn support
+                scraper_url = f"http://api.scraperapi.com?api_key={api_key}&url={quote(url)}&premium=true&country_code=se"
+                print(f"🔄 Using ScraperAPI Premium for LinkedIn")
+                response = requests.get(scraper_url, timeout=60)
+            else:
+                # LinkedIn blocks automated access - return empty to trigger manual paste
+                print(f"⚠️ LinkedIn requires manual copy-paste or ScraperAPI Premium")
+                print(f"💡 Solution: Copy job description from LinkedIn and paste into text area")
+                return ""
+        
+        # Use ScraperAPI for Indeed (they block VPS IPs)
+        elif is_indeed and api_key:
             scraper_url = f"http://api.scraperapi.com?api_key={api_key}&url={quote(url)}"
             print(f"🔄 Using ScraperAPI for {parsed_url.netloc}")
             response = requests.get(scraper_url, timeout=60)
         else:
             # Direct request (works for other sites, may fail for Indeed/LinkedIn without proxy)
-            if is_indeed or is_linkedin:
+            if is_indeed:
                 print(f"⚠️ No SCRAPERAPI_KEY configured - direct request may be blocked")
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -807,6 +932,161 @@ def preview_file(folder, filename):
         if file_path.exists():
             return send_file(file_path, mimetype='application/pdf')
         return jsonify({'error': 'File not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/generate-comprehensive-application', methods=['POST'])
+def generate_comprehensive_application():
+    """
+    Generate comprehensive job application package:
+    1. AI-customized CV (Profile, Skills, Experience optimized for JD)
+    2. Cover Letter
+    3. All 5 AI Enhancement Prompts:
+       - Resume rewrite (get more interviews)
+       - Role targeting (10 higher-paying roles)
+       - JD match check (~90% alignment)
+       - Interview prep (15 questions + answers)
+       - Proof projects (complete this week)
+    """
+    try:
+        data = request.json
+        job_description = data.get('jobDescription', '')
+        analysis = data.get('analysis', {})
+        
+        role_type = analysis.get('roleType', 'DevOps Engineer')
+        role_category = analysis.get('roleCategory', 'devops_cloud')
+        company = analysis.get('company', 'Company')
+        title = analysis.get('title', 'Position')
+        
+        # Build LaTeX documents with comprehensive AI-powered customization
+        cv_latex = build_lego_cv(role_type, company, title, role_category, job_description)
+        cl_latex = build_lego_cover_letter(role_type, company, title, role_category)
+        
+        # Create output directory
+        output_dir = Path('generated_applications') / datetime.now().strftime('%Y%m%d_%H%M%S')
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save LaTeX files
+        cv_tex_path = output_dir / 'cv.tex'
+        cl_tex_path = output_dir / 'cl.tex'
+        
+        with open(cv_tex_path, 'w', encoding='utf-8') as f:
+            f.write(cv_latex)
+        
+        with open(cl_tex_path, 'w', encoding='utf-8') as f:
+            f.write(cl_latex)
+        
+        # Compile to PDF
+        cv_pdf_path = output_dir / 'cv.pdf'
+        cl_pdf_path = output_dir / 'cl.pdf'
+        
+        # Compile CV
+        cv_result = subprocess.run(
+            ['pdflatex', '-interaction=nonstopmode', '-output-directory', str(output_dir), str(cv_tex_path)],
+            capture_output=True,
+            timeout=30,
+            text=True
+        )
+        
+        if cv_result.returncode != 0:
+            print(f"CV PDF compilation error: {cv_result.stderr}")
+        
+        # Compile CL
+        cl_result = subprocess.run(
+            ['pdflatex', '-interaction=nonstopmode', '-output-directory', str(output_dir), str(cl_tex_path)],
+            capture_output=True,
+            timeout=30,
+            text=True
+        )
+        
+        if cl_result.returncode != 0:
+            print(f"CL PDF compilation error: {cl_result.stderr}")
+        
+        # Check if PDFs were created
+        if not cv_pdf_path.exists():
+            return jsonify({'error': 'CV PDF compilation failed'}), 500
+        
+        if not cl_pdf_path.exists():
+            return jsonify({'error': 'CL PDF compilation failed'}), 500
+        
+        # Clean up auxiliary files
+        for ext in ['.aux', '.log', '.out']:
+            for file in output_dir.glob(f'*{ext}'):
+                file.unlink()
+        
+        # Generate all 5 AI enhancement prompts
+        ai_prompts_dict = generate_ai_enhancement_prompts(
+            job_description,
+            cv_latex,  # Use LaTeX source as resume text
+            company,
+            title
+        )
+        
+        # Save AI prompts to JSON file
+        prompts_path = output_dir / 'ai_enhancement_prompts.json'
+        with open(prompts_path, 'w', encoding='utf-8') as f:
+            json.dump(ai_prompts_dict, f, indent=2, ensure_ascii=False)
+        
+        return jsonify({
+            'success': True,
+            'documents': {
+                'cvUrl': f'/api/download/{output_dir.name}/cv.pdf',
+                'clUrl': f'/api/download/{output_dir.name}/cl.pdf',
+                'cvPreview': f'/api/preview/{output_dir.name}/cv.pdf',
+                'clPreview': f'/api/preview/{output_dir.name}/cl.pdf',
+                'promptsUrl': f'/api/download/{output_dir.name}/ai_enhancement_prompts.json'
+            },
+            'aiEnhancementPrompts': {
+                'resumeRewrite': {
+                    'title': '1. Resume Rewrite (Get More Interviews)',
+                    'description': 'Rewrite with measurable achievements, strong action verbs, and ATS-friendly keywords',
+                    'prompt': ai_prompts_dict['resume_rewrite']
+                },
+                'roleTargeting': {
+                    'title': '2. Role Targeting (10 Higher-Paying Roles)',
+                    'description': 'Identify 10 high-paying roles ranked by salary and market demand',
+                    'prompt': ai_prompts_dict['role_targeting']
+                },
+                'jdMatch': {
+                    'title': '3. JD Match Check (~90% Alignment)',
+                    'description': 'Compare keywords and optimize resume for ~90% alignment without exaggerating',
+                    'prompt': ai_prompts_dict['jd_match']
+                },
+                'interviewPrep': {
+                    'title': '4. Interview Prep (15 Questions + Answers)',
+                    'description': '15 realistic interview questions with confident sample answers',
+                    'prompt': ai_prompts_dict['interview_prep']
+                },
+                'proofProjects': {
+                    'title': '5. Proof Projects (Complete This Week)',
+                    'description': '3 small projects to complete within 7 days to demonstrate skills',
+                    'prompt': ai_prompts_dict['proof_projects']
+                },
+                'coverLetter': {
+                    'title': 'Bonus: Cover Letter Generator',
+                    'description': 'Generate compelling cover letter that tells a story',
+                    'prompt': ai_prompts_dict['cover_letter']
+                },
+                'linkedinOptimization': {
+                    'title': 'Bonus: LinkedIn Optimization',
+                    'description': 'Optimize LinkedIn profile for recruiter searches',
+                    'prompt': ai_prompts_dict['linkedin_optimization']
+                },
+                'salaryNegotiation': {
+                    'title': 'Bonus: Salary Negotiation',
+                    'description': 'Research salary ranges and negotiation strategy',
+                    'prompt': ai_prompts_dict['salary_negotiation']
+                }
+            },
+            'customizationSummary': {
+                'profileSummary': 'Tailored to JD with key technologies emphasized',
+                'coreSkills': 'Reordered based on JD keyword relevance',
+                'workExperience': 'JD context comments added for ATS optimization',
+                'atsOptimization': 'Keywords from JD emphasized throughout CV'
+            }
+        })
+        
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
