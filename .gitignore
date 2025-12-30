@@ -63,15 +63,6 @@ dist/
 # Windows
 Thumbs.db
 
-# LaTeX auxiliary files
-*.aux
-*.log
-*.out
-*.toc
-*.synctex.gz
-*.fls
-*.fdb_latexmk
-
 # Python
 __pycache__/
 *.py[cod]
@@ -122,7 +113,32 @@ backend/CLAUDE_INTEGRATION_SUMMARY.md
 backend/deploy_fixed_dashboard.sh
 
 # Job applications - contains personal information
+# Ignore all job applications (PDFs, personal CVs, etc.)
 job_applications/
+
+# But keep the LaTeX templates from job_applications for reuse
+!job_applications/*/*.tex
+!job_applications/*/JOB_DESCRIPTION.md
+
+# Ignore generated PDFs everywhere
+*.pdf
+
+# Ignore LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Ignore personal application summaries and guides
+*APPLICATION_SUMMARY.md
+*APPLICATION_GUIDE.md
+*_READY.md
+*_SUCCESS.md
+*_STATUS.md
+*_SUMMARY.md
 
 # Allow CV templates folder (version controlled)
 !templates/cv_templates/
