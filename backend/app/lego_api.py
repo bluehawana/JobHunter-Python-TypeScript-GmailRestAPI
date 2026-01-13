@@ -628,8 +628,15 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
         print(f"[CL] template_path={template_path}")
         if template_path:
             # Try to find CL template in same directory
-            # Handle both patterns: _CV.tex and CV_*.tex
-            cl_path = template_path.parent / template_path.name.replace('CV.tex', 'CL.tex')
+            # Handle multiple patterns: _CV_*.tex, _CV.tex, CV.tex
+            cv_filename = template_path.name
+            # Try replacing _CV_ with _CL_ first (for dated templates like _CV_20251119.tex)
+            cl_filename = cv_filename.replace('_CV_', '_CL_').replace('_CV.', '_CL.')
+            # Also try replacing CV.tex with CL.tex (for templates ending in CV.tex)
+            if cl_filename == cv_filename:  # No replacement happened
+                cl_filename = cv_filename.replace('CV.tex', 'CL.tex')
+
+            cl_path = template_path.parent / cl_filename
             print(f"[CL] cl_path={cl_path}, exists={cl_path.exists()}")
             if cl_path.exists():
                 try:
