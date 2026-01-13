@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/LegoJobGenerator.css';
+import { fetchWithTimeout, handleApiResponse } from '../utils/fetchWithTimeout';
 
 interface JobAnalysis {
   roleType: string;
@@ -20,6 +21,7 @@ interface GeneratedDocs {
 const LegoJobGenerator: React.FC = () => {
   const [jobInput, setJobInput] = useState('');
   const [jobUrl, setJobUrl] = useState('');
+  const [customizationNotes, setCustomizationNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<JobAnalysis | null>(null);
   const [generatedDocs, setGeneratedDocs] = useState<GeneratedDocs | null>(null);
@@ -28,25 +30,20 @@ const LegoJobGenerator: React.FC = () => {
   const analyzeJob = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/analyze-job', {
+      const response = await fetchWithTimeout('/api/analyze-job', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           jobDescription: jobInput,
           jobUrl: jobUrl
         })
-      });
+      }, 45000); // 45 second timeout for job analysis (URL fetching can be slow)
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Show detailed error message from server
-        const errorMsg = data.suggestion
-          ? `${data.error}\n\n💡 Suggestion: ${data.suggestion}`
-          : data.error || 'Failed to analyze job. Please try again.';
-        alert(errorMsg);
-        return;
-      }
+      const data = await handleApiResponse<{
+        success: boolean;
+        analysis: JobAnalysis;
+        jobDescription: string;
+      }>(response);
 
       setAnalysis(data.analysis);
       // If job description was fetched from URL, update the textarea
@@ -54,9 +51,9 @@ const LegoJobGenerator: React.FC = () => {
         setJobInput(data.jobDescription);
       }
       setStep('analysis');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error analyzing job:', error);
-      alert('Failed to analyze job. Please try again.');
+      alert(error.message || 'Failed to analyze job. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -65,22 +62,23 @@ const LegoJobGenerator: React.FC = () => {
   const generateDocuments = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/generate-lego-application', {
+      const response = await fetchWithTimeout('/api/generate-lego-application', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           jobDescription: jobInput,
           jobUrl: jobUrl,
-          analysis: analysis
+          analysis: analysis,
+          customizationNotes: customizationNotes
         })
-      });
+      }, 60000); // 60 second timeout for PDF generation (LaTeX compilation can take time)
 
-      const data = await response.json();
+      const data = await handleApiResponse<{ documents: GeneratedDocs }>(response);
       setGeneratedDocs(data.documents);
       setStep('generated');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating documents:', error);
-      alert('Failed to generate documents. Please try again.');
+      alert(error.message || 'Failed to generate documents. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -89,7 +87,7 @@ const LegoJobGenerator: React.FC = () => {
   const regenerateWithFeedback = async (feedback: string) => {
     setLoading(true);
     try {
-      const response = await fetch('/api/regenerate-application', {
+      const response = await fetchWithTimeout('/api/regenerate-application', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -97,13 +95,13 @@ const LegoJobGenerator: React.FC = () => {
           analysis: analysis,
           feedback: feedback
         })
-      });
+      }, 60000); // 60 second timeout for regeneration
 
-      const data = await response.json();
+      const data = await handleApiResponse<{ documents: GeneratedDocs }>(response);
       setGeneratedDocs(data.documents);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error regenerating documents:', error);
-      alert('Failed to regenerate documents. Please try again.');
+      alert(error.message || 'Failed to regenerate documents. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -145,6 +143,21 @@ const LegoJobGenerator: React.FC = () => {
               rows={15}
               className="job-input"
             />
+          </div>
+
+          <div className="input-group">
+            <label>📝 What do you want to highlight in your CV? (Optional)</label>
+            <textarea
+              placeholder="Example: Emphasize my C# .NET experience at Synteda, my Kubernetes expertise at Ecarx, and my quantified achievements (45% cost reduction, 35% MTTR improvement). Focus on automotive industry background."
+              value={customizationNotes}
+              onChange={(e) => setCustomizationNotes(e.target.value)}
+              rows={4}
+              className="job-input"
+              style={{ fontSize: '14px', fontStyle: 'italic' }}
+            />
+            <small style={{ color: '#666', marginTop: '4px', display: 'block' }}>
+              💡 Tell the AI what experiences, skills, or achievements to emphasize for this specific job
+            </small>
           </div>
 
           <button
@@ -265,6 +278,7 @@ const LegoJobGenerator: React.FC = () => {
               setStep('input');
               setJobInput('');
               setJobUrl('');
+              setCustomizationNotes('');
               setAnalysis(null);
               setGeneratedDocs(null);
             }} className="secondary-button">
