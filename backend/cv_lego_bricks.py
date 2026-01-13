@@ -50,6 +50,15 @@ class CVLegoBricks:
         }
         
         self.experience_bricks = {
+            'ecarx_infrastructure': """\\subsection*{ECARX (Geely Automotive) | IT/Infrastructure Specialist}
+\\textit{October 2024 - Present | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Leading globally distributed infrastructure optimization and system integration projects for automotive technology solutions.
+\\item Managed AKS to on-premise Kubernetes migrations, reducing operational expenses and improving CI/CD pipeline execution by 25\%.
+\\item Implementing modern observability solutions using Grafana, Prometheus, and advanced scripting for mission-critical system reliability.
+\\item Providing 24/7 on-call support for production environments across 4 global offices, ensuring high availability and rapid incident response.
+\\end{itemize}""",
+            
             'ecarx_android_focused': """\\subsection*{ECARX | IT/Infrastructure Specialist (Android Development Focus)}
 \\textit{October 2024 - Present | Gothenburg, Sweden}
 \\begin{itemize}[noitemsep]
@@ -63,11 +72,10 @@ class CVLegoBricks:
             'ecarx_fullstack': """\\subsection*{ECARX | IT/Infrastructure Specialist}
 \\textit{October 2024 - Present | Gothenburg, Sweden}
 \\begin{itemize}[noitemsep]
-\\item Leading infrastructure optimization and system integration projects for automotive technology solutions
-\\item Providing IT support and infrastructure support to development teams for enhanced productivity
-\\item Implementing cost optimization project by migrating from AKS to local Kubernetes cluster, reducing operational expenses
-\\item Implementing modern monitoring solutions using Grafana and advanced scripting for system reliability
-\\item Managing complex network systems and providing technical solution design for enterprise-level applications
+\\item Leading full-stack infrastructure optimization and system integration projects for automotive tech.
+\\item Developing and maintaining internal platforms using C\# .NET and React, ensuring seamless production deployment.
+\\item Implementing cost-optimization strategies via local Kubernetes cluster migration and CI/CD automation.
+\\item Providing 24/7 production support for globally distributed automotive services.
 \\end{itemize}""",
             
             'synteda_android_focused': """\\subsection*{Synteda | Mobile Developer \\& Integration Specialist (Freelance)}
@@ -79,17 +87,35 @@ class CVLegoBricks:
 \\item Integrated SQLite and cloud databases with optimized query performance for mobile applications
 \\end{itemize}""",
             
-            'synteda_fullstack': """\\subsection*{Synteda | Azure Fullstack Developer \\& Integration Specialist (Freelance)}
+            'synteda_fullstack': """\\subsection*{Synteda | C\# .NET Fullstack Developer \\& Integration Specialist}
 \\textit{August 2023 - September 2024 | Gothenburg, Sweden}
 \\begin{itemize}[noitemsep]
-\\item Developed comprehensive talent management system using C\\# and .NET Core with cloud-native architecture
-\\item Built complete office management platform from scratch, architecting both frontend and backend components
-\\item Implemented RESTful APIs and microservices for scalable application architecture
-\\item Integrated SQL and NoSQL databases with optimized query performance and data protection measures
+\\item Developed scalable talent management microservices using C\# .NET Core and Azure cloud-native architecture.
+\\item Built and optimized RESTful APIs and integrated SQL/NoSQL databases with high performance and security.
+\\item Managed automated CI/CD pipelines via Azure DevOps, ensuring reliable high-frequency releases.
 \\end{itemize}"""
         }
         
         self.projects_bricks = {
+            'volvo_focused_projects': """\\section*{Strategic Projects}
+\\subsection{Fleet Management Dashboard}
+\\textit{2024 -- Present} \\\\
+\\textbf{.NET 8, React 18, SQL Server 2022, Azure, Docker, GitHub Actions}
+\\begin{itemize}
+\\item Built an intelligent fleet tracking platform using US DOT data to optimize fuel efficiency and CO2 tracking for sustainable transport operations.
+\\item Implemented predictive maintenance analytics and route optimization features, aligning with Volvo's mission for eco-friendly and cost-effective logistics.
+\\item Leveraged Azure App Service and Docker for scalable hosting, with fully automated CI/CD pipelines via GitHub Actions.
+\\end{itemize}
+
+\\subsection{AI Math Grader Ecosystem}
+\\textit{2025 -- Present} \\\\
+\\textbf{C\# .NET 8, React, AI/LLM (Gemini/OpenAI), Python, PDF Export}
+\\begin{itemize}
+\\item Developed a full-stack automated grading system for K-12 math, providing instant, pedagogical feedback using advanced LLM integration.
+\\item Architected a modular API layer for AI-driven feedback loops, ensuring low-latency processing and high accuracy in mathematical evaluation.
+\\item Integrated white-label PDF export functionality for accessible, cost-effective result sharing.
+\\end{itemize}""",
+            
             'android_automotive_projects': """\\section*{Android \\& Automotive Projects}
 \\subsection{AndroidAuto\\_AI\\_Bot}
 \\textit{June 2025 -- Present} \\\\
@@ -139,6 +165,7 @@ class CVLegoBricks:
 \\item Automated job hunting pipeline integrating Gmail search, job scraping, and resume customization
 \\item Generated resumes and cover letters based on job descriptions using NLP techniques
 \\item Auto-sent job application drafts to user with a fully functional end-to-end workflow
+\\item Demo: https://jobs.bluehawana.com
 \\end{itemize}
 
 \\subsection{Bluehawana.com\\_Web.HTML}
@@ -149,7 +176,6 @@ class CVLegoBricks:
 \\item Integrated GitHub API for real-time repository feed and LinkedIn API for automated blog synchronization
 \\item Implemented responsive UI/UX with mobile-first design principles and performance-optimized layout
 \\item Deployed on Netlify with custom domain and automated CI/CD via Git
-\\item Added professional services module with booking system and contact form integration
 \\end{itemize}
 
 \\subsection{SmrtMart.com\\_COMMERCE.WEB}
@@ -192,16 +218,19 @@ class CVLegoBricks:
                 'android', 'kotlin', 'java', 'mobile', 'aosp', 'infotainment'
             ]),
             'is_automotive': any(keyword in full_text for keyword in [
-                'automotive', 'car', 'vehicle', 'infotainment', 'ecarx'
+                'automotive', 'car', 'vehicle', 'infotainment', 'volvo', 'ecarx'
             ]),
             'is_fullstack': any(keyword in full_text for keyword in [
-                'fullstack', 'full stack', 'web', 'react', 'angular', 'spring'
+                'fullstack', 'full-stack', 'full stack', 'react', '.net', 'c\#'
+            ]),
+            'requires_infrastructure': any(keyword in full_text for keyword in [
+                'infrastructure', 'devops', 'azure', 'docker', 'kubernetes', 'terraform'
             ]),
             'requires_mobile': any(keyword in full_text for keyword in [
                 'mobile', 'app', 'android', 'ios'
             ]),
             'company': job_details.get('company', ''),
-            'seniority': 'senior' if 'senior' in full_text else 'mid'
+            'seniority': 'senior' if any(k in full_text for k in ['senior', 'architect', 'lead']) else 'mid'
         }
         
         return analysis
@@ -211,8 +240,8 @@ class CVLegoBricks:
         
         if application_type == 'android_focused' or analysis['is_android']:
             return self.profile_bricks['android_developer']
-        elif analysis['requires_mobile']:
-            return self.profile_bricks['mobile_developer']
+        elif analysis['requires_infrastructure']:
+            return """Experienced DevOps Engineer and Infrastructure Specialist with over 5 years of expertise in cloud technologies, system optimization, and automated deployment pipelines. Currently serving as IT/Infrastructure Specialist at ECARX with proven track record in Kubernetes, Azure, Docker, and infrastructure automation. Specialized in building resilient, scalable infrastructure for mission-critical automotive systems."""
         else:
             return self.profile_bricks['fullstack_developer']
     
@@ -221,6 +250,16 @@ class CVLegoBricks:
         
         if application_type == 'android_focused' or analysis['is_android']:
             return self.skills_bricks['android_primary']
+        elif analysis['requires_infrastructure']:
+            return """\\begin{itemize}[noitemsep]
+\\item \\textbf{Infrastructure \& Cloud:} Azure (AKS, App Services, Functions), AWS, GCP, Terraform (IaC)
+\\item \\textbf{DevOps \& CI/CD:} GitHub Actions, Azure DevOps, Jenkins, Docker, Kubernetes, Helm
+\\item \\textbf{Programming:} C\# .NET 8, Python, Bash, PowerShell, Go, JavaScript, TypeScript
+\\item \\textbf{Observability:} Grafana, Prometheus, ELK Stack, Performance Tuning, SLO-driven Alerting
+\\item \\textbf{Backend \& APIs:} ASP.NET Core, RESTful/GraphQL APIs, Microservices, Kafka, Kafka Streams
+\\item \\textbf{Databases:} SQL Server, PostgreSQL, MongoDB, Redis, Entity Framework Core
+\\item \\textbf{Methodologies:} Agile/Scrum, DevSecOps, Site Reliability Engineering (SRE), Incident Management
+\\end{itemize}"""
         else:
             return self.skills_bricks['fullstack_primary']
     
@@ -229,13 +268,14 @@ class CVLegoBricks:
         
         experience_sections = []
         
-        # ECARX experience - tailor based on job type
-        if application_type == 'android_focused' or analysis['is_android'] or analysis['is_automotive']:
-            experience_sections.append(self.experience_bricks['ecarx_android_focused'])
-            experience_sections.append(self.experience_bricks['synteda_android_focused'])
+        # ECARX experience
+        if analysis['requires_infrastructure']:
+            experience_sections.append(self.experience_bricks['ecarx_infrastructure'])
         else:
             experience_sections.append(self.experience_bricks['ecarx_fullstack'])
-            experience_sections.append(self.experience_bricks['synteda_fullstack'])
+            
+        # Synteda experience
+        experience_sections.append(self.experience_bricks['synteda_fullstack'])
         
         # Add remaining standard experience
         remaining_experience = """\\subsection*{IT-Högskolan | Backend Developer (Part-time)}
@@ -247,13 +287,12 @@ class CVLegoBricks:
 \\item Implemented automated tests as part of delivery process
 \\end{itemize}
 
-\\subsection*{Senior Material (Europe) AB | Platform Architect \\& Project Coordinator}
+\\subsection*{Senior Material (Europe) AB | Fullstack Platform Architect}
 \\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
 \\begin{itemize}[noitemsep]
-\\item Led migration of business-critical applications with microservices architecture
-\\item Developed backend services with Spring Boot and designed RESTful APIs for frontend consumption
-\\item Collaborated with development teams to optimize applications for maximum speed and scalability
-\\item Participated in Agile ceremonies including sprint planning, reviews, and retrospectives
+\\item Led the digital transformation of manufacturing platforms in the lithium-ion battery sector, migrating monoliths to containerized microservices.
+\\item Architected scalable backend solutions with Spring Boot and integrated modern React frontends for real-time manufacturing data visualization.
+\\item Collaborated in high-stakes agile environments to optimize system performance and data integrity during critical technical transitions.
 \\end{itemize}
 
 \\subsection*{Pembio AB | Fullstack Developer}
@@ -263,7 +302,6 @@ class CVLegoBricks:
 \\item Built frontend features using Vue.js framework and integrated with backend APIs
 \\item Developed RESTful APIs and implemented comprehensive database integration
 \\item Participated in Agile development processes and collaborated with cross-functional teams
-\\item Implemented automated testing strategies and ensured application security
 \\end{itemize}"""
         
         experience_sections.append(remaining_experience)
@@ -272,8 +310,12 @@ class CVLegoBricks:
     
     def _select_projects_brick(self, analysis: dict, application_type: str) -> str:
         """Select appropriate projects brick"""
-        
-        if application_type == 'android_focused' or analysis['is_android'] or analysis['is_automotive']:
-            return self.projects_bricks['android_automotive_projects']
+
+        if analysis['is_automotive'] or analysis['is_fullstack'] or analysis['requires_infrastructure']:
+            # For Volvo/automotive roles, include BOTH Strategic Projects AND Hobby Projects
+            return self.projects_bricks['volvo_focused_projects'] + '\n\n' + self.projects_bricks['fullstack_projects']
+        elif analysis['is_android']:
+            # For Android roles, include Android projects AND Hobby Projects
+            return self.projects_bricks['android_automotive_projects'] + '\n\n' + self.projects_bricks['fullstack_projects']
         else:
             return self.projects_bricks['fullstack_projects']
