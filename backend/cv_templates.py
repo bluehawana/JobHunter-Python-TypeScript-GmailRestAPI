@@ -35,7 +35,7 @@ class CVTemplateManager:
         },
         'fullstack_developer': {
             'keywords': ['fullstack', 'full-stack', 'full stack', 'react', 'vue', 'angular', 'node.js', 'frontend', 'backend', 'web developer', 'web application'],
-            'template_path': 'job_applications/doit_international/DoiT_FullStack_CV_20251119.tex',
+            'template_path': 'job_applications/ahlsell_fullstack/Ahlsell_Fullstack_CV.tex',
             'priority': 3  # Higher priority to compete with devops
         },
         'ai_product_engineer': {
