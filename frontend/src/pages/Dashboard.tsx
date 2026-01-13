@@ -269,7 +269,7 @@ const Dashboard: React.FC = () => {
       <JobUrlProcessor 
         onApplicationGenerated={(jobDetails) => {
           // Refresh dashboard stats when application is generated
-          fetchDashboardData();
+          fetchDashboardStats();
         }}
       />
 
