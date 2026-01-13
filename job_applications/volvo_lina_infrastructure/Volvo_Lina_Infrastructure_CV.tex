@@ -1,0 +1,154 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% Page setup
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightgray}{RGB}{128,128,128}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    urlcolor=darkblue,
+    citecolor=darkblue
+}
+
+% Section formatting
+\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+\begin{document}
+\pagestyle{empty}
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{Senior .NET Infrastructure \& Performance Engineering Specialist}}\\[10pt]
+\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} --- \href{tel:0728384299}{0728384299} --- \href{https://www.linkedin.com/in/hzl/}{LinkedIn} --- \href{https://github.com/bluehawana}{GitHub}
+\end{center}
+
+% Personal Profile
+\section*{Profile Summary}
+Multi-disciplined \textbf{Fullstack Developer} with over 4 years of experience, specializing in the \textbf{.NET 8 ecosystem} and \textbf{Cloud Infrastructure}. Expert in bridging the gap between application development and production reliability through \textbf{Azure}, \textbf{Kubernetes}, and \textbf{Infrastructure as Code (Terraform)}. Proven track record in the automotive industry (Ecarx/Geely), managing globally distributed environments and optimizing CI/CD workflows. Passionate about building scalable, sustainable systems and thriving in collaborative, human-centric teams.
+
+% Areas of Expertise
+\section*{Core Technical Skills}
+\begin{itemize}[noitemsep]
+\item \textbf{Backend:} C\#/.NET Core, ASP.NET, RESTful APIs, Microservices, Event-Driven Architecture
+\item \textbf{Frontend:} React, JavaScript, TypeScript, HTML5, CSS3, Responsive Design
+\item \textbf{Infrastructure:} Kubernetes, Azure (AKS, App Services, Functions), Terraform (IaC), Docker
+\item \textbf{Observability \& Monitoring:} Grafana, Prometheus, OpenTelemetry, ELK Stack, Performance Tuning
+\item \textbf{CI/CD:} GitHub Actions, Azure DevOps, Jenkins, Automated Testing Pipelines
+\item \textbf{Databases:} SQL Server, PostgreSQL, MongoDB, Redis, Entity Framework Core
+\item \textbf{Cloud \& DevOps:} Azure (AKS, App Services, Functions, SQL), Infrastructure as Code (Terraform), Docker, Kubernetes
+\item \textbf{Distributed Systems:} Scalability, Resilience, Load Balancing, Caching Strategies, Kafka
+\item \textbf{Testing:} xUnit, NUnit, Jest, TDD, Integration Testing, Automated Test Suites
+\item \textbf{Agile:} Scrum, Kanban, Sprint Planning, Cross-functional Collaboration
+\item \textbf{Languages:} Fluent in English and Mandarin Chinese; Swedish (B2 level)
+\end{itemize}
+
+% Experience
+\section*{Professional Experience}
+\subsection*{ECARX (Geely Automotive) | Infrastructure Specialist \& Cloud Engineer}
+\textit{October 2024 - Present | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item \textbf{Azure to On-Premise Migration:} Led migration of critical workloads from Azure AKS to on-premise HPC infrastructure, achieving 65\% cost reduction and 259\% performance improvement through systematic optimization and tuning.
+\item \textbf{Cloud Architecture \& Cost Optimization:} Designed and implemented Azure cloud architecture for automotive development platforms, optimizing resource allocation and reducing operational expenses by 48\% compared to Azure HB120rs\_v3 instances.
+\item \textbf{HPC Performance Tuning:} Optimized local HPC infrastructure for Android AOSP builds, achieving record-breaking 7.78-minute build times through infrastructure automation and performance tuning.
+\item \textbf{DevOps Team Collaboration:} Worked closely with DevOps team to implement Infrastructure as Code (Terraform), automated CI/CD pipelines with GitHub Actions and GitLab Runner, and establish monitoring standards with Grafana and Prometheus.
+\item \textbf{Kubernetes Infrastructure Leadership:} Managed globally distributed Kubernetes clusters for automotive platforms, ensuring 99.9\% availability across 4 international regions with comprehensive observability and incident response.
+\item \textbf{Site Reliability Engineering:} Established SRE practices and monitoring standards, leading to 35\% reduction in MTTR for critical incidents through proactive monitoring and automated alerting.
+\end{itemize}
+
+\subsection*{Synteda AB | C\# .NET Fullstack Developer \& Azure Specialist}
+\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item \textbf{Scalable Cloud Solutions:} Developed talent management microservices using C\# .NET Core, deployed on Azure App Services with full automated CI/CD.
+\item \textbf{Database Architecture:} Designed and optimized Azure SQL databases, ensuring performant data access via Entity Framework.
+\item \textbf{API Integration:} Built secure RESTful APIs for internal and external consumption, prioritizing scalability and infrastructure alignment.
+\end{itemize}
+
+\subsection*{IT-Högskolan | Backend Developer (Part-time)}
+\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Migrated "Omstallningsstod.se" adult education platform using Spring Boot backend services with microservices architecture.
+\item Developed RESTful APIs for frontend integration and implemented secure data handling with automated testing.
+\item Collaborated with UI/UX designers to ensure seamless frontend-backend integration and optimal user experience.
+\end{itemize}
+
+\subsection*{Senior Material (Europe) AB | Fullstack Platform Architect}
+\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\begin{itemize}[noitemsep]
+\item \textbf{Infrastructure Migration:} Led the migration of monolith manufacturing platforms to a containerized microservices architecture in the battery industry.
+\item \textbf{Fullstack Delivery:} Developed React frontends and Spring Boot backends, ensuring seamless integration across the entire stack.
+\end{itemize}
+
+\section*{Strategic Projects}
+
+\subsection*{Fleet Management Dashboard}
+\textit{2024 -- Present} \\
+\textbf{.NET 8, React 18, SQL Server 2022, Azure, Docker, GitHub Actions}
+\begin{itemize}[noitemsep]
+\item Built intelligent fleet tracking platform using US DOT data to optimize fuel efficiency and CO2 tracking for sustainable transport operations.
+\item Implemented microservices architecture with event-driven patterns for real-time data processing and predictive maintenance analytics.
+\item Leveraged Azure App Service and Docker for scalable hosting, with fully automated CI/CD pipelines via GitHub Actions.
+\item Integrated Grafana dashboards for operational monitoring and performance metrics visualization.
+\end{itemize}
+
+\subsection*{AI Math Grader Ecosystem}
+\textit{2025 -- Present} \\
+\textbf{C\# .NET 8, React, AI/LLM (Gemini/OpenAI), Python, PDF Export}
+\begin{itemize}[noitemsep]
+\item Developed full-stack automated grading system for K-12 math, providing instant pedagogical feedback using advanced LLM integration.
+\item Architected modular API layer with C\# .NET for AI-driven feedback loops, ensuring low-latency processing and high accuracy.
+\item Built React frontend with responsive design and integrated white-label PDF export functionality for accessible result sharing.
+\end{itemize}
+
+\section*{Hobby Projects}
+
+\subsection*{SmrtMart E-commerce Platform}
+\textit{April 2024 -- Present} \\
+\textbf{Go, Next.js, PostgreSQL, Microservices, Stripe API, Kubernetes}
+\begin{itemize}[noitemsep]
+\item Fullstack e-commerce platform with microservices-based architecture for seamless scalability and distributed order processing.
+\item Implemented comprehensive order management, inventory tracking, and payment systems with Stripe integration.
+\item Optimized backend API performance and integrated PostgreSQL and MongoDB for hybrid data storage supporting high transaction volumes.
+\item Deployed on Kubernetes with Terraform IaC, implementing load balancing and auto-scaling for resilient distributed systems.
+\item Live demo: \href{https://www.smrtmart.com}{www.smrtmart.com}
+\end{itemize}
+
+\subsection*{JobHunter Automation Platform}
+\textit{July 2025 -- Present} \\
+\textbf{Python, TypeScript, React, Gmail REST API, LinkedIn API}
+\begin{itemize}[noitemsep]
+\item Automated job hunting pipeline integrating Gmail search, job scraping, and resume customization with NLP techniques.
+\item Built React-based dashboard for application tracking and management with real-time updates.
+\end{itemize}
+
+\section*{Education}
+\textbf{IT Högskolan} | Bachelor's in .NET Cloud Development | 2021-2023\\
+\textit{Focus: C\# backend development, cloud architecture, microservices, Azure, databases}
+
+\textbf{Mölndal Campus} | Bachelor's in Java Integration | 2019-2021\\
+\textit{Focus: Enterprise integration, Spring Framework, RESTful APIs, SQL databases}
+
+\textbf{University of Gothenburg} | Master's in International Business \& Trade | 2016-2019\\
+\textit{Focus: Business analysis, international commerce, B2B operations}
+
+\section*{Cloud Certifications}
+\begin{itemize}[noitemsep]
+\item AWS Certified Solutions Architect - Associate (Aug 2022)
+\item AWS Certified Developer - Associate (Nov 2022)
+\item Microsoft Certified: Azure Fundamentals (Jun 2022)
+\end{itemize}
+
+\end{document}
