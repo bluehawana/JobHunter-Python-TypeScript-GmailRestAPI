@@ -680,23 +680,40 @@ def customize_cover_letter(template_content: str, company: str, title: str, job_
 def build_lego_cover_letter(role_type: str, company: str, title: str, role_category: str = None, job_description: str = "", customization_notes: str = "") -> str:
     """Build cover letter using LEGO bricks - Template-based with customization"""
 
+    print(f"🔍 [CL DEBUG] Starting CL generation:")
+    print(f"  - role_category: {role_category}")
+    print(f"  - company: {company}")
+    print(f"  - title: {title}")
+
     # Try to load cover letter template first
     if role_category:
+        print(f"✓ [CL DEBUG] Role category provided: {role_category}")
         # Look for cover letter template
         template_path = template_manager.get_template_path(role_category)
+        print(f"  - CV template_path: {template_path}")
         if template_path:
             # Try to find CL template in same directory
             # Handle both patterns: _CV.tex and CV_*.tex
             cl_path = template_path.parent / template_path.name.replace('CV.tex', 'CL.tex')
+            print(f"  - CL cl_path: {cl_path}")
+            print(f"  - CL exists: {cl_path.exists()}")
             if cl_path.exists():
                 try:
+                    print(f"✓ [CL DEBUG] Loading CL template from: {cl_path}")
                     with open(cl_path, 'r', encoding='utf-8') as f:
                         template_content = f.read()
                         # Customize with company/title and extract company info from job description
                         template_content = customize_cover_letter(template_content, company, title, job_description)
+                        print(f"✓ [CL DEBUG] CL template loaded and customized successfully")
                         return template_content
                 except Exception as e:
-                    print(f"Error loading CL template: {e}")
+                    print(f"❌ [CL DEBUG] Error loading CL template: {e}")
+            else:
+                print(f"⚠ [CL DEBUG] CL template file not found at: {cl_path}")
+        else:
+            print(f"⚠ [CL DEBUG] CV template_path is None for role: {role_category}")
+    else:
+        print(f"⚠ [CL DEBUG] No role_category provided, falling back to LEGO bricks")
     
     # Fallback to LEGO bricks generation
     today = datetime.now().strftime("%B %d, %Y")
