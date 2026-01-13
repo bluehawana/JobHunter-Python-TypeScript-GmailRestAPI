@@ -155,140 +155,19 @@ class AIAnalyzer:
     def extract_role_type(self, job_description: str) -> Tuple[Optional[str], float]:
         """
         Extract role type and confidence from job description
-
+        
         Args:
             job_description: The job description text
-
+            
         Returns:
             Tuple of (role_category, confidence_score)
         """
         result = self.analyze_job_description(job_description)
-
+        
         if result:
             return result['role_category'], result['confidence']
-
+        
         return None, 0.0
-
-    def extract_company_info(self, job_description: str) -> Dict[str, Optional[str]]:
-        """
-        Extract company contact information from job description using AI
-
-        Args:
-            job_description: The job description text
-
-        Returns:
-            Dict with company_name, hiring_manager, contact_email, address, city, country
-        """
-        if not self.is_available():
-            logger.warning("AI analysis not available for company info extraction")
-            return self._default_company_info()
-
-        try:
-            # Limit job description to avoid token limits
-            jd_text = job_description[:3000] if len(job_description) > 3000 else job_description
-
-            prompt = f"""Extract company contact information from this job description.
-
-Job Description:
-{jd_text}
-
-Please respond in JSON format with:
-{{
-    "company_name": "<company name or null>",
-    "hiring_manager": "<hiring manager name or null>",
-    "contact_email": "<contact email or null>",
-    "address": "<street address or null>",
-    "city": "<city or null>",
-    "country": "<country or null>"
-}}
-
-Instructions:
-- Extract ONLY information explicitly stated in the job description
-- If information is not found, use null (not empty string)
-- For company_name: Extract the exact company name
-- For hiring_manager: Extract if a specific person is mentioned as contact
-- For contact_email: Extract if an email address is provided
-- For address: Extract street address if provided
-- For city: Extract city name
-- For country: Extract country name (default to "Sweden" if job is in Sweden and not specified)
-- Be conservative: Only include information that is clearly stated"""
-
-            logger.info("Extracting company info using MiniMax M2...")
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=2048,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ]
-            )
-
-            # Parse response
-            result = self._parse_company_info_response(response)
-
-            logger.info(f"Company info extracted: {result.get('company_name', 'N/A')}, {result.get('city', 'N/A')}")
-            return result
-
-        except Exception as e:
-            logger.error(f"Company info extraction failed: {e}", exc_info=True)
-            return self._default_company_info()
-
-    def _parse_company_info_response(self, response) -> Dict[str, Optional[str]]:
-        """Parse AI response for company information"""
-
-        try:
-            # Extract text from response
-            content = ""
-            for block in response.content:
-                if block.type == "text":
-                    content += block.text
-
-            if not content:
-                logger.error("No text content in company info response")
-                return self._default_company_info()
-
-            logger.debug(f"Company info response: {content[:200]}...")
-
-            # Remove markdown code blocks if present
-            content = content.strip()
-            if content.startswith('```json'):
-                content = content[7:]
-            if content.startswith('```'):
-                content = content[3:]
-            if content.endswith('```'):
-                content = content[:-3]
-            content = content.strip()
-
-            result = json.loads(content)
-
-            # Ensure all expected keys exist
-            expected_keys = ['company_name', 'hiring_manager', 'contact_email', 'address', 'city', 'country']
-            for key in expected_keys:
-                if key not in result:
-                    result[key] = None
-
-            return result
-
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse company info response as JSON: {e}")
-            logger.error(f"Response content: {content if 'content' in locals() else 'N/A'}")
-            return self._default_company_info()
-        except Exception as e:
-            logger.error(f"Error parsing company info response: {e}", exc_info=True)
-            return self._default_company_info()
-
-    def _default_company_info(self) -> Dict[str, Optional[str]]:
-        """Return default company info when extraction fails"""
-        return {
-            'company_name': None,
-            'hiring_manager': None,
-            'contact_email': None,
-            'address': None,
-            'city': None,
-            'country': 'Sweden'  # Default to Sweden for this user
-        }
     
     def _build_analysis_prompt(self, job_description: str) -> str:
         """Build the prompt for Minimax M2"""
