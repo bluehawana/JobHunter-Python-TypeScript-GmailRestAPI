@@ -578,41 +578,102 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
     return latex
 
 
-def customize_cover_letter(template_content: str, company: str, title: str) -> str:
-    """Customize cover letter template with company and title"""
+def customize_cover_letter(template_content: str, company: str, title: str, job_description: str = "") -> str:
+    """
+    Customize cover letter template with company info and title
+    Uses AI to extract company contact information from job description
+    """
     import re
     from datetime import datetime
-    
-    # Replace company name in header (e.g., "CPAC Systems" or "[Company Name]")
-    if company and company != 'Company':
-        # Replace [Company Name] placeholder
-        template_content = template_content.replace('[Company Name]', company)
-        template_content = template_content.replace('[Location]', 'Gothenburg, Sweden')
-        
-        # Replace hardcoded company names (e.g., "CPAC Systems", "Tata Technologies")
-        # Look for pattern: {\color{darkblue}CompanyName\\
-        pattern = r'(\\color\{darkblue\})[^\\]+(\\\\'
-        replacement = f'\\1{company}\\2'
-        template_content = re.sub(pattern, replacement, template_content, count=1)
-    
-    # Replace job title in "Re:" line and throughout
+
+    # Extract company information using AI if job_description is provided
+    company_info = None
+    if job_description and ai_analyzer.is_available():
+        try:
+            print("🤖 Extracting company contact information using AI...")
+            company_info = ai_analyzer.extract_company_info(job_description)
+            print(f"✓ Extracted: {company_info.get('company_name', 'N/A')}")
+        except Exception as e:
+            print(f"⚠ AI extraction failed: {e}")
+            company_info = None
+
+    # Use AI-extracted company name if available, otherwise use provided company
+    final_company = company
+    if company_info and company_info.get('company_name'):
+        final_company = company_info['company_name']
+
+    # Replace [Company Name] placeholder
+    if final_company and final_company != 'Company':
+        template_content = template_content.replace('[Company Name]', final_company)
+
+    # Replace [Position] placeholder with actual job title
     if title and title != 'Position':
-        # Replace in Re: line
+        template_content = template_content.replace('[Position]', title)
+
+    # Build header address section based on extracted information
+    if company_info:
+        # Build header lines dynamically based on what we extracted
+        header_lines = []
+
+        if company_info.get('company_name'):
+            header_lines.append(company_info['company_name'])
+
+        if company_info.get('hiring_manager'):
+            header_lines.append(company_info['hiring_manager'])
+        elif '[Company Name]' in template_content or not company_info.get('company_name'):
+            # Keep "Hiring Manager" as placeholder only if we didn't get company name
+            header_lines.append('Hiring Manager')
+
+        # Only include contact_email if explicitly found
+        if company_info.get('contact_email'):
+            header_lines.append(company_info['contact_email'])
+
+        # Only include address if explicitly found
+        if company_info.get('address'):
+            header_lines.append(company_info['address'])
+
+        # City and country
+        city = company_info.get('city', '')
+        country = company_info.get('country', 'Sweden')
+        if city and country:
+            header_lines.append(f"{city}, {country}")
+        elif city:
+            header_lines.append(city)
+        elif country:
+            header_lines.append(country)
+
+        # Replace the entire header block
+        # Find and replace the header section between \color{linkedinblue} and \vspace{2cm}
+        header_pattern = r'(\\color\{linkedinblue\}\s*\n)(.*?)(\n\\vspace\{2cm\})'
+
+        # Build new header with proper LaTeX formatting
+        new_header_lines = [r'\noindent ' + header_lines[0] + r' \\']
+        for line in header_lines[1:]:
+            new_header_lines.append(line + r' \\')
+
+        new_header = '\n'.join(new_header_lines)
+
         template_content = re.sub(
-            r'Re: Application for [^\\]+',
-            f'Re: Application for {title}',
-            template_content
+            header_pattern,
+            r'\1' + new_header + r'\3',
+            template_content,
+            flags=re.DOTALL
         )
-        # Replace "Android Platform Developer" or similar in second line of header
-        pattern2 = r'(\\color\{darkblue\}[^\\]+\\\\)\n([^\\]+)(\\\\)'
-        def replace_title(match):
-            return f'{match.group(1)}\n{title}{match.group(3)}'
-        template_content = re.sub(pattern2, replace_title, template_content, count=1)
-    
+
+        # Remove any remaining placeholders that weren't filled
+        template_content = template_content.replace('[Contact Email] \\\\', '')
+        template_content = template_content.replace('[Address] \\\\', '')
+        template_content = template_content.replace('[City], Sweden \\\\', '')
+
+        # Clean up "Hiring Manager \\" if we have actual company name
+        if company_info.get('company_name') and not company_info.get('hiring_manager'):
+            template_content = template_content.replace('Hiring Manager \\\\', '')
+
     # Update date
     today = datetime.now().strftime("%B %d, %Y")
     template_content = re.sub(r'December \d+, 202\d', today, template_content)
-    
+    template_content = re.sub(r'November \d+, 202\d', today, template_content)
+
     return template_content
 
 
@@ -631,8 +692,8 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
                 try:
                     with open(cl_path, 'r', encoding='utf-8') as f:
                         template_content = f.read()
-                        # Customize with company/title
-                        template_content = customize_cover_letter(template_content, company, title)
+                        # Customize with company/title and extract company info from job description
+                        template_content = customize_cover_letter(template_content, company, title, job_description)
                         return template_content
                 except Exception as e:
                     print(f"Error loading CL template: {e}")
