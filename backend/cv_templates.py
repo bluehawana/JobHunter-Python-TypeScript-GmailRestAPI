@@ -14,7 +14,7 @@ class CVTemplateManager:
     # Now using REAL templates from job_applications/ folder
     ROLE_CATEGORIES = {
         'android_developer': {
-            'keywords': ['android', 'kotlin', 'java', 'mobile', 'aosp', 'automotive', 'infotainment'],
+            'keywords': ['android', 'kotlin', 'android app', 'apk', 'mobile app', 'aosp', 'android sdk', 'jetpack', 'react native'],
             'template_path': 'job_applications/ecarx_android_developer/Ecarx_Android_Developer_CV.tex',
             'priority': 1
         },
@@ -54,9 +54,9 @@ class CVTemplateManager:
             'priority': 7
         },
         'backend_developer': {
-            'keywords': ['backend', 'api', 'database', 'server', 'microservices', 'rest', 'graphql', 'java', 'spring boot'],
+            'keywords': ['backend', 'api', 'database', 'server', 'microservices', 'rest', 'graphql', 'java', 'spring boot', 'spring', 'hibernate'],
             'template_path': 'job_applications/eworks_java/eWorks_Complete_CV_20251120.tex',
-            'priority': 8
+            'priority': 3  # Higher priority for backend roles
         },
         'integration_architect': {
             'keywords': ['integration', 'architect', 'api', 'microservices', 'system integration', 'middleware'],
