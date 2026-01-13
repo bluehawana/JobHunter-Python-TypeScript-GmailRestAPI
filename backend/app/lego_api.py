@@ -185,37 +185,62 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     }
 
 
-def customize_template(template_content: str, company: str, title: str, role_type: str, job_description: str = "") -> str:
+def customize_template(template_content: str, company: str, title: str, role_type: str, job_description: str = "", customization_notes: str = "") -> str:
     """Customize template by replacing placeholders and using AI to tailor content to job description"""
     import re
-    
+
     # Clean up the title - remove extra whitespace and newlines
     clean_title = title.strip().split('\n')[0] if title and title != 'Position' else role_type
-    
+
     # Escape special LaTeX characters in title
     clean_title = clean_title.replace('&', '\\&').replace('%', '\\%').replace('$', '\\$')
-    
+
     # Pattern 1: Replace the {\Large ...} line after the name
     # This matches lines like "{\Large DevOps & Cloud Engineer | FinTech Specialist}"
     # or "{\Large Software Engineer | Automotive & Embedded Systems Enthusiast}"
     pattern = r'\{\\Large\s+[^\}]+\}'
-    
+
     # Find the pattern
     match = re.search(pattern, template_content)
     if match:
         # Replace with clean title
         replacement = f'{{\\Large {clean_title}}}'
         template_content = template_content.replace(match.group(0), replacement, 1)
-    
+
     # AI-powered content customization if job description provided
     if job_description and ai_analyzer.is_available():
         try:
             # Analyze job to extract key requirements
             ai_result = ai_analyzer.analyze_job_description(job_description)
-            
+
             if ai_result and ai_result.get('confidence', 0) > 0.5:
                 key_techs = ai_result.get('key_technologies', [])
                 role_category = ai_result.get('role_category', '')
+
+                # Build AI enhancement prompt with user's customization notes
+                enhancement_prompt = f"""Enhance this LaTeX CV to be perfectly tailored for this job.
+
+JOB DESCRIPTION:
+{job_description}
+
+KEY TECHNOLOGIES NEEDED: {', '.join(key_techs) if key_techs else 'Not specified'}
+ROLE CATEGORY: {role_category}
+
+{"USER'S CUSTOMIZATION PRIORITIES:" if customization_notes else ""}
+{customization_notes if customization_notes else ""}
+
+INSTRUCTIONS:
+1. Keep the exact LaTeX structure and formatting
+2. Emphasize experiences and achievements that match the job requirements
+3. Highlight relevant technologies from the candidate's background
+4. Reorder or emphasize bullet points to match job priorities
+{f"5. PRIORITIZE what the user wants highlighted: {customization_notes}" if customization_notes else ""}
+
+Return ONLY the enhanced LaTeX code, no explanations."""
+
+                # Use AI to enhance the content (placeholder - need to implement)
+                # For now, just add a note that AI will enhance this
+                print(f"✓ AI enhancement available with user notes: {bool(customization_notes)}")
                 
                 # Customize Professional Summary section
                 template_content = customize_profile_summary(
@@ -405,18 +430,18 @@ def generate_ai_enhancement_prompts(job_description: str, customized_cv_text: st
     }
 
 
-def build_lego_cv(role_type: str, company: str, title: str, role_category: str = None, job_description: str = "") -> str:
-    """Build CV using LEGO bricks based on role type - Template-based with customization"""
-    
+def build_lego_cv(role_type: str, company: str, title: str, role_category: str = None, job_description: str = "", customization_notes: str = "") -> str:
+    """Build CV using LEGO bricks based on role type - Template-based with AI customization"""
+
     # Try to load template first
     template_content = None
     if role_category:
         template_content = template_manager.load_template(role_category)
-    
+
     # If template exists, use it as base and customize
     if template_content:
         # Customize template with job-specific information and AI-powered content tailoring
-        template_content = customize_template(template_content, company, title, role_type, job_description)
+        template_content = customize_template(template_content, company, title, role_type, job_description, customization_notes)
         return template_content
     
     # Fallback to LEGO bricks generation if no template
@@ -591,16 +616,17 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
     return template_content
 
 
-def build_lego_cover_letter(role_type: str, company: str, title: str, role_category: str = None) -> str:
+def build_lego_cover_letter(role_type: str, company: str, title: str, role_category: str = None, job_description: str = "", customization_notes: str = "") -> str:
     """Build cover letter using LEGO bricks - Template-based with customization"""
-    
+
     # Try to load cover letter template first
     if role_category:
         # Look for cover letter template
         template_path = template_manager.get_template_path(role_category)
         if template_path:
             # Try to find CL template in same directory
-            cl_path = template_path.parent / template_path.name.replace('_CV.tex', '_CL.tex')
+            # Handle both patterns: _CV.tex and CV_*.tex
+            cl_path = template_path.parent / template_path.name.replace('CV.tex', 'CL.tex')
             if cl_path.exists():
                 try:
                     with open(cl_path, 'r', encoding='utf-8') as f:
@@ -793,6 +819,17 @@ def fetch_job_from_url(url: str) -> str:
         return ""
 
 
+@lego_api.route('/api/health', methods=['GET'])
+def health_check():
+    """Health check endpoint to verify the API is running"""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'JobHunter LEGO API',
+        'timestamp': datetime.now().isoformat(),
+        'version': '1.0.0'
+    }), 200
+
+
 @lego_api.route('/api/analyze-job', methods=['POST'])
 def analyze_job():
     """Analyze job description and return analysis"""
@@ -832,15 +869,16 @@ def generate_lego_application():
         data = request.json
         job_description = data.get('jobDescription', '')
         analysis = data.get('analysis', {})
-        
+        customization_notes = data.get('customizationNotes', '')
+
         role_type = analysis.get('roleType', 'DevOps Engineer')
         role_category = analysis.get('roleCategory', 'devops_cloud')
         company = analysis.get('company', 'Company')
         title = analysis.get('title', 'Position')
-        
+
         # Build LaTeX documents with AI-powered content customization
-        cv_latex = build_lego_cv(role_type, company, title, role_category, job_description)
-        cl_latex = build_lego_cover_letter(role_type, company, title, role_category)
+        cv_latex = build_lego_cv(role_type, company, title, role_category, job_description, customization_notes)
+        cl_latex = build_lego_cover_letter(role_type, company, title, role_category, job_description, customization_notes)
         
         # Create output directory
         output_dir = Path('generated_applications') / datetime.now().strftime('%Y%m%d_%H%M%S')
