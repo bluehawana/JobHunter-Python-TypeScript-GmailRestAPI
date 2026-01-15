@@ -31,12 +31,18 @@ ai_prompts = AIResumePrompts()
 # LEGO Bricks definitions
 PROFILE_BRICKS = {
     'incident_management_specialist': """Incident Management Specialist and DevOps/SRE Engineer with 5+ years managing production infrastructure, resolving critical incidents, and optimizing cloud operations. Currently at ECARX supporting 4 global offices with 24/7 on-call coverage. Expert in rapid incident response - restored 26 servers in 5 hours through systematic RCA. Proven expertise in Kubernetes, Terraform IaC, CI/CD automation (Jenkins, GitHub Actions), and comprehensive observability (Prometheus, Grafana, ELK). Reduced cloud costs 45% through strategic migration and optimization. AWS/Azure certified with strong Linux administration, Python/Bash scripting, and Agile collaboration. Passionate about platform reliability, MTTR reduction, and developer experience.""",
-    
+
     'devops_engineer': """DevOps Engineer with 5+ years building CI/CD pipelines, automating infrastructure, and managing cloud platforms. Expert in Kubernetes, Docker, Terraform, and cloud optimization across AWS and Azure. Proven track record in infrastructure automation, monitoring solutions, and platform reliability.""",
-    
+
     'fullstack_developer': """Full-stack engineer with 5+ years building scalable web applications and cloud infrastructure solutions. Strong frontend expertise in React, TypeScript, and modern JavaScript, combined with deep cloud platform experience across AWS, Azure, and GCP. Proven track record collaborating with international teams, designing RESTful/GraphQL APIs, and delivering high-performance user experiences.""",
-    
-    'android_developer': """Experienced Android Developer with 5+ years in native Android development using Kotlin and Java. Expert in Android SDK, Android Studio, and automotive infotainment systems. Strong background in building performant mobile applications with modern architecture patterns."""
+
+    'android_developer': """Experienced Android Developer with 5+ years in native Android development using Kotlin and Java. Expert in Android SDK, Android Studio, and automotive infotainment systems. Strong background in building performant mobile applications with modern architecture patterns.""",
+
+    'ai_product_engineer': """AI Product Engineer with 5+ years building intelligent systems and LLM-powered applications. Expert in React/TypeScript/Python with hands-on LLM integration (GPT-4, Claude, OpenAI API). Built production AI products including CarBot (Android Auto AI assistant), JobHunter (95% accurate AI role detection), and AI Math Grader. Proficient with AI coding tools (Cursor, Claude Code, Copilot). Passionate about integrating AI engines into production systems with measurable business impact.""",
+
+    'backend_developer': """Backend Developer with 5+ years building enterprise applications and microservices. Strong expertise in Java, Spring Boot, and Python with deep database optimization skills (PostgreSQL, MongoDB, Redis). Proven track record designing RESTful APIs handling millions of requests. Unique combination of Master's in International Business with technical expertise - understanding both implementation and business impact.""",
+
+    'it_business_analyst': """IT Business Analyst with Master's in International Business & Trade combined with hands-on IT development experience. Expert at bridging the gap between technical IT systems and business requirements. 5+ years translating complex business needs into technical specifications, leading requirements workshops, and driving digital transformation. Strong analytical skills with ability to understand both technical implementation and business/commercial impact."""
 }
 
 SKILLS_BRICKS = {
@@ -65,6 +71,30 @@ SKILLS_BRICKS = {
         r"\textbf{Cloud Platforms:} AWS, Azure, GCP, Cloud optimization, Performance tuning",
         r"\textbf{DevOps:} Docker, Kubernetes, CI/CD, Terraform, Git/GitHub",
         r"\textbf{Databases:} PostgreSQL, MySQL, MongoDB, Redis",
+    ],
+
+    'ai_product_engineer_primary': [
+        r"\textbf{AI \& LLM:} OpenAI API (GPT-4), Anthropic Claude, LangChain, RAG, Prompt Engineering, Fine-tuning",
+        r"\textbf{Full-Stack:} React, TypeScript, Python, Node.js, Next.js, FastAPI, RESTful APIs",
+        r"\textbf{AI Tools:} Cursor, Claude Code, GitHub Copilot, Vercel AI SDK",
+        r"\textbf{Cloud \& DevOps:} AWS, Azure, Docker, Kubernetes, CI/CD, Terraform",
+        r"\textbf{Databases:} PostgreSQL, MongoDB, Redis, Vector Databases (Pinecone, Weaviate)",
+    ],
+
+    'backend_primary': [
+        r"\textbf{Languages:} Java, Python, Go, C\#/.NET, TypeScript",
+        r"\textbf{Frameworks:} Spring Boot, Spring Framework, FastAPI, ASP.NET Core",
+        r"\textbf{Databases:} PostgreSQL, MySQL, MongoDB, Redis, SQL optimization",
+        r"\textbf{Architecture:} Microservices, RESTful APIs, Event-driven, Message queues",
+        r"\textbf{Cloud \& DevOps:} AWS, Azure, Docker, Kubernetes, CI/CD pipelines",
+    ],
+
+    'it_business_analyst_primary': [
+        r"\textbf{Business Analysis:} Requirements gathering, Gap analysis, Business case development, Process mapping",
+        r"\textbf{Tools:} Excel (Advanced), Power BI, Visio, JIRA, Confluence, Microsoft 365",
+        r"\textbf{IT Knowledge:} Cloud platforms (Azure, AWS), Databases (SQL), APIs, System architecture",
+        r"\textbf{Project Management:} Agile/Scrum, Pre-studies, Change management, UAT coordination",
+        r"\textbf{Communication:} Workshop facilitation, Stakeholder presentations, Cross-cultural collaboration",
     ]
 }
 
@@ -479,18 +509,41 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
         return template_content
     
     # Fallback to LEGO bricks generation if no template
-    # Map role type to brick keys
+    # Map role type/category to brick keys (comprehensive mapping)
     role_map = {
+        # By role_type (display name)
         'Incident Management Specialist': 'incident_management_specialist',
+        'Incident Management Sre': 'incident_management_specialist',
         'Devops Engineer': 'devops_engineer',
+        'Devops Cloud': 'devops_engineer',
         'Fullstack Developer': 'fullstack_developer',
-        'Android Developer': 'android_developer'
+        'Android Developer': 'android_developer',
+        'Ai Product Engineer': 'ai_product_engineer',
+        'Backend Developer': 'backend_developer',
+        'It Business Analyst': 'it_business_analyst',
+        'Cloud Engineer': 'devops_engineer',
+        'Platform Engineer': 'devops_engineer',
+        # By role_category (internal key)
+        'incident_management_sre': 'incident_management_specialist',
+        'devops_cloud': 'devops_engineer',
+        'fullstack_developer': 'fullstack_developer',
+        'android_developer': 'android_developer',
+        'ai_product_engineer': 'ai_product_engineer',
+        'backend_developer': 'backend_developer',
+        'it_business_analyst': 'it_business_analyst',
+        'cloud_engineer': 'devops_engineer',
+        'platform_engineer': 'devops_engineer',
+        'devops_fintech': 'devops_engineer',
+        'finops': 'devops_engineer',
+        'it_support': 'incident_management_specialist',
+        'integration_architect': 'backend_developer',
     }
-    
-    brick_key = role_map.get(role_type, 'devops_engineer')
-    
-    profile = PROFILE_BRICKS[brick_key]
-    skills_key = brick_key.replace('_specialist', '_primary').replace('_engineer', '_primary').replace('_developer', '_primary')
+
+    # Try role_category first, then role_type, then default
+    brick_key = role_map.get(role_category, role_map.get(role_type, 'devops_engineer'))
+
+    profile = PROFILE_BRICKS.get(brick_key, PROFILE_BRICKS['devops_engineer'])
+    skills_key = brick_key.replace('_specialist', '_primary').replace('_engineer', '_primary').replace('_developer', '_primary').replace('_analyst', '_primary')
     skills = SKILLS_BRICKS.get(skills_key, SKILLS_BRICKS['devops_primary'])
     
     skills_items = "\n".join([f"\\item {skill}" for skill in skills])
