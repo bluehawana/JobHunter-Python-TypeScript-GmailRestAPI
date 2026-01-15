@@ -617,41 +617,33 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
     import re
     from datetime import datetime
 
-    # Clean up the header block - replace placeholder header with clean company-only header
-    # Match the entire header block: {\color{linkedinblue} ... company info ... }
-    header_pattern = r'\{\\color\{linkedinblue\}\s*\\noindent[^}]+\}'
-
+    # Replace [Company Name] placeholders in body text
     if company and company != 'Company':
-        # Create clean header with just company name (no placeholder address/email)
-        clean_header = f'''{{\\color{{linkedinblue}}
-\\noindent {company} \\\\
-Stockholm, Sweden
-}}'''
-        template_content = re.sub(header_pattern, clean_header, template_content, count=1, flags=re.DOTALL)
-
-        # Also replace [Company Name] placeholders in body text
         template_content = template_content.replace('[Company Name]', company)
 
-    # Replace [Position] placeholder and job title references
+    # Replace [Position] placeholder
     if title and title != 'Position':
         template_content = template_content.replace('[Position]', title)
-        # Replace in Re: line if present
-        template_content = re.sub(
-            r'Re: Application for [^\n\\]+',
-            f'Re: Application for {title}',
-            template_content
-        )
 
-    # Clean up any remaining placeholders (remove lines with unfilled placeholders)
-    # Remove lines like "[Address] \\" or "[Contact Email] \\"
-    template_content = re.sub(r'\\noindent \[Address\].*?\\\\.*?\n', '', template_content)
-    template_content = re.sub(r'\[Contact Email\].*?\\\\.*?\n', '', template_content)
-    template_content = re.sub(r'\[City\],?\s*Sweden.*?\n', '', template_content)
-    template_content = re.sub(r'Hiring Manager.*?\\\\.*?\n', '', template_content)
+    # Clean up placeholder lines in header (use simple string operations to avoid regex escape issues)
+    lines = template_content.split('\n')
+    cleaned_lines = []
+    for line in lines:
+        # Skip lines with unfilled placeholders
+        if '[Address]' in line or '[Contact Email]' in line or '[City]' in line:
+            continue
+        if 'Hiring Manager' in line and '\\\\' in line:
+            continue
+        cleaned_lines.append(line)
+    template_content = '\n'.join(cleaned_lines)
 
     # Update date
     today = datetime.now().strftime("%B %d, %Y")
-    template_content = re.sub(r'(January|February|March|April|May|June|July|August|September|October|November|December) \d+, 202\d', today, template_content)
+    template_content = re.sub(
+        r'(January|February|March|April|May|June|July|August|September|October|November|December) \d+, 202\d',
+        today,
+        template_content
+    )
 
     return template_content
 
