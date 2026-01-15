@@ -85,17 +85,26 @@ class AIAnalyzer:
             if not self.api_key:
                 logger.warning("API key not configured")
         
-        # Role categories that the AI can select from
-        self.role_categories = [
-            'android_developer',
-            'devops_cloud',
-            'incident_management_sre',
-            'fullstack_developer',
-            'ict_software_engineer',
-            'platform_engineer',
-            'integration_architect',
-            'backend_developer'
-        ]
+        # Role categories loaded from cv_templates.py for single source of truth
+        from cv_templates import CVTemplateManager
+        self.template_manager = CVTemplateManager()
+        self.role_categories = list(self.template_manager.ROLE_CATEGORIES.keys())
+
+        # Role descriptions for LLM context
+        self.role_descriptions = {
+            'android_developer': 'Android/Kotlin/mobile app development, AOSP, Android SDK, automotive infotainment',
+            'devops_fintech': 'DevOps for financial/banking/trading systems, FinTech, Nasdaq, payment processing',
+            'ai_product_engineer': 'AI/ML engineering, LLM, GPT, machine learning, deep learning, neural networks',
+            'fullstack_developer': 'Full-stack web development with React/Vue/Angular frontend + backend, TypeScript, JavaScript',
+            'backend_developer': 'Backend/API development with Java, Spring Boot, microservices, server-side',
+            'devops_cloud': 'Cloud infrastructure, DevOps, AWS/Azure/GCP, Kubernetes, Docker, Terraform, CI/CD',
+            'incident_management_sre': 'SRE, incident management, on-call, production support, monitoring, observability',
+            'platform_engineer': 'Platform engineering, internal tools, developer experience, infrastructure platform',
+            'it_support': 'IT support, helpdesk, service desk, technical support, ITIL, ticketing systems',
+            'finops': 'FinOps, cloud cost optimization, cloud economics, billing, reserved instances',
+            'integration_architect': 'Solution/integration architect, API architecture, system integration, middleware',
+            'cloud_engineer': 'Generic cloud engineering, cloud platform, cloud migration, cloud native'
+        }
     
     def is_available(self) -> bool:
         """Check if AI analysis is available"""
@@ -170,40 +179,52 @@ class AIAnalyzer:
         return None, 0.0
     
     def _build_analysis_prompt(self, job_description: str) -> str:
-        """Build the prompt for Minimax M2"""
-        
-        categories_desc = "\n".join([f"- {cat}" for cat in self.role_categories])
-        
-        # Limit job description to avoid token limits
-        jd_text = job_description[:2000] if len(job_description) > 2000 else job_description
-        
-        prompt = f"""Analyze this job description and determine the most appropriate role category.
+        """Build the prompt for Minimax M2 with detailed role descriptions"""
 
-Available role categories:
+        # Build categories with descriptions
+        categories_with_desc = []
+        for cat in self.role_categories:
+            desc = self.role_descriptions.get(cat, cat.replace('_', ' '))
+            categories_with_desc.append(f"- {cat}: {desc}")
+        categories_desc = "\n".join(categories_with_desc)
+
+        # Limit job description to avoid token limits
+        jd_text = job_description[:3000] if len(job_description) > 3000 else job_description
+
+        prompt = f"""You are a job classification expert. Analyze this job description and select the MOST appropriate role category.
+
+AVAILABLE ROLE CATEGORIES (select ONE):
 {categories_desc}
 
-Job Description:
+JOB DESCRIPTION:
 {jd_text}
 
-Please respond in JSON format with:
+CLASSIFICATION RULES (follow strictly):
+1. If job mentions "fullstack", "full-stack", "frontend AND backend", "React" + backend tech -> select 'fullstack_developer'
+2. If job is primarily Java/Spring Boot backend with no frontend -> select 'backend_developer'
+3. If job mentions Android, Kotlin, mobile, AOSP -> select 'android_developer'
+4. If job mentions FinTech, banking, trading, payment, Nasdaq -> select 'devops_fintech'
+5. If job mentions AI, ML, LLM, machine learning -> select 'ai_product_engineer'
+6. If job mentions DevOps, Kubernetes, Docker, Terraform, CI/CD (without financial focus) -> select 'devops_cloud'
+7. If job mentions SRE, incident, on-call, monitoring -> select 'incident_management_sre'
+8. If job mentions IT support, helpdesk, service desk -> select 'it_support'
+9. If job mentions FinOps, cloud cost optimization -> select 'finops'
+10. If job mentions architect, integration, middleware -> select 'integration_architect'
+11. Default to 'devops_cloud' if unclear
+
+PRIORITY ORDER for ambiguous cases:
+- Specialized roles (android, fintech, ai) take priority over generic roles
+- Fullstack takes priority over backend when frontend is mentioned
+- DevOps/Cloud is the fallback when nothing specific matches
+
+Respond ONLY in this JSON format:
 {{
-    "role_category": "<one of the categories above>",
+    "role_category": "<exactly one category from the list>",
     "confidence": <0.0 to 1.0>,
-    "reasoning": "<brief explanation>",
-    "key_technologies": ["<tech1>", "<tech2>", ...]
-}}
+    "reasoning": "<one sentence explaining why this category>",
+    "key_technologies": ["<tech1>", "<tech2>", "<tech3>", ...]
+}}"""
 
-Focus on:
-1. Primary technical skills required (e.g., Android, Kubernetes, CI/CD tools)
-2. Job responsibilities (e.g., incident management, full-stack development)
-3. Specific tools mentioned (e.g., Jenkins, Gerrit, React, Kotlin)
-
-Important: 
-- For CI/CD DevOps roles emphasizing Jenkins, Gerrit, Artifactory, select 'devops_cloud'
-- For Android/mobile development, select 'android_developer'
-- For incident management/SRE roles, select 'incident_management_sre'
-- Avoid selecting roles with irrelevant focus (e.g., don't select FinTech-focused templates for pure DevOps roles)"""
-        
         return prompt
     
     def _parse_ai_response(self, response) -> Dict:

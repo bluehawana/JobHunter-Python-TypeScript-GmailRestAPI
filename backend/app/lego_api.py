@@ -655,34 +655,19 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
 
     print(f"[CL] role_category={role_category}, company={company}, title={title}")
 
-    # Try to load cover letter template first
+    # Try to load cover letter template directly from cv_templates
     if role_category:
-        # Look for cover letter template
-        template_path = template_manager.get_template_path(role_category)
-        print(f"[CL] template_path={template_path}")
-        if template_path:
-            # Try to find CL template in same directory
-            # Handle multiple patterns: _CV_*.tex, _CV.tex, CV.tex
-            cv_filename = template_path.name
-            # Try replacing _CV_ with _CL_ first (for dated templates like _CV_20251119.tex)
-            cl_filename = cv_filename.replace('_CV_', '_CL_').replace('_CV.', '_CL.')
-            # Also try replacing CV.tex with CL.tex (for templates ending in CV.tex)
-            if cl_filename == cv_filename:  # No replacement happened
-                cl_filename = cv_filename.replace('CV.tex', 'CL.tex')
+        # Use the new direct CL template loading (no string manipulation needed)
+        template_content = template_manager.load_template(role_category, 'cl')
 
-            cl_path = template_path.parent / cl_filename
-            print(f"[CL] cl_path={cl_path}, exists={cl_path.exists()}")
-            if cl_path.exists():
-                try:
-                    print(f"[CL] Loading template from {cl_path}")
-                    with open(cl_path, 'r', encoding='utf-8') as f:
-                        template_content = f.read()
-                        # Customize with company/title
-                        template_content = customize_cover_letter(template_content, company, title)
-                        print(f"[CL] Template loaded successfully")
-                        return template_content
-                except Exception as e:
-                    print(f"[CL] Error loading CL template: {e}")
+        if template_content:
+            print(f"[CL] Loaded CL template for role: {role_category}")
+            # Customize with company/title
+            template_content = customize_cover_letter(template_content, company, title)
+            print(f"[CL] Template customized successfully")
+            return template_content
+        else:
+            print(f"[CL] No CL template found for role: {role_category}")
 
     print(f"[CL] Falling back to LEGO bricks generation")
     # Fallback to LEGO bricks generation

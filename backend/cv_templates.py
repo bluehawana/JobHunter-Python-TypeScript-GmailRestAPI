@@ -12,56 +12,95 @@ class CVTemplateManager:
     
     # Role categories and their keywords
     # Now using REAL templates from job_applications/ folder
+    # Priority: Lower number = higher priority (checked first)
+    # Tip: More specific roles should have lower priority numbers
     ROLE_CATEGORIES = {
+        # === SPECIALIZED ROLES (Priority 1) - Check these first ===
         'android_developer': {
-            'keywords': ['android', 'kotlin', 'android app', 'apk', 'mobile app', 'aosp', 'android sdk', 'jetpack', 'react native'],
-            'template_path': 'job_applications/ecarx_android_developer/Ecarx_Android_Developer_CV.tex',
+            'keywords': ['android', 'kotlin', 'android app', 'apk', 'mobile app', 'aosp', 'android sdk', 'jetpack', 'react native', 'mobile developer'],
+            'cv_template': 'job_applications/ecarx_android_developer/Ecarx_Android_Developer_CV.tex',
+            'cl_template': 'job_applications/ecarx_android_developer/Ecarx_Android_Developer_CL.tex',
             'priority': 1
         },
-        'devops_cloud': {
-            'keywords': ['devops', 'cloud', 'aws', 'azure', 'gcp', 'kubernetes', 'docker', 'terraform', 'ci/cd', 'infrastructure'],
-            'template_path': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CV.tex',  # Pure Cloud/DevOps, NO banking
-            'priority': 2
-        },
         'devops_fintech': {
-            'keywords': ['fintech', 'financial', 'banking', 'payment', 'trading', 'nasdaq', 'finance', 'post-trade', 'settlement'],
-            'template_path': 'job_applications/nasdaq_devops_cloud/Nasdaq_DevOps_Cloud_Harvad_CV.tex',  # DevOps + FinTech experience
-            'priority': 1  # Higher priority than generic devops when fintech keywords present
-        },
-        'incident_management_sre': {
-            'keywords': ['incident', 'sre', 'site reliability', 'on-call', 'monitoring', 'observability', 'mttr', 'production support'],
-            'template_path': 'job_applications/tata_incident_management/Tata_Incident_Management_Harvad_CV.tex',
-            'priority': 3
-        },
-        'fullstack_developer': {
-            'keywords': ['fullstack', 'full-stack', 'full stack', 'react', 'vue', 'angular', 'node.js', 'frontend', 'backend', 'web developer', 'web application'],
-            'template_path': 'job_applications/ahlsell_fullstack/Ahlsell_Fullstack_CV.tex',
-            'priority': 3  # Higher priority to compete with devops
+            'keywords': ['fintech', 'financial', 'banking', 'payment', 'trading', 'nasdaq', 'finance', 'post-trade', 'settlement', 'compliance'],
+            'cv_template': 'job_applications/nasdaq_devops_cloud/Nasdaq_DevOps_Cloud_Harvad_CV.tex',
+            'cl_template': 'job_applications/nasdaq_devops_cloud/Nasdaq_DevOps_Cloud_Harvad_CL.tex',
+            'priority': 1
         },
         'ai_product_engineer': {
-            'keywords': ['ai', 'machine learning', 'llm', 'gpt', 'product engineer', 'artificial intelligence', 'ml', 'openai', 'claude'],
-            'template_path': 'job_applications/omnimodular_ai_product_engineer/Omnimodular_AI_Product_Engineer_CV.tex',  # NO banking content
-            'priority': 5
+            'keywords': ['ai engineer', 'machine learning', 'llm', 'gpt', 'product engineer', 'artificial intelligence', 'ml engineer', 'openai', 'claude', 'deep learning', 'neural network'],
+            'cv_template': 'job_applications/omnimodular_ai_product_engineer/Omnimodular_AI_Product_Engineer_CV.tex',
+            'cl_template': 'job_applications/omnimodular_ai_product_engineer/Omnimodular_AI_Product_Engineer_CL.tex',
+            'priority': 1
         },
-        'cloud_engineer': {
-            'keywords': ['cloud engineer', 'cloud infrastructure', 'cloud platform', 'cloud architecture', 'cloud migration'],
-            'template_path': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CV.tex',
-            'priority': 6
+
+        # === FULLSTACK (Priority 2) - Explicit fullstack keywords win ===
+        'fullstack_developer': {
+            'keywords': ['fullstack', 'full-stack', 'full stack', 'frontend and backend', 'front-end and back-end', 'react', 'vue', 'angular', 'next.js', 'nuxt', 'web developer', 'web application', 'typescript', 'javascript'],
+            'cv_template': 'job_applications/ahlsell_fullstack/Ahlsell_Fullstack_CV.tex',
+            'cl_template': 'job_applications/ahlsell_fullstack/Ahlsell_Fullstack_CL.tex',
+            'priority': 2
+        },
+
+        # === BACKEND-FOCUSED (Priority 3) ===
+        'backend_developer': {
+            'keywords': ['backend developer', 'back-end developer', 'api developer', 'java developer', 'spring boot', 'spring framework', 'hibernate', 'jpa', 'microservices', 'server-side', 'restful api'],
+            'cv_template': 'job_applications/eworks_java/eWorks_Complete_CV_20251120.tex',
+            'cl_template': 'job_applications/eworks_java/eWorks_Complete_CL_20251120.tex',
+            'priority': 3
+        },
+
+        # === DEVOPS/INFRASTRUCTURE (Priority 4) ===
+        'devops_cloud': {
+            'keywords': ['devops', 'cloud engineer', 'aws', 'azure', 'gcp', 'kubernetes', 'docker', 'terraform', 'ci/cd', 'infrastructure as code', 'iac', 'helm', 'argocd'],
+            'cv_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CV.tex',
+            'cl_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CL.tex',
+            'priority': 4
+        },
+        'incident_management_sre': {
+            'keywords': ['incident', 'sre', 'site reliability', 'on-call', 'monitoring', 'observability', 'mttr', 'production support', 'pagerduty', 'opsgenie', 'incident management'],
+            'cv_template': 'job_applications/tata_incident_management/Tata_Incident_Management_Harvad_CV.tex',
+            'cl_template': 'job_applications/tata_incident_management/Tata_Incident_Management_Harvad_CL.tex',
+            'priority': 4
         },
         'platform_engineer': {
-            'keywords': ['platform engineer', 'platform', 'infrastructure', 'internal tools', 'developer experience'],
-            'template_path': 'job_applications/essity/Essity_Cloud_DevOps_CV_Overleaf.tex',
-            'priority': 7
+            'keywords': ['platform engineer', 'platform team', 'internal tools', 'developer experience', 'devex', 'infrastructure platform', 'golden path'],
+            'cv_template': 'job_applications/essity/Essity_Cloud_DevOps_CV_Overleaf.tex',
+            'cl_template': 'job_applications/essity/Essity_Cloud_DevOps_CL_Overleaf.tex',
+            'priority': 5
         },
-        'backend_developer': {
-            'keywords': ['backend', 'api', 'database', 'server', 'microservices', 'rest', 'graphql', 'java', 'spring boot', 'spring', 'hibernate'],
-            'template_path': 'job_applications/eworks_java/eWorks_Complete_CV_20251120.tex',
-            'priority': 3  # Higher priority for backend roles
+
+        # === IT SUPPORT / OPERATIONS (Priority 5) ===
+        'it_support': {
+            'keywords': ['it support', 'helpdesk', 'service desk', 'technical support', 'support engineer', 'it technician', 'desktop support', 'l1', 'l2', 'l3 support', 'itil', 'ticketing'],
+            'cv_template': 'job_applications/tata_incident_management/Tata_Incident_Management_Harvad_CV.tex',
+            'cl_template': 'job_applications/tata_incident_management/Tata_Incident_Management_Harvad_CL.tex',
+            'priority': 5
         },
+
+        # === FINOPS / COST OPTIMIZATION (Priority 5) ===
+        'finops': {
+            'keywords': ['finops', 'cloud cost', 'cost optimization', 'cloud economics', 'cloud billing', 'reserved instances', 'savings plans', 'cost management', 'cloud financial'],
+            'cv_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CV.tex',
+            'cl_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CL.tex',
+            'priority': 5
+        },
+
+        # === ARCHITECT ROLES (Priority 6) ===
         'integration_architect': {
-            'keywords': ['integration', 'architect', 'api', 'microservices', 'system integration', 'middleware'],
-            'template_path': 'job_applications/gothenburg_devops_cicd/Gothenburg_DevOps_CICD_Harvad_CV.tex',  # Fallback to DevOps
-            'priority': 9
+            'keywords': ['integration architect', 'solution architect', 'enterprise architect', 'api architect', 'system integration', 'middleware', 'esb', 'mulesoft', 'api gateway'],
+            'cv_template': 'job_applications/gothenburg_devops_cicd/Gothenburg_DevOps_CICD_Harvad_CV.tex',
+            'cl_template': 'job_applications/gothenburg_devops_cicd/Gothenburg_DevOps_CICD_Harvad_CL.tex',
+            'priority': 6
+        },
+
+        # === GENERIC CLOUD (Priority 7) - Fallback ===
+        'cloud_engineer': {
+            'keywords': ['cloud', 'infrastructure', 'cloud platform', 'cloud architecture', 'cloud migration', 'cloud native'],
+            'cv_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CV.tex',
+            'cl_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CL.tex',
+            'priority': 7
         }
     }
     
@@ -104,33 +143,60 @@ class CVTemplateManager:
         # Default to devops_cloud if no clear match
         return 'devops_cloud'
     
-    def get_template_path(self, role_category: str) -> Optional[Path]:
-        """Get the template path for a given role category"""
+    def get_template_path(self, role_category: str, template_type: str = 'cv') -> Optional[Path]:
+        """
+        Get the template path for a given role category
+
+        Args:
+            role_category: The role category key (e.g., 'fullstack_developer')
+            template_type: 'cv' or 'cl' for CV or Cover Letter template
+
+        Returns:
+            Path to the template file, or None if not found
+        """
         if role_category in self.ROLE_CATEGORIES:
-            template_path_str = self.ROLE_CATEGORIES[role_category]['template_path']
-            
+            # Support both old 'template_path' key and new 'cv_template'/'cl_template' keys
+            role_data = self.ROLE_CATEGORIES[role_category]
+
+            if template_type == 'cl':
+                template_path_str = role_data.get('cl_template', role_data.get('template_path'))
+            else:
+                template_path_str = role_data.get('cv_template', role_data.get('template_path'))
+
+            if not template_path_str:
+                return None
+
             # Get absolute path from project root
             base_dir = Path(__file__).parent.parent  # Go up to project root
             full_path = base_dir / template_path_str
-            
+
             # Check if file exists
             if full_path.exists() and full_path.is_file():
                 return full_path
-        
+
         return None
     
-    def load_template(self, role_category: str) -> Optional[str]:
-        """Load template content for a given role category"""
-        template_path = self.get_template_path(role_category)
-        
+    def load_template(self, role_category: str, template_type: str = 'cv') -> Optional[str]:
+        """
+        Load template content for a given role category
+
+        Args:
+            role_category: The role category key (e.g., 'fullstack_developer')
+            template_type: 'cv' or 'cl' for CV or Cover Letter template
+
+        Returns:
+            Template content as string, or None if not found
+        """
+        template_path = self.get_template_path(role_category, template_type)
+
         if template_path and template_path.exists():
             try:
                 with open(template_path, 'r', encoding='utf-8') as f:
                     return f.read()
             except Exception as e:
-                print(f"Error loading template: {e}")
+                print(f"Error loading {template_type.upper()} template: {e}")
                 return None
-        
+
         return None
     
     def get_role_info(self, role_category: str) -> Dict:
@@ -144,37 +210,75 @@ class CVTemplateManager:
         return {}
     
     def list_available_templates(self) -> List[Dict]:
-        """List all available templates"""
+        """List all available templates with both CV and CL paths"""
         templates = []
-        
+
         for role_key, role_data in self.ROLE_CATEGORIES.items():
-            template_path = self.get_template_path(role_key)
+            cv_path = self.get_template_path(role_key, 'cv')
+            cl_path = self.get_template_path(role_key, 'cl')
             templates.append({
                 'role': role_key,
                 'display_name': role_key.replace('_', ' ').title(),
                 'keywords': role_data['keywords'],
-                'template_exists': template_path is not None and template_path.exists(),
-                'template_path': str(template_path) if template_path else None
+                'priority': role_data['priority'],
+                'cv_exists': cv_path is not None and cv_path.exists(),
+                'cl_exists': cl_path is not None and cl_path.exists(),
+                'cv_path': str(cv_path) if cv_path else None,
+                'cl_path': str(cl_path) if cl_path else None
             })
-        
+
+        # Sort by priority
+        templates.sort(key=lambda x: x['priority'])
+
         return templates
 
 
-# Example usage
+# Example usage and tests
 if __name__ == '__main__':
     manager = CVTemplateManager()
-    
-    # Test with Android job
-    android_jd = """
-    We are looking for an Android Platform Developer to work on automotive infotainment systems.
-    You will work with Kotlin, Java, and AOSP to build cutting-edge mobile experiences.
-    """
-    
-    role = manager.analyze_job_role(android_jd)
-    print(f"Detected role: {role}")
-    print(f"Role info: {manager.get_role_info(role)}")
-    
-    # List all templates
-    print("\nAvailable templates:")
+
+    # Test job descriptions for different role categories
+    test_jobs = {
+        'android': """
+            We are looking for an Android Platform Developer to work on automotive infotainment systems.
+            You will work with Kotlin, Java, and AOSP to build cutting-edge mobile experiences.
+        """,
+        'fullstack': """
+            Software Developer at Benifex. We need someone with Kubernetes, Docker, Grafana,
+            TypeScript, Go, Java, Spring Boot, CI/CD, Monitoring, Observability.
+            Fullstack experience with React and backend development required.
+        """,
+        'backend_java': """
+            Backend Developer needed. Strong Java and Spring Boot experience required.
+            You will build microservices and RESTful APIs using Hibernate and JPA.
+        """,
+        'devops': """
+            DevOps Engineer position. Must have experience with AWS, Kubernetes, Terraform,
+            and CI/CD pipelines. Infrastructure as Code experience required.
+        """,
+        'fintech': """
+            FinTech Engineer at Nasdaq. Experience with trading systems, payment processing,
+            and financial compliance required. Banking experience is a plus.
+        """,
+        'it_support': """
+            IT Support Specialist needed. Experience with helpdesk, service desk, ITIL.
+            L2/L3 support experience required. Ticketing system knowledge needed.
+        """
+    }
+
+    print("=" * 60)
+    print("ROLE DETECTION TEST")
+    print("=" * 60)
+
+    for test_name, job_desc in test_jobs.items():
+        detected = manager.analyze_job_role(job_desc)
+        print(f"\n{test_name.upper()} job -> Detected: {detected}")
+
+    print("\n" + "=" * 60)
+    print("AVAILABLE TEMPLATES (sorted by priority)")
+    print("=" * 60)
+
     for template in manager.list_available_templates():
-        print(f"  - {template['display_name']}: {template['template_exists']}")
+        cv_status = "✓" if template['cv_exists'] else "✗"
+        cl_status = "✓" if template['cl_exists'] else "✗"
+        print(f"  P{template['priority']} {template['display_name']}: CV={cv_status} CL={cl_status}")
