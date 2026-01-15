@@ -16,6 +16,12 @@ class CVTemplateManager:
     # Tip: More specific roles should have lower priority numbers
     ROLE_CATEGORIES = {
         # === SPECIALIZED ROLES (Priority 1) - Check these first ===
+        'it_business_analyst': {
+            'keywords': ['business analyst', 'it analyst', 'it business analyst', 'business requirements', 'stakeholder', 'business process', 'gap analysis', 'power bi', 'visio', 'workshop', 'requirements gathering', 'business case', 'process improvement', 'digitalization', 'bridge between'],
+            'cv_template': 'job_applications/incluso_it_business_analyst/Incluso_IT_Business_Analyst_CV.tex',
+            'cl_template': 'job_applications/incluso_it_business_analyst/Incluso_IT_Business_Analyst_CL.tex',
+            'priority': 1
+        },
         'android_developer': {
             'keywords': ['android', 'kotlin', 'android app', 'apk', 'mobile app', 'aosp', 'android sdk', 'jetpack', 'react native', 'mobile developer'],
             'cv_template': 'job_applications/ecarx_android_developer/Ecarx_Android_Developer_CV.tex',

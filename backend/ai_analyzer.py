@@ -92,6 +92,7 @@ class AIAnalyzer:
 
         # Role descriptions for LLM context
         self.role_descriptions = {
+            'it_business_analyst': 'IT Business Analyst, business requirements, stakeholder management, gap analysis, process improvement, digitalization, bridge IT and business, Power BI, Visio, workshops',
             'android_developer': 'Android/Kotlin/mobile app development, AOSP, Android SDK, automotive infotainment',
             'devops_fintech': 'DevOps for financial/banking/trading systems, FinTech, Nasdaq, payment processing',
             'ai_product_engineer': 'AI/ML engineering, LLM, GPT, machine learning, deep learning, neural networks',
