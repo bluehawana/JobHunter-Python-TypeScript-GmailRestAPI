@@ -616,37 +616,43 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
     """Customize cover letter template with company and title"""
     import re
     from datetime import datetime
-    
-    # Replace company name in header (e.g., "CPAC Systems" or "[Company Name]")
+
+    # Clean up the header block - replace placeholder header with clean company-only header
+    # Match the entire header block: {\color{linkedinblue} ... company info ... }
+    header_pattern = r'\{\\color\{linkedinblue\}\s*\\noindent[^}]+\}'
+
     if company and company != 'Company':
-        # Replace [Company Name] placeholder
+        # Create clean header with just company name (no placeholder address/email)
+        clean_header = f'''{{\\color{{linkedinblue}}
+\\noindent {company} \\\\
+Stockholm, Sweden
+}}'''
+        template_content = re.sub(header_pattern, clean_header, template_content, count=1, flags=re.DOTALL)
+
+        # Also replace [Company Name] placeholders in body text
         template_content = template_content.replace('[Company Name]', company)
-        template_content = template_content.replace('[Location]', 'Gothenburg, Sweden')
-        
-        # Replace hardcoded company names (e.g., "CPAC Systems", "Tata Technologies")
-        # Look for pattern: {\color{darkblue}CompanyName\\
-        pattern = r'(\\color\{darkblue\})[^\\]+(\\\\)'
-        replacement = f'\\1{company}\\2'
-        template_content = re.sub(pattern, replacement, template_content, count=1)
-    
-    # Replace job title in "Re:" line and throughout
+
+    # Replace [Position] placeholder and job title references
     if title and title != 'Position':
-        # Replace in Re: line
+        template_content = template_content.replace('[Position]', title)
+        # Replace in Re: line if present
         template_content = re.sub(
-            r'Re: Application for [^\\]+',
+            r'Re: Application for [^\n\\]+',
             f'Re: Application for {title}',
             template_content
         )
-        # Replace "Android Platform Developer" or similar in second line of header
-        pattern2 = r'(\\color\{darkblue\}[^\\]+\\\\)\n([^\\]+)(\\\\)'
-        def replace_title(match):
-            return f'{match.group(1)}\n{title}{match.group(3)}'
-        template_content = re.sub(pattern2, replace_title, template_content, count=1)
-    
+
+    # Clean up any remaining placeholders (remove lines with unfilled placeholders)
+    # Remove lines like "[Address] \\" or "[Contact Email] \\"
+    template_content = re.sub(r'\\noindent \[Address\].*?\\\\.*?\n', '', template_content)
+    template_content = re.sub(r'\[Contact Email\].*?\\\\.*?\n', '', template_content)
+    template_content = re.sub(r'\[City\],?\s*Sweden.*?\n', '', template_content)
+    template_content = re.sub(r'Hiring Manager.*?\\\\.*?\n', '', template_content)
+
     # Update date
     today = datetime.now().strftime("%B %d, %Y")
-    template_content = re.sub(r'December \d+, 202\d', today, template_content)
-    
+    template_content = re.sub(r'(January|February|March|April|May|June|July|August|September|October|November|December) \d+, 202\d', today, template_content)
+
     return template_content
 
 
