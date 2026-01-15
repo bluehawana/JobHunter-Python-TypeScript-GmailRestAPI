@@ -125,9 +125,17 @@ class CVTemplateManager:
         job_lower = job_description.lower()
         ai_product_strong_terms = [
             'ai product', 'product engineer', 'ml engineer', 'machine learning engineer',
-            'ai engineer', 'applied ai', 'model training', 'model fine-tuning'
+            'ai engineer', 'applied ai', 'model training', 'model fine-tuning',
+            'model deployment', 'model serving', 'rag', 'retrieval-augmented',
+            'vector database', 'embeddings', 'prompt engineering'
         ]
-        fullstack_terms = ['fullstack', 'full-stack', 'full stack', 'frontend and backend', 'front-end and back-end']
+        fullstack_terms = [
+            'fullstack', 'full-stack', 'full stack', 'frontend and backend',
+            'front-end and back-end', 'web application', 'web applications',
+            'react', 'node', 'nodejs', 'javascript', 'typescript', 'api', 'rest',
+            'flask', 'sqlalchemy', 'postgresql'
+        ]
+        leadership_terms = ['lead', 'leading', 'mentor', 'managing', 'manager', 'architect']
         
         # Score each role category
         role_scores = {}
@@ -153,7 +161,9 @@ class CVTemplateManager:
                 if best_role == 'ai_product_engineer':
                     strong_ai_hits = sum(1 for term in ai_product_strong_terms if term in job_lower)
                     fullstack_hits = sum(1 for term in fullstack_terms if term in job_lower)
-                    if strong_ai_hits == 0 and fullstack_hits > 0:
+                    leadership_hits = sum(1 for term in leadership_terms if term in job_lower)
+                    # Require strong AI-product signals to override fullstack/lead roles.
+                    if (strong_ai_hits < 2) and (fullstack_hits > 0 or leadership_hits > 0):
                         role_scores['ai_product_engineer'] = 0
                         best_role = max(role_scores, key=role_scores.get)
                 return best_role
