@@ -625,7 +625,7 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
         
         # Replace hardcoded company names (e.g., "CPAC Systems", "Tata Technologies")
         # Look for pattern: {\color{darkblue}CompanyName\\
-        pattern = r'(\\color\{darkblue\})[^\\]+(\\\\'
+        pattern = r'(\\color\{darkblue\})[^\\]+(\\\\)'
         replacement = f'\\1{company}\\2'
         template_content = re.sub(pattern, replacement, template_content, count=1)
     
