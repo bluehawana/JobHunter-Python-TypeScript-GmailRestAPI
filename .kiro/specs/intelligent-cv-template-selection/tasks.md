@@ -37,7 +37,7 @@ What's missing:
     - Handle multi-word keywords as single units
     - _Requirements: 1.1, 1.2, 1.4, 1.5, 4.5_
 
-  - [x]* 2.2 Write property test for keyword extraction
+  - [x] 2.2 Write property test for keyword extraction
     - **Property 1: Keyword Extraction Completeness**
     - **Validates: Requirements 1.1, 1.4, 1.5**
 
@@ -45,8 +45,8 @@ What's missing:
     - **Property 6: Multi-word Keyword Support**
     - **Validates: Requirements 4.5**
 
-- [ ] 3. Create TemplateMatcher component with percentage-based scoring
-  - [ ] 3.1 Create TemplateMatcher class with scoring logic
+- [x] 3. Create TemplateMatcher component with percentage-based scoring
+  - [x] 3.1 Create TemplateMatcher class with scoring logic
     - Implement calculate_scores with priority weighting (existing logic)
     - Implement calculate_percentages to normalize scores to 0-100%
     - Implement get_role_breakdown to filter and rank roles by percentage
