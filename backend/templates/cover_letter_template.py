@@ -3,6 +3,7 @@
 Hongzhi Li's Cover Letter Template - Python-friendly version
 Converted from your exact LaTeX template with proper escaping
 """
+from datetime import datetime
 
 def get_base_cover_letter_template() -> str:
     """Return base cover letter components focusing on soft skills and unique value"""
@@ -74,7 +75,8 @@ COVER_LETTER_TEMPLATE = r"""
 
 % Header with company info
 \textcolor{{darkblue}}{{{company_name}\\
-{company_address}}}
+{job_title}\\
+{location}}}
 
 \vspace{{40pt}}
 
@@ -194,10 +196,10 @@ class LegoCoverLetterBuilder:
         # Use extracted company info if available
         if company_info:
             company = company_info.get('company_name', company)
-            company_address = company_info.get('company_address', f"{company}\\\\\\\\Sweden")
+            location = company_info.get('company_address') or job_data.get('location') or "Gothenburg, Sweden"
             greeting = company_info.get('greeting', "Dear Hiring Manager,")
         else:
-            company_address = f"{company}\\\\\\\\Sweden"
+            location = job_data.get('location') or "Gothenburg, Sweden"
             greeting = "Dear Hiring Manager,"
         
         # Determine industry and technical focus
@@ -225,9 +227,10 @@ class LegoCoverLetterBuilder:
         # Build complete cover letter
         cover_letter = self.base_template.format(
             company_name=company,
-            company_address=company_address,
+            job_title=job_title,
+            location=location,
             greeting=greeting,
-            current_date="2025.08.28",
+            current_date=datetime.now().strftime("%B %d, %Y"),
             cover_letter_body=customized_body
         )
         
