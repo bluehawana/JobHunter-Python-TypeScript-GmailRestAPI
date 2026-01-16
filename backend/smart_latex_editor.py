@@ -227,11 +227,14 @@ PROFILE_SUMMARY_PLACEHOLDER
 
 \\begin{letter}{\\color{darkblue}\\
 COMPANY_NAME_PLACEHOLDER\\\\
-DEPARTMENT_PLACEHOLDER\\\\
-ADDRESS_PLACEHOLDER\\\\
-CITY_PLACEHOLDER}\\\\
+JOB_TITLE_PLACEHOLDER\\\\
+LOCATION_PLACEHOLDER}\\\\
 
-\\vspace{40pt}
+\\vspace{16pt}
+
+\\today
+
+\\vspace{20pt}
 
 \\opening{Dear Hiring Manager,}
 
@@ -358,11 +361,11 @@ Hongzhi Li"""
         # Start with base template
         edited_cl = self.base_cl_template
         
-        # Replace company information
+        # Replace header information
         edited_cl = edited_cl.replace("COMPANY_NAME_PLACEHOLDER", company)
-        edited_cl = edited_cl.replace("DEPARTMENT_PLACEHOLDER", department or f"{job_title} Team")
-        edited_cl = edited_cl.replace("ADDRESS_PLACEHOLDER", address or "Hiring Department")
-        edited_cl = edited_cl.replace("CITY_PLACEHOLDER", city or "Sweden")
+        edited_cl = edited_cl.replace("JOB_TITLE_PLACEHOLDER", job_title)
+        location = city or address or "Gothenburg, Sweden"
+        edited_cl = edited_cl.replace("LOCATION_PLACEHOLDER", location)
         
         # Replace letter content
         letter_content = self.get_role_specific_cover_letter_content(job_title, company, role_focus)
