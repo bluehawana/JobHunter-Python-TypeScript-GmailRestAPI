@@ -35,7 +35,17 @@ class CVTemplateManager:
             'priority': 1
         },
         'ai_product_engineer': {
-            'keywords': ['ai engineer', 'machine learning', 'llm', 'gpt', 'product engineer', 'artificial intelligence', 'ml engineer', 'openai', 'claude', 'deep learning', 'neural network'],
+            # Keywords for BUILDING AI systems (model training, RAG, MLOps)
+            'keywords': [
+                'ai engineer', 'ml engineer', 'machine learning engineer',
+                'model training', 'training models', 'fine-tuning', 'fine-tuning models',
+                'rag', 'retrieval-augmented generation', 'vector database', 'vector databases',
+                'embeddings', 'mlops', 'ml ops', 'model serving', 'model deployment',
+                'deep learning', 'neural network', 'pytorch', 'tensorflow',
+                'hugging face', 'langchain', 'llama', 'stable diffusion',
+                'computer vision', 'nlp', 'natural language processing',
+                'data science', 'feature engineering', 'model evaluation'
+            ],
             'cv_template': 'job_applications/omnimodular_ai_product_engineer/Omnimodular_AI_Product_Engineer_CV.tex',
             'cl_template': 'job_applications/omnimodular_ai_product_engineer/Omnimodular_AI_Product_Engineer_CL.tex',
             'priority': 1
@@ -43,7 +53,16 @@ class CVTemplateManager:
 
         # === FULLSTACK (Priority 2) - Explicit fullstack keywords win ===
         'fullstack_developer': {
-            'keywords': ['fullstack', 'full-stack', 'full stack', 'frontend and backend', 'front-end and back-end', 'react', 'vue', 'angular', 'next.js', 'nuxt', 'web developer', 'web application', 'typescript', 'javascript'],
+            'keywords': [
+                'fullstack', 'full-stack', 'full stack', 'frontend and backend', 'front-end and back-end',
+                'react', 'vue', 'angular', 'next.js', 'nuxt', 'web developer', 'web application',
+                'typescript', 'javascript',
+                # AI integration keywords (using AI, not building AI)
+                'integrating ai', 'ai integration', 'using ai', 'leverage ai',
+                'ai-powered features', 'ai capabilities', 'llm integration',
+                'openai api', 'claude api', 'gpt api', 'ai apis',
+                'generative ai solutions', 'ai solutions', 'llm-based applications'
+            ],
             'cv_template': 'job_applications/ahlsell_fullstack/Ahlsell_Fullstack_CV.tex',
             'cl_template': 'job_applications/ahlsell_fullstack/Ahlsell_Fullstack_CL.tex',
             'priority': 2
@@ -51,7 +70,16 @@ class CVTemplateManager:
 
         # === BACKEND-FOCUSED (Priority 3) ===
         'backend_developer': {
-            'keywords': ['backend developer', 'back-end developer', 'api developer', 'java developer', 'spring boot', 'spring framework', 'hibernate', 'jpa', 'microservices', 'server-side', 'restful api'],
+            'keywords': [
+                'backend developer', 'back-end developer', 'api developer',
+                'java developer', 'spring boot', 'spring framework', 'hibernate', 'jpa',
+                'microservices', 'server-side', 'restful api',
+                # AI integration keywords (using AI, not building AI)
+                'integrating ai', 'ai integration', 'using ai', 'leverage ai',
+                'ai-powered features', 'ai capabilities', 'llm integration',
+                'openai api', 'claude api', 'gpt api', 'ai apis',
+                'generative ai solutions', 'ai solutions', 'llm-based applications'
+            ],
             'cv_template': 'job_applications/eworks_java/eWorks_Complete_CV_20251120.tex',
             'cl_template': 'job_applications/eworks_java/eWorks_Complete_CL_20251120.tex',
             'priority': 3
@@ -118,56 +146,51 @@ class CVTemplateManager:
     def analyze_job_role(self, job_description: str) -> str:
         """
         Analyze job description and determine the best matching role category
-        
+
         Returns:
             Role category key (e.g., 'android_developer', 'devops_cloud')
         """
         job_lower = job_description.lower()
-        ai_product_strong_terms = [
-            'ai product', 'product engineer', 'ml engineer', 'machine learning engineer',
-            'ai engineer', 'applied ai', 'model training', 'model fine-tuning',
-            'model deployment', 'model serving', 'rag', 'retrieval-augmented',
-            'vector database', 'embeddings', 'prompt engineering'
-        ]
-        fullstack_terms = [
-            'fullstack', 'full-stack', 'full stack', 'frontend and backend',
-            'front-end and back-end', 'web application', 'web applications',
-            'react', 'node', 'nodejs', 'javascript', 'typescript', 'api', 'rest',
-            'flask', 'sqlalchemy', 'postgresql'
-        ]
-        leadership_terms = ['lead', 'leading', 'mentor', 'managing', 'manager', 'architect']
-        
+
         # Score each role category
         role_scores = {}
-        
+
         for role_key, role_data in self.ROLE_CATEGORIES.items():
             score = 0
             keywords = role_data['keywords']
-            
+
             for keyword in keywords:
                 # Count occurrences of each keyword
                 count = len(re.findall(r'\b' + re.escape(keyword) + r'\b', job_lower))
                 score += count
-            
+
             # Apply priority weight (lower priority number = higher weight)
             weighted_score = score / role_data['priority']
             role_scores[role_key] = weighted_score
+
+        # Calculate total score for percentage calculation
+        total_score = sum(role_scores.values())
         
         # Return role with highest score
-        if role_scores:
+        if role_scores and total_score > 0:
             best_role = max(role_scores, key=role_scores.get)
             if role_scores[best_role] > 0:
-                # Prevent AI product template from overriding fullstack roles on generic AI mentions.
+                # Prevent AI product template from overriding software engineering roles.
+                # AI Product Engineer = building AI systems (model training, RAG, MLOps)
+                # Software Engineer with AI = building software that uses AI APIs
                 if best_role == 'ai_product_engineer':
-                    strong_ai_hits = sum(1 for term in ai_product_strong_terms if term in job_lower)
-                    fullstack_hits = sum(1 for term in fullstack_terms if term in job_lower)
-                    leadership_hits = sum(1 for term in leadership_terms if term in job_lower)
-                    # Require strong AI-product signals to override fullstack/lead roles.
-                    if (strong_ai_hits < 2) and (fullstack_hits > 0 or leadership_hits > 0):
+                    # Calculate percentage of AI Product Engineer work
+                    ai_percentage = (role_scores['ai_product_engineer'] / total_score) * 100
+                    
+                    # AI Product Engineer requires at least 50% AI-specific work
+                    if ai_percentage < 50:
+                        # This is likely a software engineering role with AI integration
+                        # Remove AI Product Engineer from consideration
                         role_scores['ai_product_engineer'] = 0
                         best_role = max(role_scores, key=role_scores.get)
+                
                 return best_role
-        
+
         # Default to devops_cloud if no clear match
         return 'devops_cloud'
     
