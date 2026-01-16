@@ -98,6 +98,253 @@ SKILLS_BRICKS = {
     ]
 }
 
+# Projects section for LEGO bricks fallback (role-specific)
+PROJECTS_BRICKS = {
+    'default': r"""
+\section*{Strategic Projects}
+
+\subsection*{Fleet Management Dashboard}
+\textit{2024 -- Present} \\
+\textbf{.NET 8, React 18, SQL Server 2022, Azure, Docker, GitHub Actions}
+\begin{itemize}[noitemsep]
+\item Built intelligent fleet tracking platform using US DOT data for fuel efficiency and CO2 tracking
+\item Implemented microservices architecture with event-driven patterns for real-time data processing
+\item Leveraged Azure App Service and Docker for scalable hosting with automated CI/CD pipelines
+\end{itemize}
+
+\subsection*{SmrtMart E-commerce Platform}
+\textit{2024 -- Present} \\
+\textbf{Go, Next.js, PostgreSQL, Kubernetes, Stripe API}
+\begin{itemize}[noitemsep]
+\item Built fullstack e-commerce platform with microservices architecture and Stripe payment integration
+\item Deployed on Kubernetes with auto-scaling for resilient distributed systems
+\item Live: \href{https://www.smrtmart.com}{smrtmart.com}
+\end{itemize}
+
+\subsection*{JobHunter Automation Platform}
+\textit{2025 -- Present} \\
+\textbf{Python, TypeScript, React, Gmail REST API}
+\begin{itemize}[noitemsep]
+\item Automated job application pipeline with AI-powered role detection (95\% accuracy)
+\item Built React dashboard for application tracking with real-time updates
+\item Demo: \href{https://jobs.bluehawana.com}{jobs.bluehawana.com}
+\end{itemize}
+""",
+
+    'ai_product_engineer': r"""
+\section*{AI Projects \& Products}
+
+\subsection*{CarBot (AndroidAuto-Ebot) - AI Voice Assistant}
+\textit{2024 - Present}
+\begin{itemize}[noitemsep]
+\item Built AI voice assistant for Android Auto outperforming Google Assistant with automotive-specific capabilities
+\item Integrated LLM with real-time vehicle data, navigation, and contextual awareness
+\item Tech: Android SDK, Kotlin, OpenAI API, Speech Recognition, TTS
+\end{itemize}
+
+\subsection*{AI Math Grader Ecosystem}
+\textit{2025 -- Present} \\
+\textbf{C\# .NET 8, React, AI/LLM (Gemini/OpenAI), Python}
+\begin{itemize}[noitemsep]
+\item Developed full-stack automated grading system for K-12 math with instant AI feedback
+\item Architected modular API layer with C\# .NET for AI-driven feedback loops
+\item Integrated white-label PDF export functionality
+\end{itemize}
+
+\subsection*{JobHunter - AI Job Application Automation}
+\textit{2024 - Present}
+\begin{itemize}[noitemsep]
+\item Intelligent job application system with AI achieving 95\% accurate role detection
+\item Full-stack application with AI-first architecture and prompt engineering
+\item Tech: React, TypeScript, Python, MiniMax M2, Anthropic SDK
+\end{itemize}
+""",
+
+    'it_business_analyst': r"""
+\section*{IT-Business Integration Projects}
+
+\subsection*{Fleet Management Business Solution}
+\textbf{Business Analysis + Technical Implementation}
+\begin{itemize}[noitemsep]
+\item Conducted market research and stakeholder interviews to define business requirements
+\item Created business case with ROI analysis for fuel efficiency features
+\item Documented functional requirements and coordinated implementation
+\end{itemize}
+
+\subsection*{E-commerce Platform (SmrtMart.com)}
+\textbf{End-to-End Business \& Technical Design}
+\begin{itemize}[noitemsep]
+\item Analyzed e-commerce market requirements and defined product specifications
+\item Designed business processes for order management, inventory, and payment flows
+\item Live platform demonstrating complete business solutions: \href{https://www.smrtmart.com}{smrtmart.com}
+\end{itemize}
+
+\subsection*{JobHunter Automation Platform}
+\textbf{Business Process Automation}
+\begin{itemize}[noitemsep]
+\item Identified inefficiencies in job application process and designed automated solution
+\item Created requirements documentation and process flow diagrams
+\item Demo: \href{https://jobs.bluehawana.com}{jobs.bluehawana.com}
+\end{itemize}
+""",
+
+    'android_developer': r"""
+\section*{Mobile \& Automotive Projects}
+
+\subsection*{CarBot (AndroidAuto-Ebot) - AI Voice Assistant}
+\textit{2024 - Present}
+\begin{itemize}[noitemsep]
+\item Built AI voice assistant for Android Auto outperforming Google Assistant with automotive-specific capabilities
+\item Integrated LLM with real-time vehicle data, navigation, and contextual awareness
+\item Tech: Android SDK, Kotlin, OpenAI API, Speech Recognition, TTS
+\end{itemize}
+
+\subsection*{Fleet Management Mobile App}
+\textit{2024 -- Present} \\
+\textbf{Kotlin, Android SDK, Retrofit, Room Database}
+\begin{itemize}[noitemsep]
+\item Developed Android companion app for fleet tracking with real-time GPS updates
+\item Implemented offline-first architecture with Room database and sync capabilities
+\item Used MVVM architecture with Jetpack components for maintainable codebase
+\end{itemize}
+
+\subsection*{E-commerce Mobile Client}
+\textit{2024} \\
+\textbf{Kotlin, Jetpack Compose, Retrofit}
+\begin{itemize}[noitemsep]
+\item Built native Android client for SmrtMart e-commerce platform
+\item Implemented Material Design 3 with Jetpack Compose for modern UI
+\item Integrated Stripe payment SDK for secure mobile checkout
+\end{itemize}
+""",
+
+    'backend_developer': r"""
+\section*{Backend \& API Projects}
+
+\subsection*{Fleet Management API Platform}
+\textit{2024 -- Present} \\
+\textbf{.NET 8, SQL Server 2022, Azure, Docker}
+\begin{itemize}[noitemsep]
+\item Architected RESTful API serving fleet tracking data with 99.9\% uptime
+\item Implemented caching strategies with Redis reducing database load by 60\%
+\item Designed event-driven microservices architecture for real-time data processing
+\end{itemize}
+
+\subsection*{SmrtMart E-commerce Backend}
+\textit{2024 -- Present} \\
+\textbf{Go, PostgreSQL, Kubernetes, Stripe API}
+\begin{itemize}[noitemsep]
+\item Built high-performance Go backend handling 10k+ concurrent requests
+\item Implemented secure payment processing with Stripe webhooks and idempotency
+\item Deployed on Kubernetes with auto-scaling and zero-downtime deployments
+\item Live: \href{https://www.smrtmart.com}{smrtmart.com}
+\end{itemize}
+
+\subsection*{JobHunter Backend Services}
+\textit{2025 -- Present} \\
+\textbf{Python, FastAPI, PostgreSQL, Gmail REST API}
+\begin{itemize}[noitemsep]
+\item Built AI-powered job analysis pipeline with 95\% role detection accuracy
+\item Implemented Gmail integration for automated application tracking
+\item Demo: \href{https://jobs.bluehawana.com}{jobs.bluehawana.com}
+\end{itemize}
+""",
+
+    'incident_management_specialist': r"""
+\section*{Infrastructure \& Automation Projects}
+
+\subsection*{Monitoring \& Alerting Platform}
+\textit{2024 -- Present} \\
+\textbf{Prometheus, Grafana, AlertManager, Python}
+\begin{itemize}[noitemsep]
+\item Deployed comprehensive monitoring stack for 50+ production services
+\item Created custom Grafana dashboards with business-relevant KPIs
+\item Implemented runbook automation reducing MTTR by 35\%
+\end{itemize}
+
+\subsection*{Infrastructure Automation Suite}
+\textit{2024 -- Present} \\
+\textbf{Terraform, Ansible, Python, Bash}
+\begin{itemize}[noitemsep]
+\item Automated server provisioning reducing deployment time from hours to minutes
+\item Created self-healing scripts for common incident patterns
+\item Implemented IaC patterns for consistent environment management
+\end{itemize}
+
+\subsection*{JobHunter Platform Operations}
+\textit{2025 -- Present} \\
+\textbf{Docker, Nginx, Let's Encrypt, GitHub Actions}
+\begin{itemize}[noitemsep]
+\item Managed production deployment with 99.9\% uptime on VPS infrastructure
+\item Implemented CI/CD pipeline with automated testing and deployment
+\item Demo: \href{https://jobs.bluehawana.com}{jobs.bluehawana.com}
+\end{itemize}
+""",
+
+    'devops_engineer': r"""
+\section*{DevOps \& Cloud Projects}
+
+\subsection*{Cloud Migration Project}
+\textit{2024 -- Present} \\
+\textbf{Azure AKS, Kubernetes, Terraform, Helm}
+\begin{itemize}[noitemsep]
+\item Led migration from Azure AKS to on-premise Kubernetes, reducing costs by 45\%
+\item Implemented GitOps workflow with ArgoCD for declarative deployments
+\item Created Helm charts for standardized application deployment
+\end{itemize}
+
+\subsection*{CI/CD Pipeline Optimization}
+\textit{2024 -- Present} \\
+\textbf{Jenkins, GitHub Actions, Docker, SonarQube}
+\begin{itemize}[noitemsep]
+\item Optimized build pipelines reducing deployment time by 60\%
+\item Integrated quality gates with SonarQube for automated code review
+\item Implemented parallel testing strategies for faster feedback
+\end{itemize}
+
+\subsection*{JobHunter Infrastructure}
+\textit{2025 -- Present} \\
+\textbf{Docker, Nginx, GitHub Actions, VPS}
+\begin{itemize}[noitemsep]
+\item Architected containerized deployment with automated CI/CD
+\item Implemented SSL/TLS with Let's Encrypt auto-renewal
+\item Demo: \href{https://jobs.bluehawana.com}{jobs.bluehawana.com}
+\end{itemize}
+""",
+
+    'fullstack_developer': r"""
+\section*{Full-Stack Projects}
+
+\subsection*{Fleet Management Dashboard}
+\textit{2024 -- Present} \\
+\textbf{.NET 8, React 18, SQL Server 2022, Azure, Docker}
+\begin{itemize}[noitemsep]
+\item Built intelligent fleet tracking platform with real-time data visualization
+\item Implemented responsive React frontend with TypeScript and modern state management
+\item Developed RESTful API backend with microservices architecture
+\end{itemize}
+
+\subsection*{SmrtMart E-commerce Platform}
+\textit{2024 -- Present} \\
+\textbf{Go, Next.js, PostgreSQL, Kubernetes, Stripe API}
+\begin{itemize}[noitemsep]
+\item Built fullstack e-commerce platform with SEO-optimized Next.js frontend
+\item Implemented secure checkout flow with Stripe payment integration
+\item Deployed on Kubernetes with auto-scaling for resilient distributed systems
+\item Live: \href{https://www.smrtmart.com}{smrtmart.com}
+\end{itemize}
+
+\subsection*{JobHunter Automation Platform}
+\textit{2025 -- Present} \\
+\textbf{Python, TypeScript, React, Gmail REST API}
+\begin{itemize}[noitemsep]
+\item Built AI-powered job application pipeline with React dashboard
+\item Implemented real-time updates with WebSocket connections
+\item Demo: \href{https://jobs.bluehawana.com}{jobs.bluehawana.com}
+\end{itemize}
+"""
+}
+
 
 def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     """Analyze job description and determine role type, keywords, and requirements"""
@@ -545,7 +792,10 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
     profile = PROFILE_BRICKS.get(brick_key, PROFILE_BRICKS['devops_engineer'])
     skills_key = brick_key.replace('_specialist', '_primary').replace('_engineer', '_primary').replace('_developer', '_primary').replace('_analyst', '_primary')
     skills = SKILLS_BRICKS.get(skills_key, SKILLS_BRICKS['devops_primary'])
-    
+
+    # Get projects section for this role
+    projects = PROJECTS_BRICKS.get(brick_key, PROJECTS_BRICKS['default'])
+
     skills_items = "\n".join([f"\\item {skill}" for skill in skills])
     
     # Build LaTeX with modern Overleaf styling
@@ -625,6 +875,8 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
 \item Built frontend with Vue.js and RESTful API integration
 \item Participated in Agile/Scrum development processes
 \end{itemize}
+
+""" + projects + r"""
 
 \section*{Education}
 
