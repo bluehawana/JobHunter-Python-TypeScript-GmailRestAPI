@@ -1,0 +1,4 @@
+# file: /Users/harvadlee/Projects/JobHunter-Python-TypeScript-GmailRestAPI/backend/template_customizer.py
+# hypothesis_version: 6.141.1
+
+['#', '$', '%', '&', '=', 'COMPANY_NAME', 'CUSTOMIZED TEMPLATE:', 'Hongzhi Li', 'Huge', 'JOB_TITLE', 'LARGE', 'Position', 'ROLE_TITLE', 'Software Developer', '\\#', '\\$', '\\%', '\\&', '\\\\section\\{', '\\_', '\\begin{document}', '\\documentclass', '\\end{document}', '\\s+', '\\textasciicircum{}', '\\textasciitilde{}', '\\{', '\\{\\\\Large\\s+[^\\}]+\\}', '\\}', '^', '_', '__main__', 'fullstack_developer', 'huge', 'large', '{', '}', '~']

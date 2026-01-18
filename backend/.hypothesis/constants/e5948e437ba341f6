@@ -1,0 +1,4 @@
+# file: /Users/harvadlee/Projects/JobHunter-Python-TypeScript-GmailRestAPI/backend/job_analyzer.py
+# hypothesis_version: 6.141.1
+
+['=', 'Extracted keywords:', '\\b', '\\s+', '__main__', 'cloud', 'full stack', 'full-stack', 'fullstack', 'incident management', 'keywords', 'python', 'react', 'site reliability', 'typescript', 'website']
