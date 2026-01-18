@@ -78,14 +78,16 @@ class CVTemplateManager:
         # === BACKEND-FOCUSED (Priority 3) ===
         'backend_developer': {
             'keywords': [
-                'backend developer', 'back-end developer', 'api developer',
-                'java developer', 'spring boot', 'spring framework', 'hibernate', 'jpa',
-                'microservices', 'server-side', 'restful api',
+                'backend developer', 'back-end developer', 'api developer', 'software engineer', 'software developer',
+                'java developer', 'spring boot', 'spring framework', 'hibernate', 'jpa', 'kotlin',
+                'microservices', 'server-side', 'restful api', 'distributed systems', 'elasticsearch',
+                'cassandra', 'big data', 'search engines', 'petabyte', 'analytics systems',
                 # AI integration keywords (using AI, not building AI)
                 'integrating ai', 'ai integration', 'using ai', 'leverage ai',
                 'ai-powered features', 'ai capabilities', 'llm integration',
                 'openai api', 'claude api', 'gpt api', 'ai apis',
-                'generative ai solutions', 'ai solutions', 'llm-based applications'
+                'generative ai solutions', 'ai solutions', 'llm-based applications',
+                'vector search', 'semantic search', 'applied use of', 'use cases powered by'
             ],
             'cv_template': 'job_applications/eworks_java/eWorks_Complete_CV_20251120.tex',
             'cl_template': 'job_applications/eworks_java/eWorks_Complete_CL_20251120.tex',
