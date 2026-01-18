@@ -1,0 +1,110 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+% Page setup
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightgray}{RGB}{128,128,128}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    urlcolor=darkblue,
+    citecolor=darkblue
+}
+
+% Section formatting
+\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+\begin{document}
+\pagestyle{empty}
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{Fullstack Developer | Infrastructure & DevOps Specialist}}\\[10pt]
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728 384 299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\end{center}
+
+% Personal Profile
+\section*{Profile Summary}
+Multi-disciplined \textbf{Fullstack Developer} with over 4 years of experience, specializing in the \textbf{.NET 8 ecosystem} and \textbf{Cloud Infrastructure}. Expert in bridging the gap between application development and production reliability through \textbf{Azure}, \textbf{Kubernetes}, and \textbf{Infrastructure as Code (Terraform)}. Proven track record in the automotive industry (Ecarx/Geely), managing globally distributed environments and optimizing CI/CD workflows. Passionate about building scalable, sustainable systems and thriving in collaborative, human-centric teams.
+
+% Areas of Expertise
+\section*{Core Technical Skills}
+\begin{itemize}[noitemsep]
+\item \textbf{Backend:} C\#/.NET Core, ASP.NET, RESTful APIs, Microservices, Event-Driven Architecture
+\item \textbf{Frontend:} React, Vue.js, JavaScript, TypeScript, HTML5, CSS3, Responsive Design
+\item \textbf{Infrastructure:} Kubernetes, Azure (AKS, App Services, Functions), Terraform (IaC), Docker
+\item \textbf{Observability \& Monitoring:} Grafana, Prometheus, OpenTelemetry, ELK Stack, Performance Tuning
+\item \textbf{CI/CD:} GitHub Actions, Azure DevOps, Jenkins, Automated Testing Pipelines
+\item \textbf{Databases:} SQL Server, PostgreSQL, MongoDB, Redis, Entity Framework Core
+\item \textbf{Cloud \& DevOps:} Azure (AKS, App Services, Functions, SQL), Infrastructure as Code (Terraform), Docker, Kubernetes
+\item \textbf{Distributed Systems:} Scalability, Resilience, Load Balancing, Caching Strategies, Kafka
+\item \textbf{Testing:} xUnit, NUnit, Jest, TDD, Integration Testing, Automated Test Suites
+\item \textbf{Agile:} Scrum, Kanban, Sprint Planning, Cross-functional Collaboration
+\item \textbf{Languages:} Fluent in English and Mandarin Chinese; Swedish (B2 level)
+\end{itemize}
+
+% Experience
+\section*{Professional Experience}
+\subsection*{ECARX (Geely Automotive) | Infrastructure Specialist \& Cloud Engineer}
+\textit{October 2024 - Present | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item \textbf{Cloud Infrastructure Leadership:} Managed globally distributed Kubernetes clusters for automotive platforms, ensuring 99.9\% availability across 4 international regions.
+\item \textbf{IaC Implementation:} Spearheaded the transition to \textbf{Terraform} for all cloud provisioning on Azure, reducing environment setup time by 60\%.
+\item \textbf{DevOps Excellence:} Designed and automated CI/CD pipelines, integrating security scanning and automated deployments for high-frequency release cycles.
+\item \textbf{Site Reliability:} Established monitoring standards with \textbf{Grafana} and Prometheus, leading to a 35\% reduction in MTTR for critical incidents.
+\end{itemize}
+
+\subsection*{Synteda AB | C\# .NET Fullstack Developer \& Azure Specialist}
+\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item \textbf{Scalable Cloud Solutions:} Developed talent management microservices using C\# .NET Core, deployed on Azure App Services with full automated CI/CD.
+\item \textbf{Database Architecture:} Designed and optimized Azure SQL databases, ensuring performant data access via Entity Framework.
+\item \textbf{API Integration:} Built secure RESTful APIs for internal and external consumption, prioritizing scalability and infrastructure alignment.
+\end{itemize}
+
+\subsection*{IT-Högskolan | Backend Developer (Part-time)}
+\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\begin{itemize}[noitemsep]
+\item Migrated "Omstallningsstod.se" adult education platform using Spring Boot backend services with microservices architecture.
+\item Developed RESTful APIs for frontend integration and implemented secure data handling with automated testing.
+\item Collaborated with UI/UX designers to ensure seamless frontend-backend integration and optimal user experience.
+\end{itemize}
+
+\subsection*{Senior Material (Europe) AB | Fullstack Platform Architect}
+\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\begin{itemize}[noitemsep]
+\item \textbf{Infrastructure Migration:} Led the migration of monolith manufacturing platforms to a containerized microservices architecture in the battery industry.
+\item \textbf{Fullstack Delivery:} Developed React frontends and Spring Boot backends, ensuring seamless integration across the entire stack.
+\end{itemize}
+
+\section*{Education}
+\textbf{IT Högskolan} | Bachelor's in .NET Cloud Development | 2021-2023\\
+\textit{Focus: C\# backend development, cloud architecture, microservices, Azure, databases}
+
+\textbf{Mölndal Campus} | Bachelor's in Java Integration | 2019-2021\\
+\textit{Focus: Enterprise integration, Spring Framework, RESTful APIs, SQL databases}
+
+\textbf{University of Gothenburg} | Master's in International Business \& Trade | 2016-2019\\
+\textit{Focus: Business analysis, international commerce, B2B operations}
+
+\section*{Cloud Certifications}
+\begin{itemize}[noitemsep]
+\item AWS Certified Solutions Architect - Associate (Aug 2022)
+\item AWS Certified Developer - Associate (Nov 2022)
+\item Microsoft Certified: Azure Fundamentals (Jun 2022)
+\end{itemize}
+
+\end{document}

@@ -248,7 +248,7 @@ What's missing:
     - Add troubleshooting section
     - Document monitoring and logging
 
-  - [ ]* 11.3 Write integration tests
+  - [x] 11.3 Write integration tests
     - Test complete workflow from job description to customized CV
     - Test with each role category
     - Test AI enabled and disabled modes
