@@ -20,6 +20,7 @@ from smart_latex_editor import SmartLaTeXEditor
 from cv_templates import CVTemplateManager
 from ai_analyzer import AIAnalyzer
 from ai_resume_prompts import AIResumePrompts
+from linkedin_job_extractor import extract_linkedin_job_info_from_content
 
 lego_api = Blueprint('lego_api', __name__)
 
@@ -351,6 +352,26 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     
     job_lower = job_description.lower()
     
+    # Initialize company and title with defaults
+    company = 'Company'
+    title = 'Position'
+    
+    # Try to extract company and title from LinkedIn URL if provided
+    if job_url and 'linkedin.com/jobs/view' in job_url:
+        try:
+            print(f"🔍 Attempting to extract job info from LinkedIn URL: {job_url}")
+            # For now, we'll extract from the job description content
+            # In the future, this can be enhanced with actual web scraping
+            linkedin_info = extract_linkedin_job_info_from_content(job_description, job_url)
+            if linkedin_info['success']:
+                company = linkedin_info['company']
+                title = linkedin_info['title']
+                print(f"✅ LinkedIn extraction successful: {title} at {company}")
+            else:
+                print(f"⚠️ LinkedIn extraction failed, using fallback extraction")
+        except Exception as e:
+            print(f"❌ Error extracting from LinkedIn URL: {e}")
+    
     # Try AI analysis first (MiniMax M2)
     ai_result = None
     confidence = 0.0
@@ -410,89 +431,94 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
             if keyword in job_lower:
                 tech_keywords.append(keyword.title())
     
-    # Extract company and title (improved extraction)
-    lines = [line.strip() for line in job_description.split('\n') if line.strip()]
-    company = 'Company'
-    title = 'Position'
+    # Only use fallback extraction if LinkedIn extraction failed
+    if company == 'Company' or title == 'Position':
+        # Extract company and title (improved extraction)
+        lines = [line.strip() for line in job_description.split('\n') if line.strip()]
 
-    # Try to find job title and company - look for lines with job-related keywords
-    job_keywords = ['engineer', 'developer', 'specialist', 'manager', 'architect', 'lead', 'senior', 'junior', 'consultant']
-    for i, line in enumerate(lines[:15]):
-        # Skip very long lines (likely paragraphs)
-        if len(line) > 100:
-            continue
-        # Check if line contains job keywords
-        line_lower = line.lower()
-        if any(keyword in line_lower for keyword in job_keywords):
-            # Clean up common prefixes
-            cleaned = line
-            for prefix in ['job title:', 'position:', 'role:', 'we are looking for']:
-                if cleaned.lower().startswith(prefix):
-                    cleaned = cleaned[len(prefix):].strip()
-
-            # Check for "Title - Company" or "Company - Title" pattern
-            if ' - ' in cleaned or ' – ' in cleaned or ' — ' in cleaned:
-                # Split by dash (support different dash types)
-                parts = None
-                for dash in [' - ', ' – ', ' — ']:
-                    if dash in cleaned:
-                        parts = [p.strip() for p in cleaned.split(dash, 1)]
-                        break
-
-                if parts and len(parts) == 2:
-                    left, right = parts
-                    # Check which part is the title (contains job keyword) and which is company
-                    left_is_title = any(kw in left.lower() for kw in job_keywords)
-                    right_is_title = any(kw in right.lower() for kw in job_keywords)
-
-                    if left_is_title and not right_is_title:
-                        # "Software Developer - Benifex" pattern
-                        title = left
-                        company = right
-                        break
-                    elif right_is_title and not left_is_title:
-                        # "Benifex - Software Developer" pattern
-                        company = left
-                        title = right
-                        break
-                    else:
-                        # Ambiguous, take first part as title
-                        title = left
-                        if len(right) < 50:  # Likely a company name
-                            company = right
-                        break
-            else:
-                # No dash pattern, just use the whole line as title
-                cleaned = cleaned.strip(' -–—:')
-                if cleaned and len(cleaned) < 80:
-                    title = cleaned
-                    break
-
-    # If company still not found, try to find it separately
-    if company == 'Company':
-        for i, line in enumerate(lines[:20]):
-            line_lower = line.lower()
-            # Skip very long lines
+        # Try to find job title and company - look for lines with job-related keywords
+        job_keywords = ['engineer', 'developer', 'specialist', 'manager', 'architect', 'lead', 'senior', 'junior', 'consultant']
+        for i, line in enumerate(lines[:15]):
+            # Skip very long lines (likely paragraphs)
             if len(line) > 100:
                 continue
-            # Look for company indicators
-            if any(indicator in line_lower for indicator in ['company:', 'about us', 'at ', 'join ']):
-                # Try next line if this is just a header
-                if line_lower in ['company:', 'about us', 'about the company']:
-                    if i + 1 < len(lines):
-                        company = lines[i + 1].strip(' -–—:')
-                        break
-                else:
-                    # Extract company name from line
-                    for indicator in ['at ', 'join ', 'company: ']:
-                        if indicator in line_lower:
-                            idx = line_lower.index(indicator) + len(indicator)
-                            company = line[idx:].strip(' -–—:,.')
-                            # Take only first part before comma or period
-                            company = company.split(',')[0].split('.')[0].strip()
+            # Check if line contains job keywords
+            line_lower = line.lower()
+            if any(keyword in line_lower for keyword in job_keywords):
+                # Clean up common prefixes
+                cleaned = line
+                for prefix in ['job title:', 'position:', 'role:', 'we are looking for']:
+                    if cleaned.lower().startswith(prefix):
+                        cleaned = cleaned[len(prefix):].strip()
+
+                # Check for "Title - Company" or "Company - Title" pattern
+                if ' - ' in cleaned or ' – ' in cleaned or ' — ' in cleaned:
+                    # Split by dash (support different dash types)
+                    parts = None
+                    for dash in [' - ', ' – ', ' — ']:
+                        if dash in cleaned:
+                            parts = [p.strip() for p in cleaned.split(dash, 1)]
                             break
-                    if company != 'Company':
+
+                    if parts and len(parts) == 2:
+                        left, right = parts
+                        # Check which part is the title (contains job keyword) and which is company
+                        left_is_title = any(kw in left.lower() for kw in job_keywords)
+                        right_is_title = any(kw in right.lower() for kw in job_keywords)
+
+                        if left_is_title and not right_is_title:
+                            # "Software Developer - Benifex" pattern
+                            if title == 'Position':
+                                title = left
+                            if company == 'Company':
+                                company = right
+                            break
+                        elif right_is_title and not left_is_title:
+                            # "Benifex - Software Developer" pattern
+                            if company == 'Company':
+                                company = left
+                            if title == 'Position':
+                                title = right
+                            break
+                        else:
+                            # Ambiguous, take first part as title
+                            if title == 'Position':
+                                title = left
+                            if company == 'Company' and len(right) < 50:  # Likely a company name
+                                company = right
+                            break
+                else:
+                    # No dash pattern, just use the whole line as title
+                    cleaned = cleaned.strip(' -–—:')
+                    if cleaned and len(cleaned) < 80 and title == 'Position':
+                        title = cleaned
                         break
+
+        # If company still not found, try to find it separately
+        if company == 'Company':
+            for i, line in enumerate(lines[:20]):
+                line_lower = line.lower()
+                # Skip very long lines
+                if len(line) > 100:
+                    continue
+                # Look for company indicators
+                if any(indicator in line_lower for indicator in ['company:', 'about us', 'at ', 'join ']):
+                    # Try next line if this is just a header
+                    if line_lower in ['company:', 'about us', 'about the company']:
+                        if i + 1 < len(lines):
+                            company = lines[i + 1].strip(' -–—:')
+                            break
+                    else:
+                        # Extract company name from line
+                        for indicator in ['at ', 'join ', 'company: ']:
+                            if indicator in line_lower:
+                                idx = line_lower.index(indicator) + len(indicator)
+                                company = line[idx:].strip(' -–—:,.')
+                                # Take only first part before comma or period
+                                company = company.split(',')[0].split('.')[0].strip()
+                                break
+                        if company != 'Company':
+                            break
     
     return {
         'roleType': role_type,

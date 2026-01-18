@@ -66,6 +66,9 @@ class TemplateCustomizer:
             logger.error("Template content is empty or None")
             return ""
         
+        # Check if this is the new multi-line format
+        has_multiline_format = 'COMPANY_NAME' in template_content and 'JOB_TITLE' in template_content
+        
         # Clean up inputs
         clean_title = self._clean_title(title, role_type)
         clean_company = company.strip() if company else ""
@@ -90,8 +93,11 @@ class TemplateCustomizer:
         # Apply replacements
         customized_content = self.replace_placeholders(template_content, replacements)
         
-        # Update job title in CV header (LaTeX-specific patterns)
-        customized_content = self._update_cv_header_title(customized_content, escaped_title)
+        # Update job title in CV header (LaTeX-specific patterns) - skip for new multi-line format
+        if not has_multiline_format:
+            customized_content = self._update_cv_header_title(customized_content, escaped_title)
+        else:
+            logger.debug("Skipping header title update - using new multi-line format")
         
         # Validate that structure is preserved
         if not self._validate_structure_preserved(template_content, customized_content):
@@ -184,7 +190,15 @@ class TemplateCustomizer:
         This handles common LaTeX CV header patterns like:
         - {\Large DevOps & Cloud Engineer | FinTech Specialist}
         - {\Large Software Engineer | Automotive & Embedded Systems Enthusiast}
+        
+        Skip this if we have the new multi-line format with COMPANY_NAME and JOB_TITLE placeholders
         """
+        
+        # Skip header title update if we have the new multi-line format
+        if 'COMPANY_NAME' in content or 'JOB_TITLE' in content:
+            logger.debug("Skipping header title update - using new multi-line format")
+            return content
+        
         # Pattern 1: Replace the {\Large ...} line after the name
         # This matches lines like "{\Large DevOps & Cloud Engineer | FinTech Specialist}"
         pattern = r'\{\\Large\s+[^\}]+\}'
