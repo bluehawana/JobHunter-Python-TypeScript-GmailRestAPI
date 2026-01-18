@@ -1,14 +1,28 @@
-\documentclass[a4paper,10pt]{letter}
-\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
-\usepackage{hyperref}
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
 \usepackage{xcolor}
-\definecolor{darkblue}{rgb}{0.0, 0.2, 0.6}
-\setlength{\parindent}{0pt}
-\begin{document}
-\pagestyle{empty}
-\begin{letter}{Kollmorgen\\Address Required\\Postal Code Required Göteborg}
-\opening{Dear Hiring Manager,}
+\usepackage{hyperref}
 
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\definecolor{linkedinblue}{RGB}{0,119,181}
+\hypersetup{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}
+
+\begin{document}
+
+% Header with job information (no name)
+\begin{center}
+{\Large \textbf{COMPANY\_NAME}}\\[4pt]
+{\Large \textbf{JOB\_TITLE}}\\[4pt]
+{\Large \textbf{Gothenburg, Sweden}}\\[8pt]
+\end{center}
+
+\vspace{1cm}
+
+Dear Hiring Manager,
+
+\vspace{0.5cm}
 I am writing to express my strong interest in the Junior Software Engineer -- Operation \& Visualization position at Kollmorgen. With hands\-on experience in visualization systems, real\-time monitoring dashboards, and automotive UI development, I am excited about the opportunity to contribute to your AGV operation software.
 
 At ECARX, I have been deeply involved in creating visualization and monitoring solutions for complex automotive systems. I designed and implemented real\-time performance dashboards using Grafana and Prometheus for Android AOSP build infrastructure, providing intuitive visual feedback that enabled our team to achieve a 3.5x performance improvement. These dashboards process and visualize terabytes of build data daily, with our Android 15 AOSP clean build time reaching 7 minutes 47 seconds -- among the fastest publicly reported times.
@@ -19,7 +33,20 @@ What excites me most about this role is applying my visualization skills to robo
 
 I am a collaborative team player who thrives in cross\-functional environments, fluent in English and Mandarin with Swedish B2 proficiency. I would be thrilled to contribute to your team in Gothenburg.
 
-\closing{Sincerely,}
-\signature{Hongzhi Li\\Ebbe Lieberathsgatan 27\\412 65 G\"{o}teborg\\hongzhili01@gmail.com\\0728384299\\2025.11.19}
-\end{letter}
+\closing{
+\vspace{1cm}
+
+Best Regards,\\[0.5cm]
+Harvad (Hongzhi) Li
+
+\vspace{\fill}
+
+% Line separator
+{\color{linkedinblue}\hrule height 0.5pt}
+
+\vspace{0.3cm}
+
+% Footer with address and date
+\noindent Ebbe Lieberathsgatan 27, 41265 Gothenburg, Sweden \hfill \today
+
 \end{document}

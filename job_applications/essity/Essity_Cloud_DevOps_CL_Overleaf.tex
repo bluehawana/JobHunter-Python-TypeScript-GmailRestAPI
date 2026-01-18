@@ -1,68 +1,54 @@
-\documentclass[a4paper,10pt]{article}
-\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
-\usepackage{enumitem}
-\usepackage{titlesec}
-\usepackage{hyperref}
-\usepackage{graphicx}
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
 \usepackage{xcolor}
+\usepackage{hyperref}
 
-% Define colors
-\definecolor{darkblue}{RGB}{0,51,102}
-
-% Section formatting
-\titleformat{\section}{\large\bfseries\raggedright\color{black}}{}{0em}{}[\titlerule]
-\titleformat{\subsection}[runin]{\bfseries}{}{0em}{}[:]
-
-% Remove paragraph indentation
+\geometry{margin=1in}
 \setlength{\parindent}{0pt}
+\definecolor{linkedinblue}{RGB}{0,119,181}
+\hypersetup{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}
 
 \begin{document}
-\pagestyle{empty} % no page number
 
-% Recipient address
-{\color{darkblue}
-Essity Hygiene and Health AB\\
-Talent Acquisition Team\\
-Mölndals bro 2, Mölndal\\
-SE-405 03 Göteborg\\
-Sweden}
+% Header with job information (no name)
+\begin{center}
+{\Large \textbf{COMPANY\_NAME}}\\[4pt]
+{\Large \textbf{JOB\_TITLE}}\\[4pt]
+{\Large \textbf{Gothenburg, Sweden}}\\[8pt]
+\end{center}
 
-\vspace{30pt}
+\vspace{1cm}
 
-% Opening
-\textbf{Dear Hiring Manager,}
+Dear Hiring Manager,
 
-\vspace{10pt}
-
+\vspace{0.5cm}
 I am writing to express my strong interest in the Cloud Engineer position at Essity's Cloud Enablement Team. With over 5 years of hands-on experience in cloud technologies, site reliability engineering, DevOps, and DevSecOps practices within multinational organizations, I am excited to support Essity's digital transformation journey and contribute to your mission of improving quality of life through sustainable solutions.
 
-\vspace{8pt}
+
 
 At ECARX, I design, deliver, and implement infrastructure supporting both cloud-native and legacy applications. I led our cloud infrastructure transformation, architecting a pragmatic hybrid approach combining Azure AKS with on-premise HPC for optimal cost and performance balance. I develop and enhance automation stacks and CI/CD pipelines—implementing Azure DevOps multi-staging pipelines with dev, staging, and production environments including automated testing, security scanning, and zero-downtime deployments. My monitoring and alerting expertise with Prometheus, Grafana, Loki, and Alertmanager ensures production-grade service stability. With hands-on software development experience in Python, C\#, and Go, combined with high expertise in Docker, Terraform, Azure Git, Azure DevOps pipelines, Git, and Helm Charts, I bridge development and operations effectively while evangelizing Development Automation adoption.
 
-\vspace{8pt}
+
 
 What particularly resonates with me is Essity's commitment to the "Business Ambition for 1.5 Degrees" initiative and achieving climate neutrality by 2050. I am passionate about leveraging cloud infrastructure and automation to create positive environmental impact while maximizing resource efficiency. I am eager to bring my cloud engineering expertise, systematic approach, and collaborative mindset to Essity's Cloud Enablement Team in Göteborg. Thank you for considering my application.
 
-\vspace{12pt}
+
 
 % Closing
-Sincerely,
+\vspace{1cm}
 
-\vspace{15pt}
-
+Best Regards,\\[0.5cm]
 Harvad (Hongzhi) Li
 
-\vspace{20pt}
+\vspace{\fill}
 
-{\color{darkblue}\rule{\linewidth}{0.6pt}}
+% Line separator
+{\color{linkedinblue}\hrule height 0.5pt}
 
-\vspace{4pt}
+\vspace{0.3cm}
 
-{\color{darkblue}
-Ebbe Lieberathsgatan 27\\
-SE-412 65 Göteborg, Sweden\\
-hongzhili01@gmail.com | 0728 384 299\\
-\href{https://www.bluehawana.com}{www.bluehawana.com}}
+% Footer with address and date
+\noindent Ebbe Lieberathsgatan 27, 41265 Gothenburg, Sweden \hfill \today
 
 \end{document}
