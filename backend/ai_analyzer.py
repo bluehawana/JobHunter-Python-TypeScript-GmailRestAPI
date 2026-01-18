@@ -205,16 +205,24 @@ CLASSIFICATION RULES (follow strictly):
 2. If job is primarily Java/Spring Boot backend with no frontend -> select 'backend_developer'
 3. If job mentions Android, Kotlin, mobile, AOSP -> select 'android_developer'
 4. If job mentions FinTech, banking, trading, payment, Nasdaq -> select 'devops_fintech'
-5. If job mentions AI, ML, LLM, machine learning -> select 'ai_product_engineer'
-6. If job mentions DevOps, Kubernetes, Docker, Terraform, CI/CD (without financial focus) -> select 'devops_cloud'
-7. If job mentions SRE, incident, on-call, monitoring -> select 'incident_management_sre'
-8. If job mentions IT support, helpdesk, service desk -> select 'it_support'
-9. If job mentions FinOps, cloud cost optimization -> select 'finops'
-10. If job mentions architect, integration, middleware -> select 'integration_architect'
-11. Default to 'devops_cloud' if unclear
+5. ONLY select 'ai_product_engineer' if the job is PRIMARILY about BUILDING AI systems (model training, model fine-tuning, prompt engineering, RAG systems, vector databases, embeddings). Do NOT select this if the job just mentions using/integrating AI APIs (like OpenAI, Azure AI, AWS Bedrock) as one of many features.
+6. If job mentions building web applications with React/Node/Flask/Django AND also mentions AI/ML integration -> select 'fullstack_developer' (software engineer with AI skills, not AI engineer)
+7. If job mentions DevOps, Kubernetes, Docker, Terraform, CI/CD (without financial focus) -> select 'devops_cloud'
+8. If job mentions SRE, incident, on-call, monitoring -> select 'incident_management_sre'
+9. If job mentions IT support, helpdesk, service desk -> select 'it_support'
+10. If job mentions FinOps, cloud cost optimization -> select 'finops'
+11. If job mentions architect, integration, middleware -> select 'integration_architect'
+12. Default to 'devops_cloud' if unclear
+
+IMPORTANT DISTINCTION - AI Product Engineer vs Software Engineer with AI skills:
+- AI Product Engineer: Primary focus is BUILDING AI/ML systems - model training, fine-tuning, MLOps, prompt engineering, RAG, vector databases
+- Software Engineer with AI: Primary focus is building software (web apps, APIs) that USES AI APIs like OpenAI/Claude/Azure AI as a feature
+- If the job requires fullstack skills (React, Node, Flask, PostgreSQL) AND mentions AI integration -> this is 'fullstack_developer', NOT 'ai_product_engineer'
+- Look at the PRIMARY job responsibilities, not just the technologies listed
 
 PRIORITY ORDER for ambiguous cases:
-- Specialized roles (android, fintech, ai) take priority over generic roles
+- If job mentions web application development + AI integration -> 'fullstack_developer' wins
+- Specialized roles (android, fintech) take priority over generic roles
 - Fullstack takes priority over backend when frontend is mentioned
 - DevOps/Cloud is the fallback when nothing specific matches
 

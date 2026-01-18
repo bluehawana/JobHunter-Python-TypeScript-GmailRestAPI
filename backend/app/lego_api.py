@@ -372,6 +372,27 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     
     role_info = template_manager.get_role_info(role_category)
     
+    # Get percentage-based analysis
+    try:
+        role_percentages = template_manager.get_role_percentages(job_description)
+        role_breakdown = template_manager.get_role_breakdown(job_description, threshold=5.0)
+        role_scores = template_manager.get_role_scores(job_description)
+        
+        # Calculate confidence score based on percentage distribution
+        if role_breakdown:
+            primary_percentage = role_breakdown[0][1]
+            secondary_percentage = role_breakdown[1][1] if len(role_breakdown) > 1 else 0
+            # Higher confidence when primary role is dominant
+            percentage_confidence = min(1.0, primary_percentage / 100.0)
+            if confidence == 0.0:  # If no AI confidence, use percentage-based confidence
+                confidence = percentage_confidence
+        
+    except Exception as e:
+        print(f"⚠ Error getting percentage analysis: {e}")
+        role_percentages = {}
+        role_breakdown = []
+        role_scores = {}
+    
     # Map role category to display name
     role_type = role_category.replace('_', ' ').title()
     
@@ -492,7 +513,12 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
             'confidence': confidence,
             'reasoning': ai_result.get('reasoning', '') if ai_result else '',
             'model': 'MiniMax-M2' if ai_result else 'keyword-matching'
-        }
+        },
+        # Add percentage-based data
+        'rolePercentages': role_percentages,  # All role percentages (0-100%)
+        'roleBreakdown': [{'role': role, 'percentage': pct} for role, pct in role_breakdown],  # Significant roles (>5%)
+        'roleScores': role_scores,  # Raw weighted scores
+        'confidenceScore': confidence  # Overall confidence in the analysis
     }
 
 
@@ -1212,6 +1238,22 @@ def generate_lego_application():
         company = analysis.get('company', 'Company')
         title = analysis.get('title', 'Position')
 
+        # Handle template selection failures gracefully
+        try:
+            # Verify template exists before proceeding
+            template_path = template_manager.get_template_path(role_category, 'cv')
+            if not template_path:
+                print(f"⚠ Template not found for role {role_category}, using fallback")
+                # Get fallback role
+                fallback_role = template_manager.template_matcher.get_fallback_template([role_category])
+                role_category = fallback_role
+                role_type = fallback_role.replace('_', ' ').title()
+                print(f"✓ Using fallback role: {role_category}")
+        except Exception as e:
+            print(f"⚠ Template verification failed: {e}, using default")
+            role_category = 'devops_cloud'
+            role_type = 'DevOps Cloud'
+
         # Build LaTeX documents with AI-powered content customization
         cv_latex = build_lego_cv(role_type, company, title, role_category, job_description, customization_notes)
         cl_latex = build_lego_cover_letter(role_type, company, title, role_category, job_description, customization_notes)
@@ -1272,17 +1314,36 @@ def generate_lego_application():
             for file in output_dir.glob(f'*{ext}'):
                 file.unlink()
         
-        return jsonify({
+        # Include percentage breakdown in response
+        response_data = {
             'success': True,
             'documents': {
                 'cvUrl': f'/api/download/{output_dir.name}/cv.pdf',
                 'clUrl': f'/api/download/{output_dir.name}/cl.pdf',
                 'cvPreview': f'/api/preview/{output_dir.name}/cv.pdf',
                 'clPreview': f'/api/preview/{output_dir.name}/cl.pdf'
+            },
+            'templateInfo': {
+                'selectedRole': role_category,
+                'selectedRoleDisplay': role_type,
+                'templateUsed': str(template_manager.get_template_path(role_category, 'cv')) if template_manager.get_template_path(role_category, 'cv') else 'fallback'
             }
-        })
+        }
+        
+        # Add percentage breakdown if available in analysis
+        if 'rolePercentages' in analysis:
+            response_data['roleAnalysis'] = {
+                'rolePercentages': analysis['rolePercentages'],
+                'roleBreakdown': analysis['roleBreakdown'],
+                'confidenceScore': analysis.get('confidenceScore', 0.0)
+            }
+        
+        return jsonify(response_data)
         
     except Exception as e:
+        print(f"Error in generate_lego_application: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 

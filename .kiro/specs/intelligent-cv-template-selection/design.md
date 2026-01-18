@@ -2,7 +2,16 @@
 
 ## Overview
 
-The Intelligent CV Template Selection system enhances the job application automation by implementing a robust, multi-strategy approach to matching job descriptions with the most appropriate CV templates. The system uses keyword-based analysis as the foundation, with optional AI-enhanced semantic analysis for improved accuracy. The design ensures that users receive CV templates that highlight relevant experience and avoid irrelevant content (e.g., not using a FinTech-focused CV for a pure CI/CD DevOps role).
+The Intelligent CV Template Selection system enhances the job application automation by implementing a **percentage-based weighted scoring approach** to accurately match job descriptions with CV templates. 
+
+**Key Problem Solved**: The previous keyword-based system would misclassify jobs - for example, a senior software engineering role that mentions "AI integration" would be incorrectly classified as "AI Product Engineer" and use an AI-focused CV template, even though the job is 85% software engineering, 10% AI integration, and 5% leadership.
+
+**Solution**: The system now calculates percentage scores for each role category, ensuring that:
+- A job that is 85% software engineering gets classified as a software engineering role
+- AI keywords only contribute their proportional weight (10%) to the scoring
+- The template selection uses the role with the highest percentage
+
+The system uses keyword-based analysis as the foundation, with optional AI-enhanced semantic analysis for improved accuracy.
 
 ## Architecture
 
@@ -20,11 +29,33 @@ The system follows a layered architecture with clear separation of concerns:
 
 ```
 Job Description → Job Analyzer → Template Matcher → Template Loader → Template Customizer → Customized CV
-                       ↓                                                        ↑
-                  AI Analyzer (optional)                                       |
-                       ↓                                                        |
-                  Enhanced Scoring ------------------------------------------------
+                       ↓                 ↓
+                  AI Analyzer       Calculate Raw Scores
+                   (optional)            ↓
+                       ↓            Normalize to Percentages
+                  Enhanced              ↓
+                   Scoring         Select Highest %
 ```
+
+### Weighted Scoring Algorithm
+
+The system uses a multi-step scoring process:
+
+1. **Keyword Extraction**: Extract all technical keywords from job description
+2. **Raw Score Calculation**: For each role category, count matching keywords weighted by priority
+   - Formula: `raw_score = Σ(keyword_matches) / priority`
+   - Lower priority = higher importance (priority 1 is most important)
+3. **Percentage Normalization**: Convert raw scores to percentages that sum to 100%
+   - Formula: `percentage = (raw_score / Σ(all_raw_scores)) × 100`
+4. **Template Selection**: Select the role with the highest percentage
+
+**Example**:
+- Job mentions: React (10x), Python (8x), Flask (5x), "AI integration" (2x), "LLM" (1x)
+- Software Engineering score: (10+8+5)/1 = 23
+- AI Product Engineer score: (2+1)/1 = 3
+- Total: 26
+- Percentages: Software Engineering = 88%, AI Product Engineer = 12%
+- **Selected Template**: Software Engineering (not AI Product Engineer)
 
 ## Components and Interfaces
 
@@ -47,6 +78,8 @@ class CVTemplateManager:
     def load_template(self, role_category: str) -> Optional[str]
     def get_role_info(self, role_category: str) -> Dict
     def get_role_scores(self, job_description: str) -> Dict[str, float]
+    def get_role_percentages(self, job_description: str) -> Dict[str, float]
+    def get_role_breakdown(self, job_description: str, threshold: float = 5.0) -> List[Tuple[str, float]]
     def list_available_templates(self) -> List[Dict]
 ```
 
@@ -75,14 +108,17 @@ Scores templates and selects the best match.
 
 **Responsibilities:**
 - Calculate weighted scores for each role category
+- Normalize scores to percentages (0-100%)
 - Apply priority weighting
 - Handle tie-breaking scenarios
-- Provide confidence scores
+- Provide confidence scores and role breakdowns
 
 **Interface:**
 ```python
 class TemplateMatcher:
     def calculate_scores(self, keyword_counts: Dict[str, int], role_categories: Dict) -> Dict[str, float]
+    def calculate_percentages(self, scores: Dict[str, float]) -> Dict[str, float]
+    def get_role_breakdown(self, percentages: Dict[str, float], threshold: float = 5.0) -> List[Tuple[str, float]]
     def select_best_match(self, scores: Dict[str, float]) -> Tuple[str, float]
     def get_fallback_template(self, excluded: List[str]) -> str
 ```
@@ -153,10 +189,22 @@ class RoleCategory:
 class TemplateMatch:
     role_category: str
     score: float
+    percentage: float
     confidence: float
     template_path: Path
     keyword_matches: Dict[str, int]
     ai_enhanced: bool = False
+```
+
+### RoleBreakdown
+
+```python
+@dataclass
+class RoleBreakdown:
+    role_category: str
+    percentage: float
+    score: float
+    keyword_matches: Dict[str, int]
 ```
 
 ### AnalysisResult
@@ -172,6 +220,8 @@ class AnalysisResult:
     title: str
     template_match: TemplateMatch
     scores: Dict[str, float]
+    percentages: Dict[str, float]
+    role_breakdown: List[RoleBreakdown]
 ```
 
 ## Correctness Properties
@@ -238,6 +288,42 @@ class AnalysisResult:
 ### Property 15: Template Content Alignment
 *For any* template selection, the template content should align with the detected role category (e.g., DevOps templates for DevOps jobs, not FinTech templates).
 **Validates: Requirements 9.2, 9.3**
+
+### Property 16: Percentage Calculation for All Roles
+*For any* job description, the system should calculate percentage scores for all configured role categories.
+**Validates: Requirements 10.1**
+
+### Property 17: Percentage Normalization
+*For any* set of raw role scores, when normalized to percentages, the sum of all percentages should equal 100% (within floating-point precision tolerance of 0.01%).
+**Validates: Requirements 10.2**
+
+### Property 18: Role Breakdown Filtering
+*For any* percentage distribution, the role breakdown should include only roles with percentages at or above the specified threshold (default 5%).
+**Validates: Requirements 10.3**
+
+### Property 19: Role Breakdown Ordering
+*For any* role breakdown, the roles should be ordered in descending order by percentage score.
+**Validates: Requirements 10.4**
+
+### Property 20: Mixed Role Warning
+*For any* job analysis where the highest role percentage is below 50%, the system should log a warning about mixed role composition.
+**Validates: Requirements 10.5**
+
+### Property 21: API Percentage Inclusion
+*For any* API response containing role analysis, it should include a percentage breakdown field with all significant roles.
+**Validates: Requirements 10.6**
+
+### Property 22: Template Selection by Highest Percentage
+*For any* percentage distribution, the selected template role should be the role with the maximum percentage score.
+**Validates: Requirements 10.7**
+
+### Property 23: AI Misclassification Prevention
+*For any* job description where software engineering keywords significantly outnumber AI keywords (ratio > 3:1), the system should classify it as a software engineering role, not an AI Product Engineer role.
+**Validates: Requirements 11.1, 11.5**
+
+### Property 24: AI Integration vs AI Product Distinction
+*For any* job description mentioning "integrating AI", "using LLMs", or "AI-powered features", these keywords should contribute to software engineering scores, not AI Product Engineer scores.
+**Validates: Requirements 11.3, 11.6**
 
 ## Error Handling
 

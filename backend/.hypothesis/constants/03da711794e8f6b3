@@ -1,0 +1,4 @@
+# file: /Users/harvadlee/Projects/JobHunter-Python-TypeScript-GmailRestAPI/backend/template_matcher.py
+# hypothesis_version: 6.141.1
+
+[0.0, 0.3, 0.7, 1.0, 5.0, 10.0, 100.0, 999, '=', '__main__', 'android', 'android_developer', 'aws', 'devops', 'devops_cloud', 'fullstack', 'fullstack_developer', 'keywords', 'kotlin', 'kubernetes', 'mobile', 'priority', 'react', 'typescript']

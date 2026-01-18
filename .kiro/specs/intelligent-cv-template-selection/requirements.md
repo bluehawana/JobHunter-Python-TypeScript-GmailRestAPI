@@ -2,7 +2,9 @@
 
 ## Introduction
 
-The Intelligent CV Template Selection system enhances the job application automation by ensuring that when a new job description is pasted, the system intelligently selects the most relevant CV template based on the job requirements (cloud developer, DevOps, Android, incident management, etc.) rather than defaulting to a single template like the Nasdaq one. This system will analyze job descriptions and match them to the most appropriate existing CV template using keyword analysis and role categorization.
+The Intelligent CV Template Selection system enhances the job application automation by ensuring that when a new job description is pasted, the system intelligently selects the most relevant CV template based on the job requirements. The system uses a **percentage-based weighted scoring approach** to accurately classify jobs with mixed responsibilities (e.g., a job that is 85% senior software engineering, 10% AI integration, 5% leadership should use a software engineering template, not an AI template).
+
+This prevents misclassification where the presence of AI keywords causes the system to incorrectly select an "AI Product Engineer" template for a job that is primarily software engineering with some AI integration work.
 
 ## Glossary
 
@@ -12,6 +14,10 @@ The Intelligent CV Template Selection system enhances the job application automa
 - **Template Manager**: The system component responsible for analyzing job descriptions and selecting appropriate templates
 - **Keyword Matching**: The process of identifying relevant terms in a job description to determine role type
 - **Template Path**: The file system location of a CV template file
+- **Role Percentage**: A normalized score (0-100%) indicating how much a job description matches a specific role category
+- **Role Breakdown**: A distribution showing percentage scores for all significant role categories in a job description
+- **Weighted Scoring**: A scoring method that considers both keyword frequency and keyword importance to calculate accurate role percentages
+- **Primary Role**: The role category with the highest percentage score, used for template selection
 
 ## Requirements
 
@@ -128,7 +134,34 @@ The Intelligent CV Template Selection system enhances the job application automa
 4. WHEN a job emphasizes specific tools (Jenkins, Gerrit, Artifactory) THEN the system SHALL select a template highlighting those or similar tools
 5. WHEN template content is irrelevant to the job THEN the system SHALL log a warning and attempt alternative template selection
 
-### Requirement 10: AI-Enhanced Analysis (Optional)
+### Requirement 10: Percentage-Based Role Scoring
+
+**User Story:** As a job seeker, I want to see what percentage of the job matches different role categories, so that I understand the job composition and can verify the template selection is appropriate.
+
+#### Acceptance Criteria
+
+1. WHEN analyzing a job description THEN the system SHALL calculate percentage scores for all role categories
+2. WHEN calculating percentages THEN the system SHALL normalize raw scores so all percentages sum to 100%
+3. WHEN displaying role breakdown THEN the system SHALL show all roles with scores above 5%
+4. WHEN a job matches multiple roles THEN the system SHALL return a ranked list of role percentages
+5. WHEN the primary role is below 50% THEN the system SHALL log a warning indicating mixed role composition
+6. WHEN API responses include role analysis THEN the system SHALL include the percentage breakdown for all significant roles
+7. WHEN selecting a template THEN the system SHALL use the role with the highest percentage score
+
+### Requirement 11: Prevent AI Misclassification
+
+**User Story:** As a job seeker applying for senior software engineering roles that mention AI integration, I want the system to recognize these as software engineering jobs (not AI Product Engineer jobs), so that my CV emphasizes software engineering experience rather than AI/ML expertise.
+
+#### Acceptance Criteria
+
+1. WHEN a job description is primarily software engineering (>70%) with minor AI mentions (<20%) THEN the system SHALL classify it as a software engineering role
+2. WHEN calculating role percentages THEN the system SHALL weight software engineering keywords higher than AI integration keywords
+3. WHEN a job mentions "integrating AI", "using LLMs", "AI-powered features" THEN the system SHALL treat these as software engineering tasks, not AI Product Engineer tasks
+4. WHEN a job is classified as AI Product Engineer THEN the system SHALL verify that AI/ML work comprises at least 50% of the role responsibilities
+5. WHEN a job emphasizes building software with AI features THEN the system SHALL select fullstack_developer or backend_developer templates, not ai_product_engineer
+6. WHEN displaying role breakdown THEN the system SHALL clearly distinguish between "AI Product Engineer" (building AI systems) and "Software Engineer with AI" (using AI APIs)
+
+### Requirement 12: AI-Enhanced Analysis (Optional)
 
 **User Story:** As a job seeker, I want the system to use AI to better understand job descriptions and template matching, so that template selection is more accurate than keyword matching alone.
 

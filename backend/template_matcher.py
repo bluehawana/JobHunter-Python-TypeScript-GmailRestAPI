@@ -3,7 +3,11 @@ Template Matcher Component
 Scores templates and selects the best match using percentage-based scoring
 """
 
+import logging
 from typing import Dict, List, Tuple, Optional
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 class TemplateMatcher:
@@ -31,6 +35,8 @@ class TemplateMatcher:
             Dictionary mapping role keys to their weighted scores
             Format: {role_key: weighted_score}
         """
+        logger.debug("Calculating weighted scores for role categories")
+        
         role_scores = {}
         
         for role_key, role_data in self.role_categories.items():
@@ -46,6 +52,10 @@ class TemplateMatcher:
             weighted_score = raw_score / priority
             
             role_scores[role_key] = weighted_score
+            
+            # Log score calculation details when debugging
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f"Role {role_key}: raw_score={raw_score}, priority={priority}, weighted_score={weighted_score:.2f}")
         
         return role_scores
     
@@ -113,11 +123,21 @@ class TemplateMatcher:
             Tuple of (best_role_key, best_score)
         """
         if not scores:
+            logger.warning("No scores provided for template matching")
             return ('', 0.0)
         
         # Find role with maximum score
         best_role = max(scores, key=scores.get)
         best_score = scores[best_role]
+        
+        logger.debug(f"Best match selection: {best_role} with score {best_score:.2f}")
+        
+        # Log top 3 matches for debugging
+        if logger.isEnabledFor(logging.DEBUG):
+            sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+            logger.debug("Top 3 role matches:")
+            for i, (role, score) in enumerate(sorted_scores[:3]):
+                logger.debug(f"  {i+1}. {role}: {score:.2f}")
         
         return (best_role, best_score)
     
@@ -134,12 +154,16 @@ class TemplateMatcher:
         if excluded is None:
             excluded = []
         
+        logger.info(f"Selecting fallback template, excluding: {excluded}")
+        
         # Default fallback is devops_cloud
         default_fallback = 'devops_cloud'
         
         # If default is excluded, find the role with lowest priority number
         # (highest priority) that's not excluded
         if default_fallback in excluded:
+            logger.debug("Default fallback 'devops_cloud' is excluded, finding alternative")
+            
             available_roles = [
                 (role_key, role_data.get('priority', 999))
                 for role_key, role_data in self.role_categories.items()
@@ -149,8 +173,13 @@ class TemplateMatcher:
             if available_roles:
                 # Sort by priority (lowest number = highest priority)
                 available_roles.sort(key=lambda x: x[1])
-                return available_roles[0][0]
+                fallback = available_roles[0][0]
+                logger.info(f"Selected alternative fallback template: {fallback}")
+                return fallback
+            else:
+                logger.warning("No available fallback templates found")
         
+        logger.info(f"Using default fallback template: {default_fallback}")
         return default_fallback
     
     def calculate_confidence_score(
