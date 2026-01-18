@@ -834,10 +834,25 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
     if role_category:
         template_content = template_manager.load_template(role_category)
 
-    # If template exists, use it as base and customize
+    # If template exists, use it as base WITHOUT customization to preserve quality
     if template_content:
-        # Customize template with job-specific information and AI-powered content tailoring
-        template_content = customize_template(template_content, company, title, role_type, job_description, customization_notes)
+        # IMPORTANT: Don't customize CV templates - they're already optimized!
+        # The original templates are 3 pages with perfect Java/Spring Boot content
+        # Only do basic placeholder replacement for company/title in header
+        
+        # Clean up the title - remove extra whitespace and newlines
+        clean_title = title.strip().split('\n')[0] if title and title != 'Position' else role_type
+        # Escape special LaTeX characters in title
+        clean_title = clean_title.replace('&', '\\&').replace('%', '\\%').replace('$', '\\$')
+        
+        # Only replace the job title in the header ({\Large ...} line after name)
+        pattern = r'\{\\Large\s+[^\}]+\}'
+        match = re.search(pattern, template_content)
+        if match:
+            replacement = f'{{\\Large {clean_title}}}'
+            template_content = template_content.replace(match.group(0), replacement, 1)
+        
+        print(f"✓ Using original CV template for {role_category} without content modification")
         return template_content
     
     # Fallback to LEGO bricks generation if no template
