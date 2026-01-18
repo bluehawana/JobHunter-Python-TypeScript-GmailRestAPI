@@ -356,21 +356,20 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     company = 'Company'
     title = 'Position'
     
-    # Try to extract company and title from LinkedIn URL if provided
-    if job_url and 'linkedin.com/jobs/view' in job_url:
+    # Try to extract company and title from job URL if provided
+    if job_url:
         try:
-            print(f"🔍 Attempting to extract job info from LinkedIn URL: {job_url}")
-            # For now, we'll extract from the job description content
-            # In the future, this can be enhanced with actual web scraping
-            linkedin_info = extract_linkedin_job_info_from_content(job_description, job_url)
-            if linkedin_info['success']:
-                company = linkedin_info['company']
-                title = linkedin_info['title']
-                print(f"✅ LinkedIn extraction successful: {title} at {company}")
+            print(f"🔍 Attempting to extract job info from URL: {job_url}")
+            # Use the enhanced universal job extractor
+            job_info = extract_linkedin_job_info_from_content(job_description, job_url)
+            if job_info['success']:
+                company = job_info['company']
+                title = job_info['title']
+                print(f"✅ Job extraction successful: {title} at {company}")
             else:
-                print(f"⚠️ LinkedIn extraction failed, using fallback extraction")
+                print(f"⚠️ Job extraction failed, using fallback values")
         except Exception as e:
-            print(f"❌ Error extracting from LinkedIn URL: {e}")
+            print(f"❌ Error extracting from job URL: {e}")
     
     # Try AI analysis first (MiniMax M2)
     ai_result = None
@@ -520,6 +519,33 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
                         if company != 'Company':
                             break
     
+    # Validate extraction results
+    extraction_success = True
+    extraction_issues = []
+    
+    # Check if company was successfully extracted
+    if company == 'Company' or not company or len(company.strip()) < 2:
+        extraction_success = False
+        extraction_issues.append('company_missing')
+        company = 'Company'  # Ensure consistent fallback
+    
+    # Check if title was successfully extracted  
+    if title == 'Position' or not title or len(title.strip()) < 3:
+        extraction_success = False
+        extraction_issues.append('title_missing')
+        title = 'Position'  # Ensure consistent fallback
+    
+    # Additional validation for reasonable values
+    if company and len(company) > 100:  # Company name too long
+        extraction_success = False
+        extraction_issues.append('company_invalid')
+        company = 'Company'
+        
+    if title and len(title) > 100:  # Job title too long
+        extraction_success = False
+        extraction_issues.append('title_invalid')
+        title = 'Position'
+    
     return {
         'roleType': role_type,
         'roleCategory': role_category,  # Internal category key for template matching
@@ -544,7 +570,14 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
         'rolePercentages': role_percentages,  # All role percentages (0-100%)
         'roleBreakdown': [{'role': role, 'percentage': pct} for role, pct in role_breakdown],  # Significant roles (>5%)
         'roleScores': role_scores,  # Raw weighted scores
-        'confidenceScore': confidence  # Overall confidence in the analysis
+        'confidenceScore': confidence,  # Overall confidence in the analysis
+        # Add extraction validation
+        'extractionStatus': {
+            'success': extraction_success,
+            'issues': extraction_issues,
+            'requiresManualInput': not extraction_success,
+            'message': 'Company and job title extracted successfully' if extraction_success else 'Manual input required for missing information'
+        }
     }
 
 
@@ -974,13 +1007,17 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
     import re
     from datetime import datetime
 
-    # Replace [Company Name] placeholders in body text
+    # Replace both old and new placeholder formats
     if company and company != 'Company':
         template_content = template_content.replace('[Company Name]', company)
+        template_content = template_content.replace('COMPANY\_NAME', company)
+        template_content = template_content.replace('COMPANY_NAME', company)
 
-    # Replace [Position] placeholder
+    # Replace [Position] placeholder and new format
     if title and title != 'Position':
         template_content = template_content.replace('[Position]', title)
+        template_content = template_content.replace('JOB\_TITLE', title)
+        template_content = template_content.replace('JOB_TITLE', title)
 
     # Clean up placeholder lines in header (use simple string operations to avoid regex escape issues)
     lines = template_content.split('\n')
@@ -1243,7 +1280,47 @@ def analyze_job():
         return jsonify({
             'success': True,
             'analysis': analysis,
-            'jobDescription': job_description  # Return fetched description
+            'jobDescription': job_description,  # Return fetched description
+            'extractionStatus': analysis.get('extractionStatus', {})  # Include extraction status for frontend
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@lego_api.route('/api/update-job-info', methods=['POST'])
+def update_job_info():
+    """Update company name and job title manually when extraction fails"""
+    try:
+        data = request.json
+        analysis = data.get('analysis', {})
+        company = data.get('company', '').strip()
+        title = data.get('title', '').strip()
+        
+        if not company or not title:
+            return jsonify({'error': 'Both company name and job title are required'}), 400
+        
+        # Validate input lengths
+        if len(company) > 100:
+            return jsonify({'error': 'Company name too long (max 100 characters)'}), 400
+        if len(title) > 100:
+            return jsonify({'error': 'Job title too long (max 100 characters)'}), 400
+        
+        # Update the analysis with manual input
+        analysis['company'] = company
+        analysis['title'] = title
+        analysis['extractionStatus'] = {
+            'success': True,
+            'issues': [],
+            'requiresManualInput': False,
+            'message': 'Company and job title provided manually',
+            'source': 'manual_input'
+        }
+        
+        return jsonify({
+            'success': True,
+            'analysis': analysis,
+            'message': 'Job information updated successfully'
         })
         
     except Exception as e:

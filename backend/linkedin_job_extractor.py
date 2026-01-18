@@ -1,35 +1,123 @@
 #!/usr/bin/env python3
 """
-LinkedIn Job Information Extractor
-Extracts company name and job title from LinkedIn job URLs using webFetch
+Universal Job Information Extractor
+Extracts company name and job title from various job sites including LinkedIn, Omegapoint, etc.
 """
 
 import re
 from typing import Dict, Optional
 import logging
+from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
 
-class LinkedInJobExtractor:
-    """Extract job information from LinkedIn job URLs"""
+class UniversalJobExtractor:
+    """Extract job information from various job sites"""
     
     def __init__(self):
         pass
     
     def extract_job_info_from_content(self, content: str, url: str) -> Dict[str, str]:
         """
-        Extract company name and job title from LinkedIn job page content
+        Extract company name and job title from job page content
         
         Args:
-            content: HTML content from LinkedIn job page
-            url: Original LinkedIn URL for reference
+            content: HTML content from job page
+            url: Original job URL for reference
             
         Returns:
             Dictionary with 'company', 'title', and 'success' keys
         """
         try:
-            logger.info(f"Extracting job info from LinkedIn content")
+            logger.info(f"Extracting job info from URL: {url}")
             
+            # Determine the job site and use appropriate extraction method
+            domain = self._get_domain(url)
+            
+            if 'omegapoint' in domain:
+                return self._extract_omegapoint_info(content, url)
+            elif 'linkedin' in domain:
+                return self._extract_linkedin_info(content, url)
+            else:
+                # Generic extraction for other sites
+                return self._extract_generic_info(content, url)
+                
+        except Exception as e:
+            logger.error(f"Error extracting job info: {e}")
+            return self._create_error_response(f"Extraction error: {str(e)}")
+    
+    def _get_domain(self, url: str) -> str:
+        """Extract domain from URL"""
+        try:
+            parsed = urlparse(url)
+            return parsed.netloc.lower()
+        except:
+            return ""
+    
+    def _extract_omegapoint_info(self, content: str, url: str) -> Dict[str, str]:
+        """Extract job info specifically from Omegapoint job pages"""
+        try:
+            # For Omegapoint, the company is always "Omegapoint"
+            company = "Omegapoint"
+            
+            # Extract job title from the page title or content
+            title = None
+            
+            # Method 1: Extract from page title pattern "Job Title - Omegapoint"
+            title_match = re.search(r'([^-]+?)\s*-\s*Omegapoint', content, re.IGNORECASE)
+            if title_match:
+                title = title_match.group(1).strip()
+            
+            # Method 2: Look for job title in URL
+            if not title:
+                url_match = re.search(r'/jobs/\d+-([^/?]+)', url)
+                if url_match:
+                    # Convert URL slug to readable title
+                    title_slug = url_match.group(1)
+                    title = title_slug.replace('-', ' ').title()
+            
+            # Method 3: Look for specific patterns in content
+            if not title:
+                patterns = [
+                    r'Vi söker.*?([A-Za-z\s]+developer[A-Za-z\s]*)',
+                    r'([A-Za-z\s]*developer[A-Za-z\s]*)',
+                    r'([A-Za-z\s]*engineer[A-Za-z\s]*)',
+                ]
+                
+                for pattern in patterns:
+                    match = re.search(pattern, content, re.IGNORECASE)
+                    if match:
+                        title = match.group(1).strip()
+                        break
+            
+            if title:
+                # Clean up the title
+                title = re.sub(r'\s+', ' ', title).strip()
+                title = title.title()  # Capitalize properly
+                
+                logger.info(f"Successfully extracted Omegapoint job: {title} at {company}")
+                return {
+                    'company': company,
+                    'title': title,
+                    'success': True,
+                    'source': 'omegapoint_extraction'
+                }
+            
+            # Fallback for Omegapoint
+            return {
+                'company': company,
+                'title': 'Software Developer',
+                'success': False,
+                'source': 'omegapoint_fallback'
+            }
+            
+        except Exception as e:
+            logger.error(f"Error extracting Omegapoint job info: {e}")
+            return self._create_error_response(f"Omegapoint extraction error: {str(e)}")
+    
+    def _extract_linkedin_info(self, content: str, url: str) -> Dict[str, str]:
+        """Extract job info from LinkedIn (existing logic)"""
+        try:
             # Extract company name and job title from content
             company = self._extract_company_name(content)
             title = self._extract_job_title(content)
@@ -45,10 +133,39 @@ class LinkedInJobExtractor:
             else:
                 logger.warning(f"Could not extract complete job info. Company: {company}, Title: {title}")
                 return self._create_fallback_response(company, title)
-                
         except Exception as e:
             logger.error(f"Error extracting LinkedIn job info: {e}")
-            return self._create_error_response(f"Extraction error: {str(e)}")
+            return self._create_error_response(f"LinkedIn extraction error: {str(e)}")
+    
+    def _extract_generic_info(self, content: str, url: str) -> Dict[str, str]:
+        """Generic extraction for other job sites"""
+        try:
+            company = self._extract_company_name(content)
+            title = self._extract_job_title(content)
+            
+            if company and title:
+                logger.info(f"Successfully extracted: {title} at {company}")
+                return {
+                    'company': company,
+                    'title': title,
+                    'success': True,
+                    'source': 'generic_extraction'
+                }
+            else:
+                return self._create_fallback_response(company, title)
+        except Exception as e:
+            logger.error(f"Error extracting generic job info: {e}")
+            return self._create_error_response(f"Generic extraction error: {str(e)}")
+            if company and title:
+                logger.info(f"Successfully extracted: {title} at {company}")
+                return {
+                    'company': company,
+                    'title': title,
+                    'success': True,
+                    'source': 'generic_extraction'
+                }
+            else:
+                return self._create_fallback_response(company, title)
     
     def _extract_company_name(self, content: str) -> Optional[str]:
         """Extract company name from LinkedIn job page content"""
@@ -76,7 +193,8 @@ class LinkedInJobExtractor:
             'King', 'Mojang', 'Skype', 'Telia', 'Electrolux', 'ABB', 'Sandvik',
             'Atlas Copco', 'Hexagon', 'Autoliv', 'SKF', 'Alfa Laval', 'Getinge',
             'Husqvarna', 'Epiroc', 'Boliden', 'SSAB', 'Essity', 'SCA', 'Kinnevik',
-            'Investor AB', 'Wallenberg', 'Nordea', 'SEB', 'Swedbank', 'Handelsbanken'
+            'Investor AB', 'Wallenberg', 'Nordea', 'SEB', 'Swedbank', 'Handelsbanken',
+            'Omegapoint', 'CPAC Systems', 'ECARX', 'DoiT International', 'Kollmorgen'
         ]
         
         content_lower = content.lower()
@@ -145,16 +263,16 @@ class LinkedInJobExtractor:
 
 def extract_linkedin_job_info_from_content(content: str, url: str = "") -> Dict[str, str]:
     """
-    Convenience function to extract job info from LinkedIn content
+    Convenience function to extract job info from various job sites
     
     Args:
-        content: LinkedIn job page content
+        content: Job page content
         url: Original URL for reference
         
     Returns:
         Dictionary with company, title, and success information
     """
-    extractor = LinkedInJobExtractor()
+    extractor = UniversalJobExtractor()
     return extractor.extract_job_info_from_content(content, url)
 
 
