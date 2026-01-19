@@ -519,6 +519,31 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
                         if company != 'Company':
                             break
     
+    # Clean up title if it contains company name with pipe separator
+    # Pattern: "Job Title | Company Name" or "Job Title — Company Name"
+    if title and ('|' in title or '—' in title or ' - ' in title):
+        for separator in [' | ', ' — ', ' - ']:
+            if separator in title:
+                parts = title.split(separator, 1)
+                if len(parts) == 2:
+                    # Check which part is likely the title vs company
+                    left, right = parts[0].strip(), parts[1].strip()
+                    left_is_title = any(kw in left.lower() for kw in ['engineer', 'developer', 'architect', 'manager', 'specialist', 'analyst'])
+                    right_is_title = any(kw in right.lower() for kw in ['engineer', 'developer', 'architect', 'manager', 'specialist', 'analyst'])
+                    
+                    if left_is_title and not right_is_title:
+                        # Left is title, right is company
+                        title = left
+                        if company == 'Company':
+                            company = right
+                        break
+                    elif right_is_title and not left_is_title:
+                        # Right is title, left is company
+                        if company == 'Company':
+                            company = left
+                        title = right
+                        break
+    
     # Validate extraction results
     extraction_success = True
     extraction_issues = []
