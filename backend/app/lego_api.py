@@ -839,9 +839,17 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
         # IMPORTANT: Don't customize CV templates - they're already optimized!
         # The original templates are 3 pages with perfect Java/Spring Boot content
         # Only do basic placeholder replacement for company/title in header
-        
-        # Clean up the title - remove extra whitespace and newlines
+
+        # Clean up the title - remove extra whitespace, newlines, and leading articles
         clean_title = title.strip().split('\n')[0] if title and title != 'Position' else role_type
+        # Remove leading articles (an, a, the)
+        clean_title = re.sub(r'^(an?|the)\s+', '', clean_title, flags=re.IGNORECASE).strip()
+        # Title case, but preserve acronyms
+        clean_title = clean_title.title() if clean_title else clean_title
+        # Restore common acronyms that .title() would break
+        acronyms = ['IT', 'AI', 'API', 'CI/CD', 'DevOps', 'SRE', 'UI', 'UX', 'QA', 'BI', 'ERP', 'CRM', 'HR', 'AWS', 'GCP', 'iOS', 'ML']
+        for acronym in acronyms:
+            clean_title = re.sub(r'\b' + acronym.title() + r'\b', acronym, clean_title, flags=re.IGNORECASE)
         # Escape special LaTeX characters in title
         clean_title = clean_title.replace('&', '\\&').replace('%', '\\%').replace('$', '\\$')
         
@@ -1022,6 +1030,16 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
     import re
     from datetime import datetime
 
+    # Clean up title - remove leading articles (an, a, the)
+    if title:
+        title = re.sub(r'^(an?|the)\s+', '', title, flags=re.IGNORECASE).strip()
+        # Capitalize first letter of each word, but preserve acronyms
+        title = title.title() if title else title
+        # Restore common acronyms that .title() would break
+        acronyms = ['IT', 'AI', 'API', 'CI/CD', 'DevOps', 'SRE', 'UI', 'UX', 'QA', 'BI', 'ERP', 'CRM', 'HR', 'AWS', 'GCP', 'iOS', 'ML']
+        for acronym in acronyms:
+            title = re.sub(r'\b' + acronym.title() + r'\b', acronym, title, flags=re.IGNORECASE)
+
     # Replace both old and new placeholder formats
     if company and company != 'Company':
         template_content = template_content.replace('[Company Name]', company)
@@ -1080,31 +1098,29 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
     # Fallback to LEGO bricks generation
     today = datetime.now().strftime("%B %d, %Y")
     
-    latex = r"""\documentclass[a4paper,10pt]{article}
-\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
-\usepackage{enumitem}
-\usepackage{titlesec}
-\usepackage{hyperref}
+    latex = r"""\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
 \usepackage{xcolor}
+\usepackage{hyperref}
 
-% Define colors
-\definecolor{darkblue}{rgb}{0.0, 0.4, 0.8}
-
-% Remove paragraph indentation
+\geometry{margin=1in}
 \setlength{\parindent}{0pt}
+\definecolor{linkedinblue}{RGB}{0,119,181}
+\hypersetup{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}
 
 \begin{document}
-\pagestyle{empty}
 
-{\color{darkblue}""" + company + r"""\\
+% Header with job information (simple left-aligned, LinkedIn blue)
+{\color{linkedinblue}""" + company + r"""\\
 """ + title + r"""\\
 Gothenburg, Sweden}
 
-\vspace{40pt}
+\vspace{1cm}
 
 Dear Hiring Manager,
 
-\vspace{10pt}
+\vspace{0.5cm}
 
 I'm excited to apply for the """ + title + r""" position at """ + company + r""". With 5+ years managing production infrastructure, resolving critical incidents, and optimizing cloud operations, I'm confident I can contribute immediately to your team.
 
@@ -1116,23 +1132,22 @@ I'm excited to apply for the """ + title + r""" position at """ + company + r"""
 
 I'm passionate about platform reliability, MTTR reduction, and developer experience improvements. I'd welcome the opportunity to discuss how my experience can contribute to """ + company + r"""'s success. Thank you for considering my application.
 
-\vspace{10pt}
+\vspace{1cm}
 
-Sincerely,
+Best Regards,\\[0.5cm]
+Harvad (Hongzhi) Li
 
-Harvad Lee
+\vspace{\fill}
 
-\vspace{40pt}
+% Line separator
+{\color{linkedinblue}\hrule height 0.5pt}
 
-{\color{darkblue}\rule{\linewidth}{0.6pt}}
+\vspace{0.3cm}
 
-\vspace{4pt}
-
-{\color{darkblue}Ebbe Lieberathsgatan 27\\
-412 65 Göteborg\\
-hongzhili01@gmail.com\\
-+46 72 838 4299\\
-""" + today + r"""}
+% Footer with address and date
+{\color{linkedinblue}Ebbe Lieberathsgatan 27\\
+41265, Gothenburg, Sweden\\
+\hfill \today}
 
 \end{document}
 """
