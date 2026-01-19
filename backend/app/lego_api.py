@@ -1041,16 +1041,17 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
             title = re.sub(r'\b' + acronym.title() + r'\b', acronym, title, flags=re.IGNORECASE)
 
     # Replace both old and new placeholder formats
+    # Handle LaTeX escaped underscores and regular underscores
     if company and company != 'Company':
         template_content = template_content.replace('[Company Name]', company)
-        template_content = template_content.replace('COMPANY\_NAME', company)
-        template_content = template_content.replace('COMPANY_NAME', company)
+        template_content = template_content.replace('COMPANY\\_NAME', company)  # LaTeX escaped
+        template_content = template_content.replace('COMPANY_NAME', company)    # Regular
 
     # Replace [Position] placeholder and new format
     if title and title != 'Position':
         template_content = template_content.replace('[Position]', title)
-        template_content = template_content.replace('JOB\_TITLE', title)
-        template_content = template_content.replace('JOB_TITLE', title)
+        template_content = template_content.replace('JOB\\_TITLE', title)  # LaTeX escaped
+        template_content = template_content.replace('JOB_TITLE', title)    # Regular
 
     # Clean up placeholder lines in header (use simple string operations to avoid regex escape issues)
     lines = template_content.split('\n')
