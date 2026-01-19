@@ -140,8 +140,54 @@ class UniversalJobExtractor:
     def _extract_generic_info(self, content: str, url: str) -> Dict[str, str]:
         """Generic extraction for other job sites"""
         try:
-            company = self._extract_company_name(content)
-            title = self._extract_job_title(content)
+            # First, check for "Title | Company" or "Title — Company" pattern at the start
+            lines = content.strip().split('\n')
+            first_line = lines[0].strip() if lines else ""
+            
+            company = None
+            title = None
+            
+            # Check for pipe or em-dash separator in first line
+            if first_line and ('|' in first_line or '—' in first_line or ' - ' in first_line):
+                for separator in [' | ', ' — ', ' - ']:
+                    if separator in first_line:
+                        parts = first_line.split(separator, 1)
+                        if len(parts) == 2:
+                            left, right = parts[0].strip(), parts[1].strip()
+                            # Check which part is likely the title vs company
+                            job_keywords = ['engineer', 'developer', 'architect', 'manager', 'specialist', 'analyst', 'lead', 'senior', 'consultant']
+                            left_is_title = any(kw in left.lower() for kw in job_keywords)
+                            right_is_title = any(kw in right.lower() for kw in job_keywords)
+                            
+                            if left_is_title and not right_is_title:
+                                # "Infrastructure Architect | Stena Metall" pattern
+                                title = left
+                                company = right
+                                logger.info(f"Extracted from first line: {title} at {company}")
+                                return {
+                                    'company': company,
+                                    'title': title,
+                                    'success': True,
+                                    'source': 'first_line_extraction'
+                                }
+                            elif right_is_title and not left_is_title:
+                                # "Stena Metall | Infrastructure Architect" pattern
+                                company = left
+                                title = right
+                                logger.info(f"Extracted from first line: {title} at {company}")
+                                return {
+                                    'company': company,
+                                    'title': title,
+                                    'success': True,
+                                    'source': 'first_line_extraction'
+                                }
+                        break
+            
+            # Fallback to content-based extraction
+            if not company:
+                company = self._extract_company_name(content)
+            if not title:
+                title = self._extract_job_title(content)
             
             if company and title:
                 logger.info(f"Successfully extracted: {title} at {company}")
@@ -156,16 +202,6 @@ class UniversalJobExtractor:
         except Exception as e:
             logger.error(f"Error extracting generic job info: {e}")
             return self._create_error_response(f"Generic extraction error: {str(e)}")
-            if company and title:
-                logger.info(f"Successfully extracted: {title} at {company}")
-                return {
-                    'company': company,
-                    'title': title,
-                    'success': True,
-                    'source': 'generic_extraction'
-                }
-            else:
-                return self._create_fallback_response(company, title)
     
     def _extract_company_name(self, content: str) -> Optional[str]:
         """Extract company name from LinkedIn job page content"""
