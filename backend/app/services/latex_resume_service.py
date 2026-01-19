@@ -149,58 +149,49 @@ class LaTeXResumeService:
 
 \end{{document}}"""
 
-        # Your cover letter template - Matching CV format
-        self.cover_letter_template = r"""\documentclass[a4paper,10pt]{{article}}
-\usepackage[left=1in,right=1in,top=1in,bottom=1in]{{geometry}}
-\usepackage{{enumitem}}
-\usepackage{{titlesec}}
-\usepackage{{hyperref}}
-\usepackage{{graphicx}}
+        # Your cover letter template - LinkedIn blue format
+        self.cover_letter_template = r"""\documentclass[10pt,a4paper]{{article}}
+\usepackage[utf8]{{inputenc}}
+\usepackage{{geometry}}
 \usepackage{{xcolor}}
+\usepackage{{hyperref}}
 
-% Define colors
-\definecolor{{darkblue}}{{rgb}}{{0.0, 0.2, 0.6}}
-
-% Section formatting
-\titleformat{{\section}}{{\large\bfseries\raggedright\color{{black}}}}{{}}{{0em}}{{}}[\titlerule]
-\titleformat{{\subsection}}[runin]{{\bfseries}}{{}}{{0em}}{{}}[:]
-
-% Remove paragraph indentation
+\geometry{{margin=1in}}
 \setlength{{\parindent}}{{0pt}}
+\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
+\hypersetup{{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}}
 
 \begin{{document}}
 
-\pagestyle{{empty}} % no page number
+% Header with job information (simple left-aligned)
+{{\color{{linkedinblue}}{company_name}\\
+{job_title}\\
+Gothenburg, Sweden}}
 
-\begin{{letter}}{{\textcolor{{darkblue}}{{\\
-{company_name}\\
-{company_address}}}}}\\
+\vspace{{1cm}}
 
-\vspace{{40pt}}
+{hiring_manager_greeting},
 
-\opening{{{hiring_manager_greeting},}}
-\vspace{{10pt}}
+\vspace{{0.5cm}}
 
 {cover_letter_body}
 
-\vspace{{20pt}}
-Sincerely,
+\vspace{{1cm}}
 
-Hongzhi Li\\
+Best Regards,\\[0.5cm]
+Harvad (Hongzhi) Li
 
-{current_date}
+\vspace{{\fill}}
 
-\vspace{{40pt}}
-{{\color{{darkblue}}\rule{{\linewidth}}{{0.6pt}}}}
-\vspace{{4pt}}
+% Line separator
+{{\color{{linkedinblue}}\hrule height 0.5pt}}
 
-\closing{{\color{{darkblue}} Ebbe Lieberathsgatan 27\\
-412 65 Göteborg\\
-hongzhili01@gmail.com\\
-0728384299}}\\
-\vspace{{10pt}}
+\vspace{{0.3cm}}
 
-\end{{letter}}
+% Footer with address and date
+{{\color{{linkedinblue}}Ebbe Lieberathsgatan 27\\
+412 65, Gothenburg, Sweden\\
+\hfill \today}}
 
 \end{{document}}"""
     
@@ -255,17 +246,13 @@ hongzhili01@gmail.com\\
             
             # Determine hiring manager greeting
             hiring_manager_greeting = self._determine_hiring_manager_greeting(job_description)
-            
-            # Get company address (can be generic or specific)
-            company_address = self._get_company_address(company_name)
-            
+
             # Fill in template
             cover_letter_content = self.cover_letter_template.format(
                 company_name=company_name,
-                company_address=company_address,
+                job_title=job_title,
                 hiring_manager_greeting=hiring_manager_greeting,
-                cover_letter_body=cover_letter_body,
-                current_date=datetime.now().strftime("%Y.%m.%d")
+                cover_letter_body=cover_letter_body
             )
             
             # Compile to PDF

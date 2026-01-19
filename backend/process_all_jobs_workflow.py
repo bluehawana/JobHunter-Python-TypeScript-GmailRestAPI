@@ -104,14 +104,14 @@ class JobApplicationProcessor:
 \\usepackage{{xcolor}}
 
 % Define dark blue color (LinkedIn blue)
-\\definecolor{{darkblue}}{{RGB}}{{0,51,102}}
+\\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
 
 % Hyperlink setup
 \\hypersetup{{
     colorlinks=true,
-    linkcolor=darkblue,
-    urlcolor=darkblue,
-    citecolor=darkblue,
+    linkcolor=linkedinblue,
+    urlcolor=linkedinblue,
+    citecolor=linkedinblue,
     pdfauthor={{Hongzhi Li}},
     pdftitle={{Hongzhi Li - {job.get('title', 'Developer')} CV}}
 }}
@@ -121,9 +121,9 @@ class JobApplicationProcessor:
 
 \\newcommand{{\\sectiontitle}}[1]{{
     \\vspace{{10pt}}
-    {{\\large\\textbf{{\\textcolor{{darkblue}}{{#1}}}}}}
+    {{\\large\\textbf{{\\textcolor{{linkedinblue}}{{#1}}}}}}
     \\vspace{{5pt}}
-    \\textcolor{{darkblue}}{{\\hrule}}
+    \\textcolor{{linkedinblue}}{{\\hrule}}
     \\vspace{{8pt}}
 }}
 
@@ -136,9 +136,9 @@ class JobApplicationProcessor:
 
 % Header
 \\begin{{center}}
-{{\\huge \\textbf{{\\textcolor{{darkblue}}{{Hongzhi Li}}}}}}\\\\
+{{\\huge \\textbf{{\\textcolor{{linkedinblue}}{{Hongzhi Li}}}}}}\\\\
 \\vspace{{8pt}}
-{{\\Large \\textcolor{{darkblue}}{{{job.get('title', 'Fullstack Developer')}}}}}\\\\
+{{\\Large \\textcolor{{linkedinblue}}{{{job.get('title', 'Fullstack Developer')}}}}}\\\\
 \\vspace{{12pt}}
 \\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} $\\bullet$ 0728384299 $\\bullet$ 
 \\href{{https://linkedin.com/in/hongzhi-li}}{{LinkedIn}} $\\bullet$ 
@@ -380,13 +380,13 @@ $\\bullet$ Optimized application performance for maximum speed and scalability""
 \\usepackage{{xcolor}}
 
 % Define dark blue color (LinkedIn blue)
-\\definecolor{{darkblue}}{{RGB}}{{0,51,102}}
+\\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
 
 \\hypersetup{{
     colorlinks=true,
-    linkcolor=darkblue,
-    urlcolor=darkblue,
-    citecolor=darkblue,
+    linkcolor=linkedinblue,
+    urlcolor=linkedinblue,
+    citecolor=linkedinblue,
     pdfauthor={{Hongzhi Li}},
     pdftitle={{Hongzhi Li - {title} Cover Letter}}
 }}
@@ -398,9 +398,9 @@ $\\bullet$ Optimized application performance for maximum speed and scalability""
 
 % Header
 \\begin{{center}}
-{{\\LARGE \\textbf{{\\textcolor{{darkblue}}{{Hongzhi Li}}}}}}\\\\
+{{\\LARGE \\textbf{{\\textcolor{{linkedinblue}}{{Hongzhi Li}}}}}}\\\\
 \\vspace{{5pt}}
-{{\\large \\textcolor{{darkblue}}{{Fullstack Developer}}}}\\\\
+{{\\large \\textcolor{{linkedinblue}}{{Fullstack Developer}}}}\\\\
 \\vspace{{10pt}}
 \\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} --- 0728384299 --- 
 \\href{{https://linkedin.com/in/hongzhi-li}}{{LinkedIn}} --- 
@@ -417,7 +417,7 @@ Hiring Department
 
 \\vspace{{20pt}}
 
-\\textbf{{\\textcolor{{darkblue}}{{Subject: Application for {title} Position}}}}
+\\textbf{{\\textcolor{{linkedinblue}}{{Subject: Application for {title} Position}}}}
 
 Dear Hiring Manager,
 
@@ -427,7 +427,7 @@ In my current position, I have been leading infrastructure optimization projects
 
 What particularly excites me about {company} is your commitment to innovative technology solutions. My background in automotive technology at ECARX, combined with my freelance work developing cloud-native applications at Synteda, has given me valuable experience in building scalable, enterprise-level applications. I have consistently delivered projects that improve system reliability and reduce operational costs.
 
-\\textbf{{\\textcolor{{darkblue}}{{Key highlights of my experience include:}}}}
+\\textbf{{\\textcolor{{linkedinblue}}{{Key highlights of my experience include:}}}}
 \\begin{{itemize}}
 {self.get_role_specific_highlights(role_focus)}
 \\end{{itemize}}

@@ -45,23 +45,23 @@ class LaTeXJobEditor:
 \\pagestyle{empty}
 
 % Color definitions
-\\definecolor{darkblue}{RGB}{0,51,102}
+\\definecolor{linkedinblue}{RGB}{0,51,102}
 \\definecolor{lightgray}{RGB}{128,128,128}
 
 % Hyperlink setup
 \\hypersetup{
     colorlinks=true,
-    linkcolor=darkblue,
-    urlcolor=darkblue,
-    citecolor=darkblue
+    linkcolor=linkedinblue,
+    urlcolor=linkedinblue,
+    citecolor=linkedinblue
 }
 
 % Section formatting
-\\titleformat{\\section}{\\Large\\bfseries\\color{darkblue}}{}{0em}{}[\\titlerule]
+\\titleformat{\\section}{\\Large\\bfseries\\color{linkedinblue}}{}{0em}{}[\\titlerule]
 \\titleformat{\\subsection}{\\large\\bfseries}{}{0em}{}
 
 % Custom commands
-\\newcommand{\\contactitem}[2]{\\textcolor{darkblue}{#1} #2}
+\\newcommand{\\contactitem}[2]{\\textcolor{linkedinblue}{#1} #2}
 
 \\begin{document}
 \\pagestyle{empty} % no page number
@@ -70,7 +70,7 @@ class LaTeXJobEditor:
 \\begin{center}
 {\\LARGE \\textbf{Hongzhi Li}}\\\\[10pt]
 {\\Large \\textit{JOB_TITLE_PLACEHOLDER}}\\\\[10pt]
-\\textcolor{darkblue}{\\href{mailto:hongzhili01@google.com}{hongzhili01@gmail.com} | \\href{tel:0728384299}{0728384299} | \\href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \\href{https://github.com/bluehawana}{GitHub}}
+\\textcolor{linkedinblue}{\\href{mailto:hongzhili01@google.com}{hongzhili01@gmail.com} | \\href{tel:0728384299}{0728384299} | \\href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \\href{https://github.com/bluehawana}{GitHub}}
 \\end{center}
 
 % Personal Profile
@@ -403,13 +403,13 @@ EXPERIENCE_SECTION_PLACEHOLDER
 \\pagestyle{{empty}}
 
 % Color definitions
-\\definecolor{{darkblue}}{{RGB}}{{0,51,102}}
+\\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
 
 \\hypersetup{{
     colorlinks=true,
-    linkcolor=darkblue,
-    urlcolor=darkblue,
-    citecolor=darkblue
+    linkcolor=linkedinblue,
+    urlcolor=linkedinblue,
+    citecolor=linkedinblue
 }}
 
 \\setlength{{\\parindent}}{{0pt}}
@@ -419,11 +419,11 @@ EXPERIENCE_SECTION_PLACEHOLDER
 
 % Header
 \\begin{{center}}
-{{\\LARGE \\textbf{{\\textcolor{{darkblue}}{{Hongzhi Li}}}}}}\\\\
+{{\\LARGE \\textbf{{\\textcolor{{linkedinblue}}{{Hongzhi Li}}}}}}\\\\
 \\vspace{{5pt}}
-{{\\large \\textcolor{{darkblue}}{{Fullstack Developer}}}}\\\\
+{{\\large \\textcolor{{linkedinblue}}{{Fullstack Developer}}}}\\\\
 \\vspace{{10pt}}
-\\textcolor{{darkblue}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:0728384299}}{{0728384299}} | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
+\\textcolor{{linkedinblue}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:0728384299}}{{0728384299}} | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
 \\end{{center}}
 
 \\vspace{{20pt}}
@@ -436,7 +436,7 @@ Hiring Department
 
 \\vspace{{20pt}}
 
-\\textbf{{\\textcolor{{darkblue}}{{Subject: Application for {job_title} Position}}}}
+\\textbf{{\\textcolor{{linkedinblue}}{{Subject: Application for {job_title} Position}}}}
 
 Dear Hiring Manager,
 

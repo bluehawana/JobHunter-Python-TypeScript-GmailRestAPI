@@ -202,60 +202,49 @@ PROFILE_SUMMARY_PLACEHOLDER
 
 \\end{document}"""
 
-        # Your base Cover Letter template
-        self.base_cl_template = r"""\\documentclass[a4paper,10pt]{article}
-\\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
-\\usepackage{enumitem}
-\\usepackage{titlesec}
-\\usepackage{hyperref}
-\\usepackage{graphicx}
+        # Your base Cover Letter template - LinkedIn blue format
+        self.base_cl_template = r"""\\documentclass[10pt,a4paper]{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage{geometry}
 \\usepackage{xcolor}
+\\usepackage{hyperref}
 
-% Define colors
-\\definecolor{darkblue}{rgb}{0.0, 0.2, 0.6}
-
-% Section formatting
-\\titleformat{\\section}{\\large\\bfseries\\raggedright\\color{black}}{}{0em}{}[\\titlerule]
-\\titleformat{\\subsection}[runin]{\\bfseries}{}{0em}{}[:]
-
-% Remove paragraph indentation
+\\geometry{margin=1in}
 \\setlength{\\parindent}{0pt}
+\\definecolor{linkedinblue}{RGB}{0,119,181}
+\\hypersetup{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}
 
 \\begin{document}
 
-\\pagestyle{empty} % no page number
-
-\\begin{letter}{\\color{darkblue}\\
-COMPANY_NAME_PLACEHOLDER\\\\
+% Header with job information (simple left-aligned)
+{\\color{linkedinblue}COMPANY_NAME_PLACEHOLDER\\\\
 JOB_TITLE_PLACEHOLDER\\\\
-LOCATION_PLACEHOLDER}\\\\
+LOCATION_PLACEHOLDER}
 
-\\vspace{16pt}
+\\vspace{1cm}
 
-\\today
+Dear Hiring Manager,
 
-\\vspace{20pt}
-
-\\opening{Dear Hiring Manager,}
-
-\\vspace{10pt}
+\\vspace{0.5cm}
 
 LETTER_CONTENT_PLACEHOLDER
 
-\\vspace{40pt}
+\\vspace{1cm}
 
-{\\color{darkblue}\\rule{\\linewidth}{0.6pt}}
+Best Regards,\\\\[0.5cm]
+Harvad (Hongzhi) Li
 
-\\vspace{4pt}
+\\vspace{\\fill}
 
-\\closing{\\color{darkblue} Ebbe Lieberathsgatan 27\\\\
-412 65 Göteborg\\\\
-hongzhili01@gmail.com\\\\
-0728384299}\\\\
+% Line separator
+{\\color{linkedinblue}\\hrule height 0.5pt}
 
-\\vspace{10pt}
+\\vspace{0.3cm}
 
-\\end{letter}
+% Footer with address and date
+{\\color{linkedinblue}Ebbe Lieberathsgatan 27\\\\
+412 65, Gothenburg, Sweden\\\\
+\\hfill \\today}
 
 \\end{document}"""
     

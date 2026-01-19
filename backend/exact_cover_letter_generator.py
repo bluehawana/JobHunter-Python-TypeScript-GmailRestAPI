@@ -173,37 +173,29 @@ My multicultural background has equipped me with exceptional cross-cultural comm
         current_date = time.strftime("%Y.%m.%d")
         
         # Generate the EXACT LaTeX template with customizations
-        latex_content = f"""\\documentclass[a4paper,10pt]{{article}}
-\\usepackage[left=1in,right=1in,top=1in,bottom=1in]{{geometry}}
-\\usepackage{{enumitem}}
-\\usepackage{{titlesec}}
-\\usepackage{{hyperref}}
-\\usepackage{{graphicx}}
+        latex_content = f"""\\documentclass[10pt,a4paper]{{article}}
+\\usepackage[utf8]{{inputenc}}
+\\usepackage{{geometry}}
 \\usepackage{{xcolor}}
+\\usepackage{{hyperref}}
 
-% Define colors
-\\definecolor{{darkblue}}{{rgb}}{{0.0, 0.2, 0.6}}
-
-% Section formatting
-\\titleformat{{\\section}}{{\\large\\bfseries\\raggedright\\color{{black}}}}{{}}{{0em}}{{}}[\\titlerule]
-\\titleformat{{\\subsection}}[runin]{{\\bfseries}}{{}}{{0em}}{{}}[:]
-
-% Remove paragraph indentation
+\\geometry{{margin=1in}}
 \\setlength{{\\parindent}}{{0pt}}
+\\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
+\\hypersetup{{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}}
 
 \\begin{{document}}
-\\pagestyle{{empty}} % no page number
 
-{{\\color{{darkblue}}
-{company}\\\\
-{company_info['company_address']}\\\\
-{company_info['postal_code']} {company_info['city']}}}
+% Header with job information (simple left-aligned)
+{{\\color{{linkedinblue}}{company}\\\\
+{job_title}\\\\
+Gothenburg, Sweden}}
 
-\\vspace{{40pt}}
+\\vspace{{1cm}}
 
 {greeting_line}
 
-\\vspace{{10pt}}
+\\vspace{{0.5cm}}
 
 I am writing to express my sincere interest in the {job_title} role at {company}. {industry_passion}
 
@@ -217,24 +209,22 @@ At {company}, I am eager to contribute my skills and knowledge in tools such as 
 
 Thank you for considering my application. I look forward to discussing how my expertise and collaborative approach can contribute to {company}'s continued success and innovation.
 
-\\vspace{{20pt}}
+\\vspace{{1cm}}
 
-Sincerely,
+Best Regards,\\\\[0.5cm]
+Harvad (Hongzhi) Li
 
-Hongzhi Li\\\\
-{current_date}
+\\vspace{{\\fill}}
 
-\\vspace{{40pt}}
+% Line separator
+{{\\color{{linkedinblue}}\\hrule height 0.5pt}}
 
-{{\\color{{darkblue}}\\rule{{\\linewidth}}{{0.6pt}}}}
+\\vspace{{0.3cm}}
 
-\\vspace{{4pt}}
-
-{{\\color{{darkblue}}
-Ebbe Lieberathsgatan 27\\\\
-412 65 Göteborg\\\\
-hongzhili01@gmail.com\\\\
-0728384299}}
+% Footer with address and date
+{{\\color{{linkedinblue}}Ebbe Lieberathsgatan 27\\\\
+412 65, Gothenburg, Sweden\\\\
+\\hfill \\today}}
 
 \\end{{document}}"""
         

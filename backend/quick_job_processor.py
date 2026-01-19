@@ -62,13 +62,13 @@ class QuickJobProcessor:
 \\usepackage{{xcolor}}
 
 % Define dark blue color (LinkedIn blue)
-\\definecolor{{darkblue}}{{RGB}}{{0,51,102}}
+\\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
 
 \\hypersetup{{
     colorlinks=true,
-    linkcolor=darkblue,
-    urlcolor=darkblue,
-    citecolor=darkblue
+    linkcolor=linkedinblue,
+    urlcolor=linkedinblue,
+    citecolor=linkedinblue
 }}
 
 \\setlength{{\\parindent}}{{0pt}}
@@ -78,27 +78,27 @@ class QuickJobProcessor:
 
 % Header
 \\begin{{center}}
-{{\\huge \\textbf{{\\textcolor{{darkblue}}{{Hongzhi Li}}}}}}\\\\
+{{\\huge \\textbf{{\\textcolor{{linkedinblue}}{{Hongzhi Li}}}}}}\\\\
 \\vspace{{6pt}}
-{{\\Large \\textcolor{{darkblue}}{{{job_title}}}}}\\\\
+{{\\Large \\textcolor{{linkedinblue}}{{{job_title}}}}}\\\\
 \\vspace{{10pt}}
 \\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} $\\bullet$ 0728384299 $\\bullet$ \\href{{https://linkedin.com/in/hongzhi-li}}{{LinkedIn}} $\\bullet$ \\href{{https://github.com/bluehawana}}{{GitHub}}
 \\end{{center}}
 
 \\vspace{{12pt}}
 
-{{\\large\\textbf{{\\textcolor{{darkblue}}{{Profile Summary}}}}}}\\\\
-\\textcolor{{darkblue}}{{\\hrule}}\\vspace{{6pt}}
+{{\\large\\textbf{{\\textcolor{{linkedinblue}}{{Profile Summary}}}}}}\\\\
+\\textcolor{{linkedinblue}}{{\\hrule}}\\vspace{{6pt}}
 {profile}
 
 \\vspace{{8pt}}
-{{\\large\\textbf{{\\textcolor{{darkblue}}{{Core Technical Skills}}}}}}\\\\
-\\textcolor{{darkblue}}{{\\hrule}}\\vspace{{6pt}}
+{{\\large\\textbf{{\\textcolor{{linkedinblue}}{{Core Technical Skills}}}}}}\\\\
+\\textcolor{{linkedinblue}}{{\\hrule}}\\vspace{{6pt}}
 {skills}
 
 \\vspace{{8pt}}
-{{\\large\\textbf{{\\textcolor{{darkblue}}{{Professional Experience}}}}}}\\\\
-\\textcolor{{darkblue}}{{\\hrule}}\\vspace{{6pt}}
+{{\\large\\textbf{{\\textcolor{{linkedinblue}}{{Professional Experience}}}}}}\\\\
+\\textcolor{{linkedinblue}}{{\\hrule}}\\vspace{{6pt}}
 
 \\textbf{{ECARX --- IT/Infrastructure Specialist}} (October 2024 - Present)\\\\
 \\textit{{Gothenburg, Sweden}}\\\\
@@ -132,8 +132,8 @@ $\\bullet$ Optimized applications for maximum speed and scalability\\\\
 $\\bullet$ Participated in Agile ceremonies and sprint planning
 
 \\vspace{{8pt}}
-{{\\large\\textbf{{\\textcolor{{darkblue}}{{Key Projects}}}}}}\\\\
-\\textcolor{{darkblue}}{{\\hrule}}\\vspace{{6pt}}
+{{\\large\\textbf{{\\textcolor{{linkedinblue}}{{Key Projects}}}}}}\\\\
+\\textcolor{{linkedinblue}}{{\\hrule}}\\vspace{{6pt}}
 
 \\textbf{{Gothenburg TaxiCarPooling Platform}} (May 2025 - Present)\\\\
 Spring Boot backend with React Native mobile app, PostgreSQL integration
@@ -145,8 +145,8 @@ Android Auto applications with Java backend and voice command integration
 Fullstack platform with Spring Boot, React, microservices architecture
 
 \\vspace{{8pt}}
-{{\\large\\textbf{{\\textcolor{{darkblue}}{{Education \\& Certifications}}}}}}\\\\
-\\textcolor{{darkblue}}{{\\hrule}}\\vspace{{6pt}}
+{{\\large\\textbf{{\\textcolor{{linkedinblue}}{{Education \\& Certifications}}}}}}\\\\
+\\textcolor{{linkedinblue}}{{\\hrule}}\\vspace{{6pt}}
 
 \\textbf{{IT Högskolan}} --- Bachelor's in .NET Cloud Development (2021-2023)\\\\
 \\textbf{{University of Gothenburg}} --- Master's in International Business (2016-2019)\\\\
@@ -195,13 +195,13 @@ Fullstack platform with Spring Boot, React, microservices architecture
 \\usepackage{{xcolor}}
 
 % Define dark blue color (LinkedIn blue)
-\\definecolor{{darkblue}}{{RGB}}{{0,51,102}}
+\\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
 
 \\hypersetup{{
     colorlinks=true,
-    linkcolor=darkblue,
-    urlcolor=darkblue,
-    citecolor=darkblue
+    linkcolor=linkedinblue,
+    urlcolor=linkedinblue,
+    citecolor=linkedinblue
 }}
 
 \\setlength{{\\parindent}}{{0pt}}
@@ -211,9 +211,9 @@ Fullstack platform with Spring Boot, React, microservices architecture
 
 % Header
 \\begin{{center}}
-{{\\LARGE \\textbf{{\\textcolor{{darkblue}}{{Hongzhi Li}}}}}}\\\\
+{{\\LARGE \\textbf{{\\textcolor{{linkedinblue}}{{Hongzhi Li}}}}}}\\\\
 \\vspace{{5pt}}
-{{\\large \\textcolor{{darkblue}}{{Fullstack Developer}}}}\\\\
+{{\\large \\textcolor{{linkedinblue}}{{Fullstack Developer}}}}\\\\
 \\vspace{{10pt}}
 \\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} --- 0728384299 --- \\href{{https://linkedin.com/in/hongzhi-li}}{{LinkedIn}} --- \\href{{https://github.com/bluehawana}}{{GitHub}}
 \\end{{center}}
@@ -228,7 +228,7 @@ Hiring Department
 
 \\vspace{{20pt}}
 
-\\textbf{{\\textcolor{{darkblue}}{{Subject: Application for {job_title} Position}}}}
+\\textbf{{\\textcolor{{linkedinblue}}{{Subject: Application for {job_title} Position}}}}
 
 Dear Hiring Manager,
 
@@ -238,7 +238,7 @@ In my current position, I have been leading infrastructure optimization projects
 
 What particularly excites me about {company} is your commitment to innovative technology solutions. My background in automotive technology at ECARX, combined with my freelance work developing cloud-native applications, has given me valuable experience in building scalable, enterprise-level applications.
 
-\\textbf{{\\textcolor{{darkblue}}{{Key highlights of my experience include:}}}}
+\\textbf{{\\textcolor{{linkedinblue}}{{Key highlights of my experience include:}}}}
 \\begin{{itemize}}
 {highlight_list}
 \\end{{itemize}}
