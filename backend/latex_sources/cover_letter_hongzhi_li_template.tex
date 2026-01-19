@@ -1,52 +1,26 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
-\usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage{hyperref}
 
-% Page setup
-\geometry{margin=0.75in}
-\pagestyle{empty}
-
-% Color definitions
-\definecolor{darkblue}{RGB}{0,51,102}
-\definecolor{lightgray}{RGB}{128,128,128}
-
-% Hyperlink setup
-\hypersetup{
-    colorlinks=true,
-    linkcolor=darkblue,
-    urlcolor=darkblue,
-    citecolor=darkblue
-}
-
-% Section formatting
-\titleformat{\section}{\Large\bfseries\color{darkblue}}{}{0em}{}[\titlerule]
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\definecolor{linkedinblue}{RGB}{0,119,181}
+\hypersetup{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}
 
 \begin{document}
-\pagestyle{empty}
 
-% Header
-\noindent
-\textcolor{darkblue}{
-[COMPANY NAME]\\
+% Header with job information (simple left-aligned)
+{\color{linkedinblue}[COMPANY NAME]\\
 [JOB TITLE]\\
-Gothenburg, Sweden
-}
+Gothenburg, Sweden}
 
-\vspace{12pt}
+\vspace{1cm}
 
-% Date (latest applied date)
-\noindent
-\today
-
-\vspace{15pt}
-
-% Salutation
 Dear Hiring Manager,
 
-\vspace{10pt}
+\vspace{0.5cm}
 
 % Opening paragraph
 I am writing to express my strong interest in the [JOB TITLE] position at [COMPANY NAME]. With over 5 years of experience as a Senior Fullstack Developer and my current role as IT/Infrastructure Specialist at ECARX, I am excited about the opportunity to contribute my expertise in Java/J2EE, modern web technologies, and scalable application development to your dynamic team.
@@ -88,21 +62,21 @@ I am particularly drawn to [COMPANY NAME] because of [SPECIFIC REASON - customiz
 % Call to action
 I would welcome the opportunity to discuss how my experience and passion for innovative software development can contribute to [COMPANY NAME]'s continued success. Thank you for considering my application. I look forward to hearing from you soon.
 
-\vspace{15pt}
+\vspace{1cm}
 
-% Sign-off
-Sincerely,
+Best Regards,\\[0.5cm]
+Harvad (Hongzhi) Li
 
-\vspace{15pt}
+\vspace{\fill}
 
-Hongzhi Li
+% Line separator
+{\color{linkedinblue}\hrule height 0.5pt}
 
-\vspace{10pt}
+\vspace{0.3cm}
 
-% Additional contact info
-\textcolor{darkblue}{
-\href{https://www.bluehawana.com}{Portfolio: bluehawana.com} | 
-\href{https://github.com/bluehawana}{GitHub: github.com/bluehawana}
-}
+% Footer with address and date
+{\color{linkedinblue}Ebbe Lieberathsgatan 27\\
+412 65, Gothenburg, Sweden\\
+\hfill \today}
 
 \end{document}

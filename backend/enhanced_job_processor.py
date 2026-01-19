@@ -178,19 +178,19 @@ class EnhancedJobProcessor:
 \\pagestyle{{empty}}
 
 % Color definitions
-\\definecolor{{darkblue}}{{RGB}}{{0,51,102}}
+\\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
 \\definecolor{{lightgray}}{{RGB}}{{128,128,128}}
 
 % Hyperlink setup
 \\hypersetup{{
     colorlinks=true,
-    linkcolor=darkblue,
-    urlcolor=darkblue,
-    citecolor=darkblue
+    linkcolor=linkedinblue,
+    urlcolor=linkedinblue,
+    citecolor=linkedinblue
 }}
 
 % Section formatting
-\\titleformat{{\\section}}{{\\Large\\bfseries\\color{{darkblue}}}}{{}}{{0em}}{{}}[\\titlerule]
+\\titleformat{{\\section}}{{\\Large\\bfseries\\color{{linkedinblue}}}}{{}}{{0em}}{{}}[\\titlerule]
 \\titleformat{{\\subsection}}{{\\large\\bfseries}}{{}}{{0em}}{{}}
 
 \\begin{{document}}
@@ -199,7 +199,7 @@ class EnhancedJobProcessor:
 \\begin{{center}}
 {{\\LARGE \\textbf{{Hongzhi Li}}}}\\\\[10pt]
 {{\\Large \\textit{{{job_title}}}}}\\\\[10pt]
-\\textcolor{{darkblue}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:0728384299}}{{0728384299}} | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
+\\textcolor{{linkedinblue}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:0728384299}}{{0728384299}} | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
 \\end{{center}}
 
 % Personal Profile
@@ -458,13 +458,13 @@ class EnhancedJobProcessor:
 \\pagestyle{{empty}}
 
 % Color definitions
-\\definecolor{{darkblue}}{{RGB}}{{0,51,102}}
+\\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
 
 \\hypersetup{{
     colorlinks=true,
-    linkcolor=darkblue,
-    urlcolor=darkblue,
-    citecolor=darkblue
+    linkcolor=linkedinblue,
+    urlcolor=linkedinblue,
+    citecolor=linkedinblue
 }}
 
 \\setlength{{\\parindent}}{{0pt}}
@@ -474,11 +474,11 @@ class EnhancedJobProcessor:
 
 % Header
 \\begin{{center}}
-{{\\LARGE \\textbf{{\\textcolor{{darkblue}}{{Hongzhi Li}}}}}}\\\\
+{{\\LARGE \\textbf{{\\textcolor{{linkedinblue}}{{Hongzhi Li}}}}}}\\\\
 \\vspace{{5pt}}
-{{\\large \\textcolor{{darkblue}}{{Fullstack Developer}}}}\\\\
+{{\\large \\textcolor{{linkedinblue}}{{Fullstack Developer}}}}\\\\
 \\vspace{{10pt}}
-\\textcolor{{darkblue}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:0728384299}}{{0728384299}} | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
+\\textcolor{{linkedinblue}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:0728384299}}{{0728384299}} | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
 \\end{{center}}
 
 \\vspace{{20pt}}
@@ -491,7 +491,7 @@ Hiring Department
 
 \\vspace{{20pt}}
 
-\\textbf{{\\textcolor{{darkblue}}{{Subject: Application for {job_title} Position}}}}
+\\textbf{{\\textcolor{{linkedinblue}}{{Subject: Application for {job_title} Position}}}}
 
 Dear Hiring Manager,
 
@@ -501,7 +501,7 @@ Dear Hiring Manager,
 
 What particularly excites me about {company} is your commitment to innovative technology solutions. My experience spans from automotive technology at ECARX to freelance cloud-native development at Synteda, giving me valuable insight into building scalable, enterprise-level applications across different industries. I have consistently delivered projects that improve system reliability, reduce operational costs, and enhance user experience.
 
-\\textbf{{\\textcolor{{darkblue}}{{Key technical highlights include:}}}}
+\\textbf{{\\textcolor{{linkedinblue}}{{Key technical highlights include:}}}}
 \\begin{{itemize}}[noitemsep]
 \\item Comprehensive project portfolio demonstrating {role_focus} expertise with real-world applications
 \\item Proven track record in building scalable systems serving thousands of users

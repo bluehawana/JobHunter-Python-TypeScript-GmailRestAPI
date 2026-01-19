@@ -513,7 +513,7 @@ class ImprovedWorkingAutomation:
                 parent=styles['Heading2'],
                 fontSize=14,
                 spaceAfter=6,
-                textColor='darkblue'
+                textColor=colors.HexColor('#0077B5')  # LinkedIn blue
             )
             
             # Analyze job for LEGO component selection
