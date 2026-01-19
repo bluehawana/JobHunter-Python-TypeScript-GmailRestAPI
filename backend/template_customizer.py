@@ -80,9 +80,12 @@ class TemplateCustomizer:
         logger.info(f"Customizing template for {escaped_company} - {escaped_title}")
         
         # Create replacement dictionary
+        # Include both escaped and unescaped versions for LaTeX compatibility
         replacements = {
+            'COMPANY\\_NAME': escaped_company,  # LaTeX escaped version
             'COMPANY_NAME': escaped_company,
             'COMPANY_NAME_PLACEHOLDER': escaped_company,
+            'JOB\\_TITLE': escaped_title,  # LaTeX escaped version
             'JOB_TITLE': escaped_title,
             'JOB_TITLE_PLACEHOLDER': escaped_title,
             'ROLE_TITLE': escaped_title,
