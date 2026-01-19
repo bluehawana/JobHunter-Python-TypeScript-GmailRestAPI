@@ -188,18 +188,36 @@ class UniversalJobExtractor:
                     return company
         
         # Method 2: Look for specific company names in content
+        # Known companies - prioritize recruiting/staffing companies first
+        known_recruiting_companies = [
+            'Incluso', 'Academic Work', 'Randstad', 'Manpower', 'Adecco',
+            'Jefferson Wells', 'Experis', 'TNG', 'Poolia', 'Jurek'
+        ]
+
         known_companies = [
-            'Meltwater', 'Volvo', 'Spotify', 'Ericsson', 'IKEA', 'H&M', 'Klarna', 
+            'Emerson', 'Meltwater', 'Volvo', 'Spotify', 'Ericsson', 'IKEA', 'H&M', 'Klarna',
             'King', 'Mojang', 'Skype', 'Telia', 'Electrolux', 'ABB', 'Sandvik',
             'Atlas Copco', 'Hexagon', 'Autoliv', 'SKF', 'Alfa Laval', 'Getinge',
             'Husqvarna', 'Epiroc', 'Boliden', 'SSAB', 'Essity', 'SCA', 'Kinnevik',
             'Investor AB', 'Wallenberg', 'Nordea', 'SEB', 'Swedbank', 'Handelsbanken',
-            'Omegapoint', 'CPAC Systems', 'ECARX', 'DoiT International', 'Kollmorgen'
+            'Omegapoint', 'CPAC Systems', 'ECARX', 'DoiT International', 'Kollmorgen',
+            'Benifex', 'Ahlsell', 'ALTEN', 'Luxoft', 'eWorks', 'Tata', 'Nasdaq',
+            'Thomson Reuters', 'Ascom', 'VFS Global', 'Cetasol', 'Saab', 'OmniModular'
         ]
-        
-        content_lower = content.lower()
+
+        # Check recruiting companies first (they post jobs for other companies)
+        # Use word boundary matching to avoid false positives (e.g., "king" in "making")
+        import re as regex
+        for company in known_recruiting_companies:
+            # Match whole word only
+            pattern = r'\b' + regex.escape(company) + r'\b'
+            if regex.search(pattern, content, regex.IGNORECASE):
+                return company
+
         for company in known_companies:
-            if company.lower() in content_lower:
+            # Match whole word only
+            pattern = r'\b' + regex.escape(company) + r'\b'
+            if regex.search(pattern, content, regex.IGNORECASE):
                 return company
         
         return None
