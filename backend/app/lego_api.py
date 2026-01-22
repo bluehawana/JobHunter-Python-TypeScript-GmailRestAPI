@@ -366,6 +366,22 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
         'ingenjör', 'utvecklare', 'specialist', 'arkitekt', 'chef'
     ]
     
+    # PRIORITY: Check for explicit "Göteborgs Stad" or similar city/government names first
+    full_text = ' '.join(lines).lower()
+    priority_companies = [
+        ('göteborgs stad', 'Göteborgs Stad'),
+        ('goteborgs stad', 'Göteborgs Stad'),
+        ('city of gothenburg', 'Göteborgs Stad'),
+        ('stockholms stad', 'Stockholms Stad'),
+        ('malmö stad', 'Malmö Stad'),
+    ]
+    
+    for search_term, proper_name in priority_companies:
+        if search_term in full_text:
+            company = proper_name
+            print(f"📍 Found priority company: {company}")
+            break
+    
     # First pass: Look for title in first few lines (usually at the top)
     for i, line in enumerate(lines[:10]):
         if len(line) > 100 or len(line) < 3:
@@ -391,69 +407,76 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
                 print(f"📍 Found title in line {i}: {title}")
                 break
     
-    # Second pass: Look for company name
-    # Check for Swedish "Förvaltning/bolag" pattern (Göteborgs Stad specific)
-    for i, line in enumerate(lines):
-        line_lower = line.lower()
-        
-        if 'förvaltning/bolag' in line_lower or 'förvaltning / bolag' in line_lower:
-            # Next line usually contains the company name
-            if i + 1 < len(lines):
-                potential_company = lines[i + 1].strip()
-                if len(potential_company) < 50 and potential_company not in ['att', 'och', 'för', 'med']:
-                    company = potential_company
-                    print(f"📍 Found company via 'Förvaltning/bolag': {company}")
+    # Second pass: Look for company name (only if not already found in priority check)
+    if company == 'Company':
+        # Check for Swedish "Förvaltning/bolag" pattern (Göteborgs Stad specific)
+        for i, line in enumerate(lines):
+            line_lower = line.lower()
+            
+            if 'förvaltning/bolag' in line_lower or 'förvaltning / bolag' in line_lower:
+                # Next line usually contains the department/company name
+                if i + 1 < len(lines):
+                    potential_company = lines[i + 1].strip()
+                    # For Swedish government jobs, prefer the main organization over department
+                    # Check if "Göteborgs Stad" or similar appears in surrounding context
+                    context = ' '.join(lines[max(0, i-5):min(len(lines), i+10)]).lower()
+                    if 'göteborgs stad' in context or 'goteborgs stad' in context:
+                        company = 'Göteborgs Stad'
+                        print(f"📍 Found 'Göteborgs Stad' in context of Förvaltning/bolag")
+                    elif len(potential_company) < 50 and potential_company not in ['att', 'och', 'för', 'med']:
+                        company = potential_company
+                        print(f"📍 Found company via 'Förvaltning/bolag': {company}")
                     break
-        
-        # Look for "Om oss" section
-        if line_lower in ['om oss', 'about us', 'about the company', 'om företaget']:
-            # Company name is often in the next few lines
-            for j in range(i + 1, min(i + 5, len(lines))):
-                potential = lines[j].strip()
-                # Look for capitalized text that could be a company name
-                if potential and len(potential) < 50 and potential[0].isupper():
-                    # Filter out common Swedish words
-                    words = potential.split()
-                    if len(words) <= 4:
-                        # Check it's not a common Swedish phrase
-                        common_words = ['att', 'och', 'för', 'med', 'är', 'vi', 'som', 'på', 'i', 'av', 'till']
-                        if not any(w.lower() in common_words for w in words[:2]):  # Check first 2 words
-                            company = potential
-                            print(f"📍 Found company in 'Om oss' section: {company}")
-                            break
-            if company != 'Company':
-                break
-        
-        # Look for explicit company mentions
-        company_patterns = [
-            ('company:', 1),
-            ('företag:', 1),
-            ('arbetsgivare:', 1),
-            ('organisation:', 1),
-        ]
-        
-        for pattern, offset in company_patterns:
-            if pattern in line_lower:
-                # Check if it's a header (company name on next line)
-                if line_lower.strip() == pattern:
-                    if i + offset < len(lines):
-                        potential = lines[i + offset].strip()
+            
+            # Look for "Om oss" section
+            if line_lower in ['om oss', 'about us', 'about the company', 'om företaget']:
+                # Company name is often in the next few lines
+                for j in range(i + 1, min(i + 5, len(lines))):
+                    potential = lines[j].strip()
+                    # Look for capitalized text that could be a company name
+                    if potential and len(potential) < 50 and potential[0].isupper():
+                        # Filter out common Swedish words
+                        words = potential.split()
+                        if len(words) <= 4:
+                            # Check it's not a common Swedish phrase
+                            common_words = ['att', 'och', 'för', 'med', 'är', 'vi', 'som', 'på', 'i', 'av', 'till']
+                            if not any(w.lower() in common_words for w in words[:2]):  # Check first 2 words
+                                company = potential
+                                print(f"📍 Found company in 'Om oss' section: {company}")
+                                break
+                if company != 'Company':
+                    break
+            
+            # Look for explicit company mentions
+            company_patterns = [
+                ('company:', 1),
+                ('företag:', 1),
+                ('arbetsgivare:', 1),
+                ('organisation:', 1),
+            ]
+            
+            for pattern, offset in company_patterns:
+                if pattern in line_lower:
+                    # Check if it's a header (company name on next line)
+                    if line_lower.strip() == pattern:
+                        if i + offset < len(lines):
+                            potential = lines[i + offset].strip()
+                            if potential and len(potential) < 50:
+                                company = potential
+                                print(f"📍 Found company after '{pattern}': {company}")
+                                break
+                    else:
+                        # Company name on same line
+                        idx = line_lower.index(pattern) + len(pattern)
+                        potential = line[idx:].strip(' -–—:,.')
+                        potential = potential.split(',')[0].split('.')[0].strip()
                         if potential and len(potential) < 50:
                             company = potential
-                            print(f"📍 Found company after '{pattern}': {company}")
+                            print(f"📍 Found company inline with '{pattern}': {company}")
                             break
-                else:
-                    # Company name on same line
-                    idx = line_lower.index(pattern) + len(pattern)
-                    potential = line[idx:].strip(' -–—:,.')
-                    potential = potential.split(',')[0].split('.')[0].strip()
-                    if potential and len(potential) < 50:
-                        company = potential
-                        print(f"📍 Found company inline with '{pattern}': {company}")
-                        break
-        
-        if company != 'Company':
-            break
+            
+            if company != 'Company':
+                break
     
     # Third pass: Look for company in URL-like patterns or specific mentions
     # For Göteborgs Stad, look for "Intraservice" or "Göteborgs Stad"
