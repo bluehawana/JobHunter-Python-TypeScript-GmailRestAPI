@@ -347,6 +347,142 @@ PROJECTS_BRICKS = {
 }
 
 
+def extract_company_and_title_from_text(job_description: str) -> tuple:
+    """
+    Improved extraction of company name and job title from job description text.
+    Handles Swedish job sites like Göteborgs Stad better.
+    
+    Returns:
+        tuple: (company_name, job_title)
+    """
+    lines = [line.strip() for line in job_description.split('\n') if line.strip()]
+    company = 'Company'
+    title = 'Position'
+    
+    # Job title keywords (English and Swedish)
+    job_keywords = [
+        'engineer', 'developer', 'specialist', 'manager', 'architect', 
+        'lead', 'senior', 'junior', 'consultant', 'analyst',
+        'ingenjör', 'utvecklare', 'specialist', 'arkitekt', 'chef'
+    ]
+    
+    # First pass: Look for title in first few lines (usually at the top)
+    for i, line in enumerate(lines[:10]):
+        if len(line) > 100 or len(line) < 3:
+            continue
+        
+        line_lower = line.lower()
+        
+        # Check if this line is likely a job title
+        # It should contain job keywords and be reasonably short
+        if any(keyword in line_lower for keyword in job_keywords):
+            # Skip lines that are clearly not titles
+            skip_phrases = [
+                'som ', 'kommer du', 'du kommer', 'vi söker', 'we are looking',
+                'about the job', 'om jobbet', 'responsibilities', 'ansvar'
+            ]
+            if any(phrase in line_lower for phrase in skip_phrases):
+                continue
+            
+            # This looks like a title
+            cleaned = line.strip(' -–—:')
+            if len(cleaned) < 80:
+                title = cleaned
+                print(f"📍 Found title in line {i}: {title}")
+                break
+    
+    # Second pass: Look for company name
+    # Check for Swedish "Förvaltning/bolag" pattern (Göteborgs Stad specific)
+    for i, line in enumerate(lines):
+        line_lower = line.lower()
+        
+        if 'förvaltning/bolag' in line_lower or 'förvaltning / bolag' in line_lower:
+            # Next line usually contains the company name
+            if i + 1 < len(lines):
+                potential_company = lines[i + 1].strip()
+                if len(potential_company) < 50 and potential_company not in ['att', 'och', 'för', 'med']:
+                    company = potential_company
+                    print(f"📍 Found company via 'Förvaltning/bolag': {company}")
+                    break
+        
+        # Look for "Om oss" section
+        if line_lower in ['om oss', 'about us', 'about the company', 'om företaget']:
+            # Company name is often in the next few lines
+            for j in range(i + 1, min(i + 5, len(lines))):
+                potential = lines[j].strip()
+                # Look for capitalized text that could be a company name
+                if potential and len(potential) < 50 and potential[0].isupper():
+                    # Filter out common Swedish words
+                    words = potential.split()
+                    if len(words) <= 4:
+                        # Check it's not a common Swedish phrase
+                        common_words = ['att', 'och', 'för', 'med', 'är', 'vi', 'som', 'på', 'i', 'av', 'till']
+                        if not any(w.lower() in common_words for w in words[:2]):  # Check first 2 words
+                            company = potential
+                            print(f"📍 Found company in 'Om oss' section: {company}")
+                            break
+            if company != 'Company':
+                break
+        
+        # Look for explicit company mentions
+        company_patterns = [
+            ('company:', 1),
+            ('företag:', 1),
+            ('arbetsgivare:', 1),
+            ('organisation:', 1),
+        ]
+        
+        for pattern, offset in company_patterns:
+            if pattern in line_lower:
+                # Check if it's a header (company name on next line)
+                if line_lower.strip() == pattern:
+                    if i + offset < len(lines):
+                        potential = lines[i + offset].strip()
+                        if potential and len(potential) < 50:
+                            company = potential
+                            print(f"📍 Found company after '{pattern}': {company}")
+                            break
+                else:
+                    # Company name on same line
+                    idx = line_lower.index(pattern) + len(pattern)
+                    potential = line[idx:].strip(' -–—:,.')
+                    potential = potential.split(',')[0].split('.')[0].strip()
+                    if potential and len(potential) < 50:
+                        company = potential
+                        print(f"📍 Found company inline with '{pattern}': {company}")
+                        break
+        
+        if company != 'Company':
+            break
+    
+    # Third pass: Look for company in URL-like patterns or specific mentions
+    # For Göteborgs Stad, look for "Intraservice" or "Göteborgs Stad"
+    if company == 'Company':
+        for line in lines[:30]:
+            if 'göteborgs stad' in line.lower() or 'goteborgs stad' in line.lower():
+                company = 'Göteborgs Stad'
+                print(f"📍 Found 'Göteborgs Stad' in text")
+                break
+            if 'intraservice' in line.lower():
+                # Check if it mentions both
+                if 'göteborgs stad' in ' '.join(lines[:30]).lower():
+                    company = 'Göteborgs Stad'
+                else:
+                    company = 'Intraservice'
+                print(f"📍 Found company mention: {company}")
+                break
+    
+    # Clean up: Remove Swedish stop words if they ended up in company/title
+    swedish_stopwords = ['att', 'och', 'för', 'med', 'är', 'som', 'på', 'i', 'av', 'till']
+    if company.lower() in swedish_stopwords:
+        company = 'Company'
+    if title.lower().startswith('som '):
+        title = 'Position'
+    
+    print(f"🏢 Final extraction - Company: {company}, Title: {title}")
+    return company, title
+
+
 def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     """Analyze job description and determine role type, keywords, and requirements"""
     
@@ -432,92 +568,12 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     
     # Only use fallback extraction if LinkedIn extraction failed
     if company == 'Company' or title == 'Position':
-        # Extract company and title (improved extraction)
-        lines = [line.strip() for line in job_description.split('\n') if line.strip()]
-
-        # Try to find job title and company - look for lines with job-related keywords
-        job_keywords = ['engineer', 'developer', 'specialist', 'manager', 'architect', 'lead', 'senior', 'junior', 'consultant']
-        for i, line in enumerate(lines[:15]):
-            # Skip very long lines (likely paragraphs)
-            if len(line) > 100:
-                continue
-            # Check if line contains job keywords
-            line_lower = line.lower()
-            if any(keyword in line_lower for keyword in job_keywords):
-                # Clean up common prefixes
-                cleaned = line
-                for prefix in ['job title:', 'position:', 'role:', 'we are looking for']:
-                    if cleaned.lower().startswith(prefix):
-                        cleaned = cleaned[len(prefix):].strip()
-
-                # Check for "Title - Company" or "Company - Title" pattern
-                if ' - ' in cleaned or ' – ' in cleaned or ' — ' in cleaned:
-                    # Split by dash (support different dash types)
-                    parts = None
-                    for dash in [' - ', ' – ', ' — ']:
-                        if dash in cleaned:
-                            parts = [p.strip() for p in cleaned.split(dash, 1)]
-                            break
-
-                    if parts and len(parts) == 2:
-                        left, right = parts
-                        # Check which part is the title (contains job keyword) and which is company
-                        left_is_title = any(kw in left.lower() for kw in job_keywords)
-                        right_is_title = any(kw in right.lower() for kw in job_keywords)
-
-                        if left_is_title and not right_is_title:
-                            # "Software Developer - Benifex" pattern
-                            if title == 'Position':
-                                title = left
-                            if company == 'Company':
-                                company = right
-                            break
-                        elif right_is_title and not left_is_title:
-                            # "Benifex - Software Developer" pattern
-                            if company == 'Company':
-                                company = left
-                            if title == 'Position':
-                                title = right
-                            break
-                        else:
-                            # Ambiguous, take first part as title
-                            if title == 'Position':
-                                title = left
-                            if company == 'Company' and len(right) < 50:  # Likely a company name
-                                company = right
-                            break
-                else:
-                    # No dash pattern, just use the whole line as title
-                    cleaned = cleaned.strip(' -–—:')
-                    if cleaned and len(cleaned) < 80 and title == 'Position':
-                        title = cleaned
-                        break
-
-        # If company still not found, try to find it separately
+        # Use improved extraction function
+        extracted_company, extracted_title = extract_company_and_title_from_text(job_description)
         if company == 'Company':
-            for i, line in enumerate(lines[:20]):
-                line_lower = line.lower()
-                # Skip very long lines
-                if len(line) > 100:
-                    continue
-                # Look for company indicators
-                if any(indicator in line_lower for indicator in ['company:', 'about us', 'at ', 'join ']):
-                    # Try next line if this is just a header
-                    if line_lower in ['company:', 'about us', 'about the company']:
-                        if i + 1 < len(lines):
-                            company = lines[i + 1].strip(' -–—:')
-                            break
-                    else:
-                        # Extract company name from line
-                        for indicator in ['at ', 'join ', 'company: ']:
-                            if indicator in line_lower:
-                                idx = line_lower.index(indicator) + len(indicator)
-                                company = line[idx:].strip(' -–—:,.')
-                                # Take only first part before comma or period
-                                company = company.split(',')[0].split('.')[0].strip()
-                                break
-                        if company != 'Company':
-                            break
+            company = extracted_company
+        if title == 'Position':
+            title = extracted_title
     
     # Clean up title if it contains company name with pipe separator
     # Pattern: "Job Title | Company Name" or "Job Title — Company Name"
