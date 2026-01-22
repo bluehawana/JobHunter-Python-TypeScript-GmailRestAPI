@@ -140,14 +140,42 @@ class UniversalJobExtractor:
     def _extract_generic_info(self, content: str, url: str) -> Dict[str, str]:
         """Generic extraction for other job sites"""
         try:
-            # First, check for "Title | Company" or "Title — Company" pattern at the start
             lines = content.strip().split('\n')
             first_line = lines[0].strip() if lines else ""
             
             company = None
             title = None
             
-            # Check for pipe or em-dash separator in first line
+            # Method 1: Check for Verama/structured format (e.g., "CI/CD DevOps DeveloperJR-48785Published on 21 Jan 2026 byVolvo...")
+            # Pattern: TitleJOB-IDPublished...byCompanyName
+            verama_match = re.search(r'^(.+?)(?:JR-\d+|Published)', first_line)
+            if verama_match:
+                potential_title = verama_match.group(1).strip()
+                # Look for "by" followed by company name
+                by_match = re.search(r'by([A-Z][^\n]+?)(?:Role|Seniority|Location|Remote|$)', content)
+                if by_match:
+                    company = by_match.group(1).strip()
+                    # Clean up company name - remove extra text after parentheses
+                    if '(' in company:
+                        # Keep text in parentheses if it's a clarification
+                        company = re.sub(r'\s*\([^)]*\)\s*', ' ', company).strip()
+                        # Or keep the parenthetical if it's the main name
+                        paren_match = re.search(r'([^(]+)\(([^)]+)\)', by_match.group(1))
+                        if paren_match:
+                            # Use the shorter, cleaner name
+                            name1, name2 = paren_match.group(1).strip(), paren_match.group(2).strip()
+                            company = name2 if len(name2) < len(name1) and len(name2) > 3 else name1
+                    
+                    title = potential_title
+                    logger.info(f"Extracted from Verama format: {title} at {company}")
+                    return {
+                        'company': company,
+                        'title': title,
+                        'success': True,
+                        'source': 'verama_extraction'
+                    }
+            
+            # Method 2: Check for "Title | Company" or "Title — Company" pattern at the start
             if first_line and ('|' in first_line or '—' in first_line or ' - ' in first_line):
                 for separator in [' | ', ' — ', ' - ']:
                     if separator in first_line:
@@ -183,7 +211,7 @@ class UniversalJobExtractor:
                                 }
                         break
             
-            # Fallback to content-based extraction
+            # Method 3: Fallback to content-based extraction
             if not company:
                 company = self._extract_company_name(content)
             if not title:
@@ -231,14 +259,15 @@ class UniversalJobExtractor:
         ]
 
         known_companies = [
-            'Emerson', 'Meltwater', 'Volvo', 'Spotify', 'Ericsson', 'IKEA', 'H&M', 'Klarna',
+            'Emerson', 'Meltwater', 'Volvo', 'Volvo Cars', 'Spotify', 'Ericsson', 'IKEA', 'H&M', 'Klarna',
             'King', 'Mojang', 'Skype', 'Telia', 'Electrolux', 'ABB', 'Sandvik',
             'Atlas Copco', 'Hexagon', 'Autoliv', 'SKF', 'Alfa Laval', 'Getinge',
             'Husqvarna', 'Epiroc', 'Boliden', 'SSAB', 'Essity', 'SCA', 'Kinnevik',
             'Investor AB', 'Wallenberg', 'Nordea', 'SEB', 'Swedbank', 'Handelsbanken',
             'Omegapoint', 'CPAC Systems', 'ECARX', 'DoiT International', 'Kollmorgen',
             'Benifex', 'Ahlsell', 'ALTEN', 'Luxoft', 'eWorks', 'Tata', 'Nasdaq',
-            'Thomson Reuters', 'Ascom', 'VFS Global', 'Cetasol', 'Saab', 'OmniModular'
+            'Thomson Reuters', 'Ascom', 'VFS Global', 'Cetasol', 'Saab', 'OmniModular',
+            'Stena Metall', 'Speechify', 'Verama'
         ]
 
         # Check recruiting companies first (they post jobs for other companies)
