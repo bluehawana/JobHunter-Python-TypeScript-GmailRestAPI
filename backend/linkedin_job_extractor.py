@@ -151,28 +151,44 @@ class UniversalJobExtractor:
             verama_match = re.search(r'^(.+?)(?:JR-\d+|Published)', first_line)
             if verama_match:
                 potential_title = verama_match.group(1).strip()
+                
                 # Look for "by" followed by company name
                 by_match = re.search(r'by([A-Z][^\n]+?)(?:Role|Seniority|Location|Remote|$)', content)
                 if by_match:
                     company = by_match.group(1).strip()
-                    # Clean up company name - remove extra text after parentheses
-                    if '(' in company:
-                        # Keep text in parentheses if it's a clarification
-                        company = re.sub(r'\s*\([^)]*\)\s*', ' ', company).strip()
-                        # Or keep the parenthetical if it's the main name
-                        paren_match = re.search(r'([^(]+)\(([^)]+)\)', by_match.group(1))
-                        if paren_match:
-                            # Use the shorter, cleaner name
-                            name1, name2 = paren_match.group(1).strip(), paren_match.group(2).strip()
-                            company = name2 if len(name2) < len(name1) and len(name2) > 3 else name1
+                    # Clean up company name - extract from parentheses if present
+                    paren_match = re.search(r'([^(]+)\(([^)]+)\)', company)
+                    if paren_match:
+                        # Use the shorter, cleaner name (usually what's in parentheses)
+                        name1, name2 = paren_match.group(1).strip(), paren_match.group(2).strip()
+                        company = name2 if len(name2) < len(name1) and len(name2) > 3 else name1
                     
                     title = potential_title
-                    logger.info(f"Extracted from Verama format: {title} at {company}")
+                    logger.info(f"Extracted from Verama 'by' format: {title} at {company}")
                     return {
                         'company': company,
                         'title': title,
                         'success': True,
-                        'source': 'verama_extraction'
+                        'source': 'verama_by_extraction'
+                    }
+                
+                # Alternative: Look for "Client" field (common in Verama)
+                client_match = re.search(r'Client\s*\n?\s*([A-Z][^\n]+?)(?:\n|Published|$)', content, re.MULTILINE)
+                if client_match:
+                    company = client_match.group(1).strip()
+                    # Clean up company name - extract from parentheses if present
+                    paren_match = re.search(r'([^(]+)\(([^)]+)\)', company)
+                    if paren_match:
+                        name1, name2 = paren_match.group(1).strip(), paren_match.group(2).strip()
+                        company = name2 if len(name2) < len(name1) and len(name2) > 3 else name1
+                    
+                    title = potential_title
+                    logger.info(f"Extracted from Verama 'Client' format: {title} at {company}")
+                    return {
+                        'company': company,
+                        'title': title,
+                        'success': True,
+                        'source': 'verama_client_extraction'
                     }
             
             # Method 2: Check for "Title | Company" or "Title — Company" pattern at the start
