@@ -44,6 +44,21 @@ class CVLegoBricks:
 \\item \\textbf{Cross-Cultural:} Mandarin Chinese proficiency, Eastern-Western communication bridge
 \\end{itemize}""",
             
+            'backend_primary': """\\begin{itemize}[noitemsep]
+\\item \\textbf{Programming Languages:} Java, C\\#/.NET Core, Python, Go, TypeScript
+\\item \\textbf{Backend Frameworks:} Spring Boot, Spring Framework, ASP.NET Core, FastAPI, Node.js
+\\item \\textbf{API Development:} RESTful APIs, GraphQL, gRPC, Microservices Architecture
+\\item \\textbf{Databases:} PostgreSQL, SQL Server, MongoDB, Redis, MySQL, Entity Framework Core
+\\item \\textbf{Message Queues:} Apache Kafka, RabbitMQ, Azure Service Bus, AWS SQS
+\\item \\textbf{Cloud Platforms:} AWS, Azure, GCP, Cloud-native development
+\\item \\textbf{Containerization:} Docker, Kubernetes, Azure Kubernetes Service (AKS)
+\\item \\textbf{CI/CD:} GitHub Actions, Azure DevOps, Jenkins, GitLab CI
+\\item \\textbf{Testing:} Unit Testing, Integration Testing, TDD, JUnit, xUnit, Pytest
+\\item \\textbf{Performance:} Caching strategies (Redis), Query optimization, Load balancing
+\\item \\textbf{Security:} Authentication/Authorization, OAuth2, JWT, API security
+\\item \\textbf{Methodologies:} Agile/Scrum, Microservices, Event-driven architecture, Domain-Driven Design
+\\end{itemize}""",
+            
             'fullstack_primary': """\\begin{itemize}[noitemsep]
 \\item \\textbf{Programming Languages:} Java/J2EE, JavaScript, C\\#/.NET Core, Python, Bash, PowerShell
 \\item \\textbf{Frontend Frameworks:} Angular, ReactJS, React Native, Vue.js, HTML5, CSS3
@@ -279,7 +294,6 @@ class CVLegoBricks:
 \\item Analyzed partnership opportunities with Uber Eats and Foodora, optimizing delivery operations
 \\end{itemize}"""
         }
-        }
         
         self.projects_bricks = {
             'volvo_focused_projects': """\\section*{Strategic Projects}
@@ -405,6 +419,14 @@ class CVLegoBricks:
             'is_automotive': any(keyword in full_text for keyword in [
                 'automotive', 'car', 'vehicle', 'infotainment', 'volvo', 'ecarx'
             ]),
+            'is_backend': any(keyword in full_text for keyword in [
+                'backend', 'back-end', 'back end', 'api', 'microservices',
+                'spring boot', '.net core', 'asp.net', 'server-side'
+            ]),
+            'is_frontend': any(keyword in full_text for keyword in [
+                'frontend', 'front-end', 'front end', 'react', 'angular', 
+                'vue', 'javascript', 'typescript', 'ui', 'user interface'
+            ]),
             'is_fullstack': any(keyword in full_text for keyword in [
                 'fullstack', 'full-stack', 'full stack', 'react', '.net', 'c\#'
             ]),
@@ -423,25 +445,37 @@ class CVLegoBricks:
     def _select_profile_brick(self, analysis: dict, application_type: str) -> str:
         """Select appropriate profile summary brick"""
         
-        if application_type == 'android_focused' or analysis['is_android']:
+        # Check application_type first for explicit role specification
+        if 'business' in application_type.lower() or 'analyst' in application_type.lower():
+            return self.profile_bricks['it_business_analyst']
+        elif 'backend' in application_type.lower() or analysis.get('is_backend', False):
+            return self.profile_bricks['backend_developer']
+        elif 'frontend' in application_type.lower() or analysis.get('is_frontend', False):
+            return self.profile_bricks['frontend_developer']
+        elif 'android' in application_type.lower() or (analysis['is_android'] and not analysis.get('is_backend', False)):
             return self.profile_bricks['android_developer']
-        elif analysis['requires_infrastructure']:
-            return """Experienced DevOps Engineer and Infrastructure Specialist with over 5 years of expertise in cloud technologies, system optimization, and automated deployment pipelines. Currently serving as IT/Infrastructure Specialist at ECARX with proven track record in Kubernetes, Azure, Docker, and infrastructure automation. Specialized in building resilient, scalable infrastructure for mission-critical automotive systems."""
+        elif 'app' in application_type.lower() or 'mobile' in application_type.lower():
+            return self.profile_bricks['app_developer']
+        elif analysis['requires_infrastructure'] or 'devops' in application_type.lower() or 'cloud' in application_type.lower():
+            return self.profile_bricks['devops_cloud_engineer']
         else:
             return self.profile_bricks['fullstack_developer']
     
     def _select_skills_brick(self, analysis: dict, application_type: str) -> str:
         """Select appropriate skills brick"""
         
-        if application_type == 'android_focused' or analysis['is_android']:
+        if 'backend' in application_type.lower() or analysis.get('is_backend', False):
+            return self.skills_bricks['backend_primary']
+        elif application_type == 'android_focused' or analysis['is_android']:
             return self.skills_bricks['android_primary']
-        elif analysis['requires_infrastructure']:
+        elif analysis['requires_infrastructure'] or 'devops' in application_type.lower() or 'cloud' in application_type.lower():
+            # DevOps/Cloud skills
             return """\\begin{itemize}[noitemsep]
-\\item \\textbf{Infrastructure \& Cloud:} Azure (AKS, App Services, Functions), AWS, GCP, Terraform (IaC)
-\\item \\textbf{DevOps \& CI/CD:} GitHub Actions, Azure DevOps, Jenkins, Docker, Kubernetes, Helm
-\\item \\textbf{Programming:} C\# .NET 8, Python, Bash, PowerShell, Go, JavaScript, TypeScript
+\\item \\textbf{Infrastructure \\& Cloud:} Azure (AKS, App Services, Functions), AWS, GCP, Terraform (IaC)
+\\item \\textbf{DevOps \\& CI/CD:} GitHub Actions, Azure DevOps, Jenkins, Docker, Kubernetes, Helm
+\\item \\textbf{Programming:} C\\# .NET 8, Python, Bash, PowerShell, Go, JavaScript, TypeScript
 \\item \\textbf{Observability:} Grafana, Prometheus, ELK Stack, Performance Tuning, SLO-driven Alerting
-\\item \\textbf{Backend \& APIs:} ASP.NET Core, RESTful/GraphQL APIs, Microservices, Kafka, Kafka Streams
+\\item \\textbf{Backend \\& APIs:} ASP.NET Core, RESTful/GraphQL APIs, Microservices, Kafka, Kafka Streams
 \\item \\textbf{Databases:} SQL Server, PostgreSQL, MongoDB, Redis, Entity Framework Core
 \\item \\textbf{Methodologies:} Agile/Scrum, DevSecOps, Site Reliability Engineering (SRE), Incident Management
 \\end{itemize}"""
