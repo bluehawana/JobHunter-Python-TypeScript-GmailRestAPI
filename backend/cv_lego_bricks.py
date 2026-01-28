@@ -9,11 +9,23 @@ class CVLegoBricks:
     
     def __init__(self):
         self.profile_bricks = {
-            'android_developer': """Experienced Android Developer with over 5 years of hands-on experience in native Android development using Kotlin and Java. Proven expertise in building scalable mobile applications with Android Studio, deep understanding of Android SDK and platform architecture. Strong background in system-level Android components including Activities, Services, Content Providers, and Broadcast Receivers. Demonstrated ability to work with automotive infotainment systems and in-car applications. Currently serving as IT/Infrastructure Specialist at ECARX, bringing deep Android development knowledge to automotive technology solutions.""",
+            'android_developer': """Experienced Android Developer with 6+ years of hands-on experience (2019-Present) in native Android development using Kotlin and Java. Proven expertise in building scalable mobile applications with Android Studio, deep understanding of Android SDK and platform architecture. Strong background in system-level Android components including Activities, Services, Content Providers, and Broadcast Receivers. Demonstrated ability to work with automotive infotainment systems and in-car applications. Currently serving as IT/Infrastructure Specialist at ECARX, bringing deep Android development knowledge to automotive technology solutions. Experience spans across ECARX, Synteda, CollabMaker, and Pembio.""",
             
-            'fullstack_developer': """Experienced Fullstack Developer with over 5 years of hands-on experience in Java/J2EE development with modern web technologies. Proven expertise in building scalable full-stack applications using Spring Boot, Angular/React frontend integration, and comprehensive database management across SQL and NoSQL platforms. Strong background in RESTful API development, microservices architecture, and end-to-end application development.""",
+            'ios_developer': """Experienced iOS Developer with 6+ years of software development experience (2019-Present) including mobile application development. Strong foundation in Swift, Objective-C, and iOS SDK with proven ability to build scalable mobile applications. Background in full-stack development provides comprehensive understanding of mobile-backend integration, RESTful APIs, and cloud services. Experience with modern iOS architecture patterns (MVVM, Clean Architecture) and continuous integration/deployment for mobile apps.""",
             
-            'mobile_developer': """Experienced Mobile Developer with expertise in cross-platform and native mobile development. Strong background in Android development using Kotlin and Java, with additional experience in React Native for cross-platform solutions. Proven ability to build scalable mobile applications with focus on user experience and performance optimization."""
+            'fullstack_developer': """Experienced Fullstack Developer with 6+ years of hands-on experience (2019-Present) in Java/J2EE and .NET development with modern web technologies. Proven expertise in building scalable full-stack applications using Spring Boot, .NET Core, Angular/React frontend integration, and comprehensive database management across SQL and NoSQL platforms. Strong background in RESTful API development, microservices architecture, cloud deployment (AWS, Azure), and DevOps practices including CI/CD pipelines, Docker, and Kubernetes. Experience spans across ECARX, Synteda, IT-Högskolan, Senior Material, AddCell, Pembio, and CollabMaker.""",
+            
+            'backend_developer': """Backend Developer with 6+ years of hands-on experience (2019-Present) building enterprise applications and microservices. Strong expertise in Java/Spring Boot and .NET Core with deep database optimization skills (PostgreSQL, MongoDB, Redis, SQL Server). Proven track record designing RESTful APIs handling millions of requests with focus on performance, scalability, and security. Extensive experience with cloud platforms (AWS, Azure), Docker, Kubernetes, and CI/CD pipelines. Experience spans across ECARX, Synteda, IT-Högskolan, Senior Material, AddCell, and Pembio.""",
+            
+            'frontend_developer': """Frontend Developer with 6+ years of software development experience (2019-Present) including extensive frontend work with React, Angular, Vue.js, and TypeScript. Expert in building responsive, performant user interfaces with modern JavaScript frameworks and state management solutions. Strong background in full-stack development provides deep understanding of API integration, backend communication, and end-to-end application architecture. Experience with cloud deployment, CI/CD pipelines, and DevOps practices. Experience spans across ECARX, Synteda, Senior Material, Pembio, and CollabMaker.""",
+            
+            'app_developer': """Mobile and Web Application Developer with 6+ years of experience (2019-Present) building cross-platform and native applications. Expert in React Native, Android (Kotlin/Java), and modern web technologies (React, TypeScript). Strong background in full-stack development with backend API integration, cloud services (AWS, Azure), and DevOps practices. Proven ability to deliver scalable applications with focus on user experience, performance optimization, and continuous deployment. Experience spans across ECARX, Synteda, Senior Material, Pembio, and CollabMaker.""",
+            
+            'devops_cloud_engineer': """DevOps and Cloud Engineer with 6+ years of experience (2019-Present) building cloud-native infrastructure, CI/CD pipelines, and automated deployment systems. Expert in AWS, Azure, Kubernetes, Docker, Terraform, and Infrastructure as Code. Proven track record managing production systems with 24/7 on-call support, reducing cloud costs by 45%, and implementing comprehensive monitoring solutions. Strong background in both development and operations, bridging the gap between software engineering and infrastructure management. Experience spans across ECARX, Synteda, IT-Högskolan, Senior Material, AddCell, Pembio, and CollabMaker.""",
+            
+            'it_business_analyst': """IT Business Analyst with 6+ years of combined business and technical experience (2019-Present). Master's in International Business & Trade combined with hands-on IT development experience across multiple companies. Expert at bridging the gap between technical IT systems and business requirements. Proven track record translating complex business needs into technical specifications, leading requirements workshops, and driving digital transformation. Strong analytical skills with deep understanding of both technical implementation (cloud platforms, databases, APIs) and business/commercial impact. Experience spans across ECARX, Synteda, Senior Material, Pembio, and entrepreneurship at Hong Yan AB.""",
+            
+            'mobile_developer': """Mobile Developer with 6+ years of software development experience (2019-Present) including native and cross-platform mobile development. Strong background in Android development using Kotlin and Java, with additional experience in React Native for cross-platform solutions. Proven ability to build scalable mobile applications with focus on user experience, performance optimization, and cloud integration. Experience with CI/CD pipelines, DevOps practices, and modern mobile architecture patterns. Experience spans across ECARX, Synteda, Pembio, and CollabMaker."""
         }
         
         self.skills_bricks = {
@@ -51,16 +63,18 @@ class CVLegoBricks:
         
         self.experience_bricks = {
             'ecarx_infrastructure': """\\subsection*{ECARX (Geely Automotive) | IT/Infrastructure Specialist}
-\\textit{October 2024 - Present | Gothenburg, Sweden}
+\\textit{October 2024 - November 2025 | Gothenburg, Sweden}
 \\begin{itemize}[noitemsep]
-\\item Leading globally distributed infrastructure optimization and system integration projects for automotive technology solutions.
-\\item Managed AKS to on-premise Kubernetes migrations, reducing operational expenses and improving CI/CD pipeline execution by 25\%.
-\\item Implementing modern observability solutions using Grafana, Prometheus, and advanced scripting for mission-critical system reliability.
-\\item Providing 24/7 on-call support for production environments across 4 global offices, ensuring high availability and rapid incident response.
+\\item Managed multi-cloud infrastructure across AWS and Azure with 24/7 on-call support for 4 global offices
+\\item Led Azure AKS to on-premise Kubernetes migration, reducing operational costs by 45\% and improving CI/CD efficiency by 25\%
+\\item Implemented Infrastructure as Code using Terraform for AWS and Azure resource provisioning
+\\item Deployed Prometheus/Grafana monitoring stack for proactive incident detection and capacity planning
+\\item Built CI/CD pipelines with GitHub Actions and GitLab CI for automated deployments
+\\item Worked extensively with Software Factory, DevOps practices, and container orchestration (AKS, AWS EKS)
 \\end{itemize}""",
             
             'ecarx_android_focused': """\\subsection*{ECARX | IT/Infrastructure Specialist (Android Development Focus)}
-\\textit{October 2024 - Present | Gothenburg, Sweden}
+\\textit{October 2024 - November 2025 | Gothenburg, Sweden}
 \\begin{itemize}[noitemsep]
 \\item Leading Android-based automotive technology solutions and system integration projects
 \\item Developing and maintaining Android applications for automotive infotainment systems
@@ -70,12 +84,24 @@ class CVLegoBricks:
 \\end{itemize}""",
             
             'ecarx_fullstack': """\\subsection*{ECARX | IT/Infrastructure Specialist}
-\\textit{October 2024 - Present | Gothenburg, Sweden}
+\\textit{October 2024 - November 2025 | Gothenburg, Sweden}
 \\begin{itemize}[noitemsep]
-\\item Leading full-stack infrastructure optimization and system integration projects for automotive tech.
-\\item Developing and maintaining internal platforms using C\# .NET and React, ensuring seamless production deployment.
-\\item Implementing cost-optimization strategies via local Kubernetes cluster migration and CI/CD automation.
-\\item Providing 24/7 production support for globally distributed automotive services.
+\\item Led full-stack infrastructure optimization and cloud deployment projects for automotive technology
+\\item Developed and maintained internal platforms using C\# .NET and React with cloud-native architecture
+\\item Implemented cost-optimization strategies via Kubernetes cluster migration and CI/CD automation
+\\item Managed AWS and Azure cloud resources with Infrastructure as Code (Terraform)
+\\item Provided 24/7 production support for globally distributed automotive services with comprehensive monitoring
+\\end{itemize}""",
+            
+            'synteda_devops_cloud': """\\subsection*{Synteda | .NET and Azure Integration Developer (Freelance)}
+\\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Developed cloud-native applications on Azure with microservices architecture using .NET Core
+\\item Implemented CI/CD pipelines using Azure DevOps and GitHub Actions for automated deployments
+\\item Managed Azure Kubernetes Service (AKS) for container orchestration and scaling
+\\item Built Infrastructure as Code with Terraform for Azure resource provisioning
+\\item Integrated Azure Functions, App Services, and Azure Databricks for serverless computing
+\\item Implemented monitoring and logging with Azure Monitor and Application Insights
 \\end{itemize}""",
             
             'synteda_android_focused': """\\subsection*{Synteda | Mobile Developer \\& Integration Specialist (Freelance)}
@@ -90,10 +116,169 @@ class CVLegoBricks:
             'synteda_fullstack': """\\subsection*{Synteda | C\# .NET Fullstack Developer \\& Integration Specialist}
 \\textit{August 2023 - September 2024 | Gothenburg, Sweden}
 \\begin{itemize}[noitemsep]
-\\item Developed scalable talent management microservices using C\# .NET Core and Azure cloud-native architecture.
-\\item Built and optimized RESTful APIs and integrated SQL/NoSQL databases with high performance and security.
-\\item Managed automated CI/CD pipelines via Azure DevOps, ensuring reliable high-frequency releases.
+\\item Developed scalable talent management microservices using C\# .NET Core and Azure cloud-native architecture
+\\item Built and optimized RESTful APIs and integrated SQL/NoSQL databases with high performance and security
+\\item Managed automated CI/CD pipelines via Azure DevOps, ensuring reliable high-frequency releases
+\\item Implemented Docker containerization and Azure Kubernetes Service (AKS) for scalable deployments
+\\end{itemize}""",
+            
+            'iths_lia2_devops_cloud': """\\subsection*{IT-Högskolan | .NET Cloud Developer (LIA 2 - Intensive Training)}
+\\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Intensive cloud development training with Azure platform (40+ hours/week, 5 months)
+\\item Built and deployed applications on Azure App Services, Azure Functions, and Azure Kubernetes Service
+\\item Implemented CI/CD pipelines with Azure DevOps for automated testing and deployment
+\\item Worked with Infrastructure as Code using Terraform and ARM templates for Azure resources
+\\item Gained hands-on experience with Azure monitoring, security, and cloud-native architecture patterns
+\\item Migrated applications from on-premises to Azure cloud with zero-downtime deployment strategies
+\\end{itemize}""",
+            
+            'senior_material_devops_cloud': """\\subsection*{Senior Material (Europe) AB | Platform Architect \\& Project Coordinator}
+\\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Architected full-stack web platform with cloud deployment on Azure for manufacturing sector
+\\item Implemented CI/CD pipelines for automated testing and deployment using Azure DevOps
+\\item Managed Azure cloud resources and optimized infrastructure costs through resource right-sizing
+\\item Built microservices architecture with Docker containers and Azure Kubernetes Service
+\\item Integrated Azure DevOps for project management, version control, and deployment automation
+\\item Implemented monitoring and logging solutions using Azure Monitor for production systems
+\\end{itemize}""",
+            
+            'addcell_devops_cloud': """\\subsection*{AddCell | Cloud Developer (LIA 1 - Intensive Training)}
+\\textit{September 2022 - November 2022 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Developed cloud-native applications deployed on both Azure and AWS (intensive 40+ hrs/week, 3 months)
+\\item Built .NET Blazor application with backend APIs deployed on Azure App Services
+\\item Implemented AWS Lambda functions and EC2 instances for multi-cloud deployment strategy
+\\item Worked with Docker and Kubernetes for container orchestration across cloud platforms
+\\item Set up CI/CD pipelines using Azure DevOps and GitLab for automated deployments
+\\item Gained hands-on experience with multi-cloud architecture, Infrastructure as Code, and DevOps practices
+\\end{itemize}""",
+            
+            'pembio_devops_cloud': """\\subsection*{Pembio AB | Full Stack Engineer (Internship)}
+\\textit{October 2020 - September 2021 | Lund, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Developed full-stack SaaS application with cloud deployment on AWS/Azure
+\\item Built backend microservices with Spring Boot and deployed on cloud platforms using Docker
+\\item Implemented CI/CD pipelines for automated testing and deployment using GitHub Actions
+\\item Worked with Docker containers and Kubernetes orchestration for scalable cloud infrastructure
+\\item Set up monitoring and logging for production applications using CloudWatch and Azure Monitor
+\\item Participated in Agile/Scrum development with DevOps practices and continuous delivery
+\\end{itemize}""",
+            
+            'collabmaker_devops_cloud': """\\subsection*{CollabMaker | Frontend Developer (Internship)}
+\\textit{July 2020 - October 2020 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Developed React.js frontend with backend API integration and cloud deployment
+\\item Worked with CI/CD pipelines for automated deployments using GitHub Actions
+\\item Participated in Agile/Scrum development processes with DevOps practices
+\\item Gained experience with Git version control, collaborative development, and cloud collaboration tools
+\\item Worked remotely during COVID-19, using cloud-based development and deployment workflows
+\\end{itemize}""",
+            
+            # Backend Developer focused experience bricks
+            'ecarx_backend': """\\subsection*{ECARX (Geely Automotive) | IT/Infrastructure Specialist}
+\\textit{October 2024 - November 2025 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Developed and maintained backend services for automotive technology platforms using .NET Core
+\\item Built RESTful APIs and microservices architecture for distributed systems
+\\item Optimized database performance (SQL Server, PostgreSQL) and implemented caching strategies with Redis
+\\item Managed cloud infrastructure on AWS and Azure with Infrastructure as Code (Terraform)
+\\item Implemented comprehensive monitoring and logging for backend services using Prometheus and Grafana
+\\end{itemize}""",
+            
+            'synteda_backend': """\\subsection*{Synteda | .NET Backend Developer \\& Integration Specialist (Freelance)}
+\\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Developed scalable backend microservices using C\# .NET Core and ASP.NET Core
+\\item Built and optimized RESTful APIs with focus on performance, security, and scalability
+\\item Integrated SQL Server and Azure Cosmos DB with Entity Framework Core
+\\item Implemented message queues and event-driven architecture for asynchronous processing
+\\item Managed database migrations, stored procedures, and query optimization
+\\end{itemize}""",
+            
+            'pembio_backend': """\\subsection*{Pembio AB | Backend Engineer (Internship)}
+\\textit{October 2020 - September 2021 | Lund, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Developed backend microservices using Java and Spring Boot framework
+\\item Built RESTful APIs for SaaS platform with focus on scalability and performance
+\\item Implemented database integration with PostgreSQL and MongoDB
+\\item Worked with message queues (RabbitMQ) for asynchronous task processing
+\\item Participated in code reviews, unit testing, and continuous integration practices
+\\end{itemize}""",
+            
+            # Frontend Developer focused experience bricks
+            'ecarx_frontend': """\\subsection*{ECARX (Geely Automotive) | IT/Infrastructure Specialist}
+\\textit{October 2024 - November 2025 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Developed and maintained internal web applications using React and TypeScript
+\\item Built responsive user interfaces with modern JavaScript frameworks and state management
+\\item Integrated frontend applications with backend APIs and cloud services
+\\item Implemented CI/CD pipelines for automated frontend deployments
+\\item Optimized web application performance and implemented comprehensive testing strategies
+\\end{itemize}""",
+            
+            'synteda_frontend': """\\subsection*{Synteda | Frontend Developer \\& Integration Specialist (Freelance)}
+\\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Developed modern web applications using React, TypeScript, and Angular
+\\item Built responsive, accessible user interfaces with focus on user experience
+\\item Integrated frontend applications with RESTful APIs and Azure cloud services
+\\item Implemented state management solutions (Redux, Context API) for complex applications
+\\item Worked with modern build tools (Webpack, Vite) and testing frameworks (Jest, React Testing Library)
+\\end{itemize}""",
+            
+            'collabmaker_frontend': """\\subsection*{CollabMaker | Frontend Developer (Internship)}
+\\textit{July 2020 - October 2020 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Developed React.js frontend for career guidance and matchmaking platform
+\\item Built reusable UI components with modern JavaScript (ES6+) and React hooks
+\\item Integrated frontend with backend APIs using Axios and RESTful services
+\\item Participated in UI/UX design discussions and implemented responsive designs
+\\item Worked in Agile/Scrum environment with daily standups and sprint planning
+\\end{itemize}""",
+            
+            # IT Business Analyst focused experience bricks
+            'ecarx_business_analyst': """\\subsection*{ECARX (Geely Automotive) | IT/Infrastructure Specialist}
+\\textit{October 2024 - November 2025 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Analyzed business requirements and translated them into technical specifications for automotive IT systems
+\\item Conducted stakeholder workshops across 4 global offices to gather requirements and align on solutions
+\\item Led cost-benefit analysis for cloud migration project, achieving 45\% cost reduction
+\\item Created technical documentation, process flows, and system architecture diagrams
+\\item Coordinated between business stakeholders and technical teams to ensure successful project delivery
+\\end{itemize}""",
+            
+            'synteda_business_analyst': """\\subsection*{Synteda | IT Business Analyst \\& Integration Specialist (Freelance)}
+\\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Gathered and documented business requirements for talent management platform
+\\item Conducted gap analysis between current state and desired business outcomes
+\\item Created functional specifications and user stories for development teams
+\\item Facilitated workshops with stakeholders to define business processes and system requirements
+\\item Analyzed data flows and integration points between systems
+\\end{itemize}""",
+            
+            'senior_material_business_analyst': """\\subsection*{Senior Material (Europe) AB | Business Analyst \\& Project Coordinator}
+\\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Led business analysis for digital transformation of manufacturing platforms
+\\item Conducted stakeholder interviews and requirements gathering sessions
+\\item Created business cases with ROI analysis for technology investments
+\\item Documented business processes and created process flow diagrams
+\\item Coordinated between business units and IT teams to ensure alignment on project goals
+\\end{itemize}""",
+            
+            'hongyan_business_analyst': """\\subsection*{Hong Yan AB | Entrepreneur \\& Business Analyst}
+\\textit{April 2017 - Present | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Analyzed market trends and customer data to drive business decisions
+\\item Implemented technology solutions (Wix, Zettle, Stripe) to optimize business operations
+\\item Conducted financial analysis and forecasting, achieving 25\% annual revenue growth
+\\item Integrated online ordering, table reservation, and delivery services through technology platforms
+\\item Analyzed partnership opportunities with Uber Eats and Foodora, optimizing delivery operations
 \\end{itemize}"""
+        }
         }
         
         self.projects_bricks = {
@@ -264,47 +449,93 @@ class CVLegoBricks:
             return self.skills_bricks['fullstack_primary']
     
     def _select_experience_bricks(self, analysis: dict, application_type: str) -> str:
-        """Select and combine appropriate experience bricks"""
+        """Select and combine appropriate experience bricks based on job requirements"""
         
         experience_sections = []
         
-        # ECARX experience
-        if analysis['requires_infrastructure']:
+        # Determine the focus area
+        is_devops_cloud = analysis['requires_infrastructure'] or 'devops' in application_type.lower() or 'cloud' in application_type.lower()
+        is_backend = 'backend' in application_type.lower() or analysis.get('is_backend', False)
+        is_frontend = 'frontend' in application_type.lower() or analysis.get('is_frontend', False)
+        is_business_analyst = 'business' in application_type.lower() or 'analyst' in application_type.lower()
+        is_android = analysis['is_android'] or 'android' in application_type.lower()
+        
+        # ECARX experience (Oct 2024 - Nov 2025)
+        if is_business_analyst:
+            experience_sections.append(self.experience_bricks['ecarx_business_analyst'])
+        elif is_backend:
+            experience_sections.append(self.experience_bricks['ecarx_backend'])
+        elif is_frontend:
+            experience_sections.append(self.experience_bricks['ecarx_frontend'])
+        elif is_devops_cloud:
             experience_sections.append(self.experience_bricks['ecarx_infrastructure'])
+        elif is_android:
+            experience_sections.append(self.experience_bricks['ecarx_android_focused'])
         else:
             experience_sections.append(self.experience_bricks['ecarx_fullstack'])
             
-        # Synteda experience
-        experience_sections.append(self.experience_bricks['synteda_fullstack'])
+        # Synteda experience (Aug 2023 - Sep 2024)
+        if is_business_analyst:
+            experience_sections.append(self.experience_bricks['synteda_business_analyst'])
+        elif is_backend:
+            experience_sections.append(self.experience_bricks['synteda_backend'])
+        elif is_frontend:
+            experience_sections.append(self.experience_bricks['synteda_frontend'])
+        elif is_devops_cloud:
+            experience_sections.append(self.experience_bricks['synteda_devops_cloud'])
+        elif is_android:
+            experience_sections.append(self.experience_bricks['synteda_android_focused'])
+        else:
+            experience_sections.append(self.experience_bricks['synteda_fullstack'])
         
-        # Add remaining standard experience
-        remaining_experience = """\\subsection*{IT-Högskolan | Backend Developer (Part-time)}
-\\textit{January 2023 - May 2023 | Gothenburg, Sweden}
-\\begin{itemize}[noitemsep]
-\\item Migrated "Omstallningsstod.se" adult education platform using Spring Boot backend services
-\\item Developed RESTful APIs for frontend integration and implemented secure data handling
-\\item Collaborated with UI/UX designers to ensure seamless frontend-backend integration
-\\item Implemented automated tests as part of delivery process
-\\end{itemize}
-
-\\subsection*{Senior Material (Europe) AB | Fullstack Platform Architect}
+        # IT-Högskolan LIA 2 (Jan 2023 - May 2023) - Intensive Azure/DevOps training
+        if is_devops_cloud or is_backend or is_frontend:
+            experience_sections.append(self.experience_bricks['iths_lia2_devops_cloud'])
+        
+        # Senior Material (Jan 2022 - Dec 2022)
+        if is_business_analyst:
+            experience_sections.append(self.experience_bricks['senior_material_business_analyst'])
+        elif is_devops_cloud:
+            experience_sections.append(self.experience_bricks['senior_material_devops_cloud'])
+        else:
+            # Original version for non-DevOps roles
+            experience_sections.append("""\\subsection*{Senior Material (Europe) AB | Fullstack Platform Architect}
 \\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
 \\begin{itemize}[noitemsep]
-\\item Led the digital transformation of manufacturing platforms in the lithium-ion battery sector, migrating monoliths to containerized microservices.
-\\item Architected scalable backend solutions with Spring Boot and integrated modern React frontends for real-time manufacturing data visualization.
-\\item Collaborated in high-stakes agile environments to optimize system performance and data integrity during critical technical transitions.
-\\end{itemize}
-
-\\subsection*{Pembio AB | Fullstack Developer}
+\\item Led the digital transformation of manufacturing platforms in the lithium-ion battery sector, migrating monoliths to containerized microservices
+\\item Architected scalable backend solutions with Spring Boot and integrated modern React frontends for real-time manufacturing data visualization
+\\item Collaborated in high-stakes agile environments to optimize system performance and data integrity during critical technical transitions
+\\end{itemize}""")
+        
+        # AddCell LIA 1 (Sep 2022 - Nov 2022) - Intensive multi-cloud training
+        if is_devops_cloud or is_backend or is_frontend:
+            experience_sections.append(self.experience_bricks['addcell_devops_cloud'])
+        
+        # Pembio (Oct 2020 - Sep 2021)
+        if is_backend:
+            experience_sections.append(self.experience_bricks['pembio_backend'])
+        elif is_devops_cloud:
+            experience_sections.append(self.experience_bricks['pembio_devops_cloud'])
+        else:
+            # Original version for non-DevOps roles
+            experience_sections.append("""\\subsection*{Pembio AB | Fullstack Developer}
 \\textit{October 2020 - September 2021 | Lund, Sweden}
 \\begin{itemize}[noitemsep]
 \\item Developed Pembio.com platform backend with Java and Spring Boot in microservices architecture
 \\item Built frontend features using Vue.js framework and integrated with backend APIs
 \\item Developed RESTful APIs and implemented comprehensive database integration
 \\item Participated in Agile development processes and collaborated with cross-functional teams
-\\end{itemize}"""
+\\end{itemize}""")
         
-        experience_sections.append(remaining_experience)
+        # CollabMaker (Jul 2020 - Oct 2020)
+        if is_frontend:
+            experience_sections.append(self.experience_bricks['collabmaker_frontend'])
+        elif is_devops_cloud:
+            experience_sections.append(self.experience_bricks['collabmaker_devops_cloud'])
+        
+        # Hong Yan AB (Apr 2017 - Present) - Only for Business Analyst roles
+        if is_business_analyst:
+            experience_sections.append(self.experience_bricks['hongyan_business_analyst'])
         
         return '\n\n'.join(experience_sections)
     
