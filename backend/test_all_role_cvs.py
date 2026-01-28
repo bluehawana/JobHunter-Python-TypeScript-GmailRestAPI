@@ -54,6 +54,18 @@ def generate_latex_cv(role_type: str, output_filename: str):
             'company': 'Tech Company',
             'description': 'business analyst requirements gathering stakeholder workshops',
             'requirements': ['Business Analysis', 'Requirements', 'Stakeholder Management']
+        },
+        'it_support': {
+            'title': 'IT Support Specialist',
+            'company': 'Tech Company',
+            'description': 'it support technical support troubleshooting system administration help desk',
+            'requirements': ['IT Support', 'Troubleshooting', 'System Administration', 'Help Desk']
+        },
+        'sre': {
+            'title': 'Site Reliability Engineer',
+            'company': 'Tech Company',
+            'description': 'sre site reliability engineer incident management monitoring on-call production support',
+            'requirements': ['SRE', 'Incident Management', 'Monitoring', 'On-call', 'Production Support']
         }
     }
     
@@ -195,6 +207,8 @@ def main():
         ('fullstack', 'Fullstack_Developer_CV'),
         ('android', 'Android_Developer_CV'),
         ('business_analyst', 'IT_Business_Analyst_CV'),
+        ('it_support', 'IT_Support_Specialist_CV'),
+        ('sre', 'Site_Reliability_Engineer_CV'),
     ]
     
     success_count = 0
