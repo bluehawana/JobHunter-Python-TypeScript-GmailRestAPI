@@ -25,7 +25,11 @@ class CVLegoBricks:
             
             'it_business_analyst': """IT Business Analyst with 6+ years of combined business and technical experience (2019-Present). Master's in International Business & Trade combined with hands-on IT development experience across multiple companies. Expert at bridging the gap between technical IT systems and business requirements. Proven track record translating complex business needs into technical specifications, leading requirements workshops, and driving digital transformation. Strong analytical skills with deep understanding of both technical implementation (cloud platforms, databases, APIs) and business/commercial impact. Experience spans across ECARX, Synteda, Senior Material, Pembio, and entrepreneurship at Hong Yan AB.""",
             
-            'mobile_developer': """Mobile Developer with 6+ years of software development experience (2019-Present) including native and cross-platform mobile development. Strong background in Android development using Kotlin and Java, with additional experience in React Native for cross-platform solutions. Proven ability to build scalable mobile applications with focus on user experience, performance optimization, and cloud integration. Experience with CI/CD pipelines, DevOps practices, and modern mobile architecture patterns. Experience spans across ECARX, Synteda, Pembio, and CollabMaker."""
+            'mobile_developer': """Mobile Developer with 6+ years of software development experience (2019-Present) including native and cross-platform mobile development. Strong background in Android development using Kotlin and Java, with additional experience in React Native for cross-platform solutions. Proven ability to build scalable mobile applications with focus on user experience, performance optimization, and cloud integration. Experience with CI/CD pipelines, DevOps practices, and modern mobile architecture patterns. Experience spans across ECARX, Synteda, Pembio, and CollabMaker.""",
+            
+            'it_support_specialist': """IT Support Specialist with 6+ years of technical support and infrastructure experience (2019-Present). Expert in troubleshooting complex technical issues, managing IT infrastructure, and providing 24/7 support across global offices. Strong background in Windows/Linux system administration, network troubleshooting, hardware maintenance, and user support. Proven track record resolving critical incidents - restored 26 servers in 5 hours through systematic troubleshooting. Experience with cloud platforms (AWS, Azure), monitoring tools (Grafana, Prometheus), and IT service management. Experience spans across ECARX, Synteda, IT-Högskolan, Senior Material, AddCell, Pembio, and CollabMaker.""",
+            
+            'site_reliability_engineer': """Site Reliability Engineer (SRE) with 6+ years managing production systems, ensuring high availability, and optimizing platform reliability (2019-Present). Expert in incident management, monitoring, automation, and capacity planning. Currently at ECARX supporting 4 global offices with 24/7 on-call coverage. Proven expertise in Kubernetes, Terraform IaC, CI/CD automation, and comprehensive observability (Prometheus, Grafana, ELK). Reduced MTTR by 35% through proactive monitoring and automation. Strong background in both development and operations, implementing SRE best practices including SLOs, error budgets, and blameless postmortems. Experience spans across ECARX, Synteda, IT-Högskolan, Senior Material, AddCell, Pembio, and CollabMaker."""
         }
         
         self.skills_bricks = {
@@ -292,6 +296,150 @@ class CVLegoBricks:
 \\item Conducted financial analysis and forecasting, achieving 25\% annual revenue growth
 \\item Integrated online ordering, table reservation, and delivery services through technology platforms
 \\item Analyzed partnership opportunities with Uber Eats and Foodora, optimizing delivery operations
+\\end{itemize}""",
+            
+            # IT Support Specialist focused experience bricks
+            'ecarx_it_support': """\\subsection*{ECARX (Geely Automotive) | IT/Infrastructure Specialist}
+\\textit{October 2024 - November 2025 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Provided 24/7 IT support for 4 global offices (Gothenburg, London, Stuttgart, San Diego)
+\\item Resolved critical server boot failures through systematic troubleshooting and diagnostics
+\\item Managed Windows and Linux system administration, user account management, and access control
+\\item Performed hardware maintenance, component replacement, and system upgrades
+\\item Supported cloud infrastructure on AWS and Azure, troubleshooting connectivity and performance issues
+\\item Created technical documentation and delivered training in Swedish and English
+\\item Implemented monitoring solutions using Grafana and Prometheus for proactive issue detection
+\\end{itemize}""",
+            
+            'synteda_it_support': """\\subsection*{Synteda | IT Support \\& Integration Specialist (Freelance)}
+\\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Provided technical support for Azure cloud applications and services
+\\item Troubleshot application issues, database connectivity problems, and API integration errors
+\\item Managed user access, permissions, and Azure Active Directory configurations
+\\item Supported development teams with environment setup and deployment issues
+\\item Created knowledge base articles and technical documentation for common issues
+\\item Monitored application performance and resolved incidents using Azure Monitor
+\\end{itemize}""",
+            
+            'iths_lia2_it_support': """\\subsection*{IT-Högskolan | IT Support \\& Cloud Support (LIA 2 - Intensive Training)}
+\\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Provided technical support for Azure cloud platform and applications (40+ hours/week)
+\\item Troubleshot Azure services including App Services, Functions, and Virtual Machines
+\\item Supported students and teachers with technical issues and environment setup
+\\item Created troubleshooting guides and documentation for common Azure issues
+\\item Gained hands-on experience with Azure support tools and monitoring solutions
+\\end{itemize}""",
+            
+            'senior_material_it_support': """\\subsection*{Senior Material (Europe) AB | IT Support \\& Platform Support}
+\\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Provided technical support for web platform and cloud infrastructure
+\\item Troubleshot application issues, database problems, and user access issues
+\\item Supported manufacturing operations with IT systems and technology solutions
+\\item Created user guides and training materials for platform users
+\\item Monitored system performance and resolved incidents proactively
+\\end{itemize}""",
+            
+            'addcell_it_support': """\\subsection*{AddCell | IT Support \\& Cloud Support (LIA 1 - Intensive Training)}
+\\textit{September 2022 - November 2022 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Provided technical support for multi-cloud applications (Azure and AWS)
+\\item Troubleshot deployment issues, connectivity problems, and application errors
+\\item Supported team members with development environment setup and configuration
+\\item Gained hands-on experience with cloud support tools and troubleshooting techniques
+\\end{itemize}""",
+            
+            'pembio_it_support': """\\subsection*{Pembio AB | IT Support \\& Application Support (Internship)}
+\\textit{October 2020 - September 2021 | Lund, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Provided technical support for SaaS platform and cloud applications
+\\item Troubleshot user issues, application bugs, and integration problems
+\\item Supported remote team members during COVID-19 with technical setup and connectivity
+\\item Created user documentation and FAQ guides for common issues
+\\item Monitored application logs and resolved incidents proactively
+\\end{itemize}""",
+            
+            'collabmaker_it_support': """\\subsection*{CollabMaker | IT Support \\& Technical Support (Internship)}
+\\textit{July 2020 - October 2020 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Provided technical support for web platform and user issues
+\\item Troubleshot frontend issues, API connectivity problems, and user access issues
+\\item Supported remote team during COVID-19 with technical setup and collaboration tools
+\\item Created troubleshooting guides for common user issues
+\\end{itemize}""",
+            
+            # Site Reliability Engineer (SRE) focused experience bricks
+            'ecarx_sre': """\\subsection*{ECARX (Geely Automotive) | Site Reliability Engineer / IT Specialist}
+\\textit{October 2024 - November 2025 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Managed production systems with 24/7 on-call support for 4 global offices ensuring 99.9\% uptime
+\\item Led Azure AKS to on-premise Kubernetes migration, improving reliability and reducing costs by 45\%
+\\item Implemented comprehensive monitoring and alerting using Prometheus, Grafana, and custom dashboards
+\\item Reduced MTTR by 35\% through automation, runbook creation, and proactive incident management
+\\item Conducted blameless postmortems and implemented preventive measures for recurring incidents
+\\item Defined and tracked SLOs/SLIs for critical services, managing error budgets effectively
+\\item Automated incident response and recovery procedures, reducing manual intervention by 60\%
+\\end{itemize}""",
+            
+            'synteda_sre': """\\subsection*{Synteda | SRE \\& Platform Reliability Engineer (Freelance)}
+\\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Ensured high availability and reliability of Azure cloud applications and services
+\\item Implemented monitoring and alerting using Azure Monitor, Application Insights, and custom metrics
+\\item Managed incident response, root cause analysis, and preventive measures
+\\item Automated deployment and recovery procedures using Azure DevOps and Infrastructure as Code
+\\item Defined SLOs for critical services and tracked error budgets
+\\item Conducted capacity planning and performance optimization for production systems
+\\end{itemize}""",
+            
+            'iths_lia2_sre': """\\subsection*{IT-Högskolan | SRE \\& Platform Reliability (LIA 2 - Intensive Training)}
+\\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Intensive training in site reliability engineering practices and Azure platform reliability
+\\item Implemented monitoring and alerting for Azure applications using Azure Monitor
+\\item Practiced incident management, root cause analysis, and blameless postmortems
+\\item Automated deployment and recovery procedures using Azure DevOps and Terraform
+\\item Gained hands-on experience with SRE best practices including SLOs, error budgets, and toil reduction
+\\end{itemize}""",
+            
+            'senior_material_sre': """\\subsection*{Senior Material (Europe) AB | Platform Reliability Engineer}
+\\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Ensured reliability and availability of manufacturing platform and cloud infrastructure
+\\item Implemented monitoring and alerting using Azure Monitor for proactive issue detection
+\\item Managed incident response and conducted root cause analysis for production issues
+\\item Automated deployment and recovery procedures to reduce manual toil
+\\item Conducted capacity planning and performance optimization for production systems
+\\end{itemize}""",
+            
+            'addcell_sre': """\\subsection*{AddCell | SRE \\& Platform Reliability (LIA 1 - Intensive Training)}
+\\textit{September 2022 - November 2022 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Practiced site reliability engineering principles with multi-cloud applications (Azure and AWS)
+\\item Implemented monitoring and alerting for cloud applications
+\\item Practiced incident management and root cause analysis
+\\item Automated deployment and recovery procedures using CI/CD pipelines
+\\end{itemize}""",
+            
+            'pembio_sre': """\\subsection*{Pembio AB | Platform Reliability Engineer (Internship)}
+\\textit{October 2020 - September 2021 | Lund, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Ensured reliability and availability of SaaS platform and cloud applications
+\\item Implemented monitoring and logging for production applications
+\\item Participated in incident response and root cause analysis
+\\item Automated deployment procedures to improve reliability and reduce manual errors
+\\item Practiced SRE principles including monitoring, alerting, and capacity planning
+\\end{itemize}""",
+            
+            'collabmaker_sre': """\\subsection*{CollabMaker | Platform Support Engineer (Internship)}
+\\textit{July 2020 - October 2020 | Gothenburg, Sweden}
+\\begin{itemize}[noitemsep]
+\\item Supported platform reliability and availability during COVID-19 remote operations
+\\item Monitored application performance and resolved incidents proactively
+\\item Participated in incident response and troubleshooting
+\\item Gained experience with reliability engineering practices and monitoring tools
 \\end{itemize}"""
         }
         
@@ -446,7 +594,11 @@ class CVLegoBricks:
         """Select appropriate profile summary brick"""
         
         # Check application_type first for explicit role specification
-        if 'business' in application_type.lower() or 'analyst' in application_type.lower():
+        if 'support' in application_type.lower() or 'it support' in application_type.lower():
+            return self.profile_bricks['it_support_specialist']
+        elif 'sre' in application_type.lower() or 'site reliability' in application_type.lower() or 'reliability' in application_type.lower():
+            return self.profile_bricks['site_reliability_engineer']
+        elif 'business' in application_type.lower() or 'analyst' in application_type.lower():
             return self.profile_bricks['it_business_analyst']
         elif 'backend' in application_type.lower() or analysis.get('is_backend', False):
             return self.profile_bricks['backend_developer']
@@ -493,9 +645,15 @@ class CVLegoBricks:
         is_frontend = 'frontend' in application_type.lower() or analysis.get('is_frontend', False)
         is_business_analyst = 'business' in application_type.lower() or 'analyst' in application_type.lower()
         is_android = analysis['is_android'] or 'android' in application_type.lower()
+        is_it_support = 'support' in application_type.lower() or 'it support' in application_type.lower()
+        is_sre = 'sre' in application_type.lower() or 'site reliability' in application_type.lower() or 'reliability' in application_type.lower()
         
         # ECARX experience (Oct 2024 - Nov 2025)
-        if is_business_analyst:
+        if is_it_support:
+            experience_sections.append(self.experience_bricks['ecarx_it_support'])
+        elif is_sre:
+            experience_sections.append(self.experience_bricks['ecarx_sre'])
+        elif is_business_analyst:
             experience_sections.append(self.experience_bricks['ecarx_business_analyst'])
         elif is_backend:
             experience_sections.append(self.experience_bricks['ecarx_backend'])
@@ -509,7 +667,11 @@ class CVLegoBricks:
             experience_sections.append(self.experience_bricks['ecarx_fullstack'])
             
         # Synteda experience (Aug 2023 - Sep 2024)
-        if is_business_analyst:
+        if is_it_support:
+            experience_sections.append(self.experience_bricks['synteda_it_support'])
+        elif is_sre:
+            experience_sections.append(self.experience_bricks['synteda_sre'])
+        elif is_business_analyst:
             experience_sections.append(self.experience_bricks['synteda_business_analyst'])
         elif is_backend:
             experience_sections.append(self.experience_bricks['synteda_backend'])
@@ -523,11 +685,19 @@ class CVLegoBricks:
             experience_sections.append(self.experience_bricks['synteda_fullstack'])
         
         # IT-Högskolan LIA 2 (Jan 2023 - May 2023) - Intensive Azure/DevOps training
-        if is_devops_cloud or is_backend or is_frontend:
+        if is_it_support:
+            experience_sections.append(self.experience_bricks['iths_lia2_it_support'])
+        elif is_sre:
+            experience_sections.append(self.experience_bricks['iths_lia2_sre'])
+        elif is_devops_cloud or is_backend or is_frontend:
             experience_sections.append(self.experience_bricks['iths_lia2_devops_cloud'])
         
         # Senior Material (Jan 2022 - Dec 2022)
-        if is_business_analyst:
+        if is_it_support:
+            experience_sections.append(self.experience_bricks['senior_material_it_support'])
+        elif is_sre:
+            experience_sections.append(self.experience_bricks['senior_material_sre'])
+        elif is_business_analyst:
             experience_sections.append(self.experience_bricks['senior_material_business_analyst'])
         elif is_devops_cloud:
             experience_sections.append(self.experience_bricks['senior_material_devops_cloud'])
@@ -542,11 +712,19 @@ class CVLegoBricks:
 \\end{itemize}""")
         
         # AddCell LIA 1 (Sep 2022 - Nov 2022) - Intensive multi-cloud training
-        if is_devops_cloud or is_backend or is_frontend:
+        if is_it_support:
+            experience_sections.append(self.experience_bricks['addcell_it_support'])
+        elif is_sre:
+            experience_sections.append(self.experience_bricks['addcell_sre'])
+        elif is_devops_cloud or is_backend or is_frontend:
             experience_sections.append(self.experience_bricks['addcell_devops_cloud'])
         
         # Pembio (Oct 2020 - Sep 2021)
-        if is_backend:
+        if is_it_support:
+            experience_sections.append(self.experience_bricks['pembio_it_support'])
+        elif is_sre:
+            experience_sections.append(self.experience_bricks['pembio_sre'])
+        elif is_backend:
             experience_sections.append(self.experience_bricks['pembio_backend'])
         elif is_devops_cloud:
             experience_sections.append(self.experience_bricks['pembio_devops_cloud'])
@@ -562,7 +740,11 @@ class CVLegoBricks:
 \\end{itemize}""")
         
         # CollabMaker (Jul 2020 - Oct 2020)
-        if is_frontend:
+        if is_it_support:
+            experience_sections.append(self.experience_bricks['collabmaker_it_support'])
+        elif is_sre:
+            experience_sections.append(self.experience_bricks['collabmaker_sre'])
+        elif is_frontend:
             experience_sections.append(self.experience_bricks['collabmaker_frontend'])
         elif is_devops_cloud:
             experience_sections.append(self.experience_bricks['collabmaker_devops_cloud'])
