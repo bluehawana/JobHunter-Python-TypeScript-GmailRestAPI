@@ -23,10 +23,9 @@ def generate_android_cv():
 \setlength{\parindent}{0pt}
 \pagestyle{empty}
 
-\definecolor{titlecolor}{RGB}{0,102,204}
-\definecolor{linkcolor}{RGB}{0,102,204}
+\definecolor{linkedinblue}{RGB}{0,119,181}
 
-\titleformat{\section}{\Large\bfseries\color{titlecolor}}{}{0em}{}[\titlerule]
+\titleformat{\section}{\Large\bfseries\color{linkedinblue}}{}{0em}{}[\titlerule]
 \titlespacing*{\section}{0pt}{12pt}{6pt}
 
 \titleformat{\subsection}{\large\bfseries}{}{0em}{}
@@ -34,9 +33,9 @@ def generate_android_cv():
 
 \hypersetup{
     colorlinks=true,
-    linkcolor=linkcolor,
-    urlcolor=linkcolor,
-    citecolor=linkcolor
+    linkcolor=linkedinblue,
+    urlcolor=linkedinblue,
+    citecolor=linkedinblue
 }
 
 \begin{document}
@@ -44,7 +43,7 @@ def generate_android_cv():
 \begin{center}
 {\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
 {\Large \textit{Senior Android Developer}}\\[10pt]
-\textcolor{titlecolor}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:+46728384299}{+46 72 838 4299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\textcolor{linkedinblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:+46728384299}{+46 72 838 4299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
 \end{center}
 
 \vspace{8pt}
@@ -267,7 +266,7 @@ def generate_android_cover_letter(company: str, position: str):
 \usepackage{{xcolor}}
 
 % Define colors
-\definecolor{{darkblue}}{{RGB}}{{0,51,102}}
+\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
 
 % Section formatting
 \titleformat{{\section}}{{\large\bfseries\raggedright\color{{black}}}}{{}}{{0em}}{{}}[\titlerule]
@@ -280,7 +279,7 @@ def generate_android_cover_letter(company: str, position: str):
 \pagestyle{{empty}} % no page number
 
 % Header
-{{\color{{darkblue}}
+{{\color{{linkedinblue}}
 {company}\\
 {position}\\
 Gothenburg, Sweden}}
@@ -331,15 +330,14 @@ Harvad (Hongzhi) Li
 
 \vspace{{20pt}}
 
-{{\color{{darkblue}}\rule{{\linewidth}}{{0.6pt}}}}
+{{\color{{linkedinblue}}\rule{{\linewidth}}{{0.6pt}}}}
 
 \vspace{{4pt}}
 
-{{\color{{darkblue}}
+{{\color{{linkedinblue}}
 Ebbe Lieberathsgatan 27\\
 412 65 Göteborg, Sweden\\
-hongzhili01@gmail.com | 0728 384 299\\
-LinkedIn: \href{{https://www.linkedin.com/in/hzl/}}{{linkedin.com/in/hzl}} | GitHub: \href{{https://github.com/bluehawana}}{{github.com/bluehawana}}}}
+\today}}
 
 \end{{document}}
 """
