@@ -389,8 +389,8 @@ def main():
         position = input("Enter position: ").strip() or "Senior Android Developer"
     
     # Create output directory
-    output_dir = Path(__file__).parent.parent / 'android_application_package'
-    output_dir.mkdir(exist_ok=True)
+    output_dir = Path(__file__).parent.parent / 'job_applications' / 'android_developer_application'
+    output_dir.mkdir(parents=True, exist_ok=True)
     
     print(f"\n🚀 Generating Android Developer Application Package")
     print(f"   Company: {company}")
