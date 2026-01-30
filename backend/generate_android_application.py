@@ -284,10 +284,6 @@ def generate_android_cover_letter(company: str, position: str):
 {position}\\
 Gothenburg, Sweden}}
 
-\vspace{{14pt}}
-
-\today
-
 \vspace{{16pt}}
 
 % Opening
