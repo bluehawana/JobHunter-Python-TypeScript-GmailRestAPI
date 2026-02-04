@@ -111,8 +111,24 @@ const LegoJobGenerator: React.FC = () => {
 
   const downloadDocuments = () => {
     if (generatedDocs) {
-      window.open(generatedDocs.cvUrl, '_blank');
-      window.open(generatedDocs.clUrl, '_blank');
+      // Create temporary links and trigger downloads
+      const downloadFile = (url: string, filename: string) => {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+      
+      // Download CV
+      downloadFile(generatedDocs.cvUrl, 'cv.pdf');
+      
+      // Download CL with a small delay to avoid browser blocking
+      setTimeout(() => {
+        downloadFile(generatedDocs.clUrl, 'cl.pdf');
+      }, 100);
     }
   };
 
