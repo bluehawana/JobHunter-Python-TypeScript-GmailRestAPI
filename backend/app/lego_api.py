@@ -1163,7 +1163,6 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
         'platform_engineer': 'devops_engineer',
         'devops_fintech': 'devops_engineer',
         'finops': 'devops_engineer',
-        'it_support': 'incident_management_specialist',
         'integration_architect': 'backend_developer',
     }
 
@@ -1647,6 +1646,14 @@ def generate_lego_application():
         company = analysis.get('company', 'Company')
         title = analysis.get('title', 'Position')
 
+        # SAFEGUARD: Ensure role_type is consistent with role_category
+        # This prevents mismatches where role_category is 'devops_cloud' but role_type is 'IT Business Analyst'
+        expected_role_type = role_category.replace('_', ' ').title()
+        if role_type != expected_role_type:
+            print(f"⚠️ Role type mismatch detected: roleType='{role_type}', roleCategory='{role_category}'")
+            print(f"🔧 Correcting role_type from '{role_type}' to '{expected_role_type}'")
+            role_type = expected_role_type
+
         # Handle template selection failures gracefully
         try:
             # Verify template exists before proceeding
@@ -1804,6 +1811,14 @@ def generate_comprehensive_application():
         role_category = analysis.get('roleCategory', 'devops_cloud')
         company = analysis.get('company', 'Company')
         title = analysis.get('title', 'Position')
+        
+        # SAFEGUARD: Ensure role_type is consistent with role_category
+        # This prevents mismatches where role_category is 'devops_cloud' but role_type is 'IT Business Analyst'
+        expected_role_type = role_category.replace('_', ' ').title()
+        if role_type != expected_role_type:
+            print(f"⚠️ Role type mismatch detected: roleType='{role_type}', roleCategory='{role_category}'")
+            print(f"🔧 Correcting role_type from '{role_type}' to '{expected_role_type}'")
+            role_type = expected_role_type
         
         # Build LaTeX documents with comprehensive AI-powered customization
         cv_latex = build_lego_cv(role_type, company, title, role_category, job_description)
