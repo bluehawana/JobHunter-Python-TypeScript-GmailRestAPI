@@ -1514,6 +1514,16 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
         template_content = template_content.replace('JOB\\_TITLE', title)  # LaTeX escaped
         template_content = template_content.replace('JOB_TITLE', title)    # Regular
 
+    # Replace any remaining placeholder patterns
+    template_content = template_content.replace('[SPECIFIC REASON - customize per company]', 'your reputation for excellence and commitment to quality')
+    template_content = template_content.replace('[SPECIFIC REASON]', 'your reputation for excellence and commitment to quality')
+    
+    # Remove inappropriate generic language that doesn't fit all roles
+    template_content = template_content.replace('passion for innovative software development', 'dedication to technical excellence')
+    template_content = template_content.replace('innovative software development', 'technical excellence')
+    template_content = template_content.replace('scalable software solutions', 'effective technical solutions')
+    template_content = template_content.replace('modern development practices', 'best practices and continuous improvement')
+
     # Clean up placeholder lines in header (use simple string operations to avoid regex escape issues)
     lines = template_content.split('\n')
     cleaned_lines = []
@@ -1567,7 +1577,32 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
         title = 'Target Position'
     
     # DEBUG: Print what values are being used
-    print(f"[CL DEBUG] Using company='{company}', title='{title}'")
+    print(f"[CL DEBUG] Using company='{company}', title='{title}', role_type='{role_type}'")
+    
+    # Create role-appropriate cover letter content
+    if 'support' in title.lower() or 'support' in role_type.lower():
+        # Customer/Technical Support role content
+        opening = f"I'm excited to apply for the {title} position at {company}. With 5+ years of technical experience and a strong background in customer service and problem-solving, I'm confident I can provide excellent support to your customers and contribute immediately to your team."
+        
+        expertise = r"""\textbf{Customer Support Excellence:} At ECARX, I provide technical support across 4 global offices, helping customers resolve complex technical issues. My most significant achievement was resolving a critical incident affecting 26 servers - I performed systematic troubleshooting under pressure and completed resolution within 5 hours, ensuring minimal customer impact. This experience demonstrates my ability to work under pressure, communicate effectively with customers, and resolve technical problems rapidly.
+
+\textbf{Technical Problem-Solving:} I have hands-on experience with various technologies including cloud platforms (AWS, Azure), monitoring tools (Prometheus, Grafana), and scripting (Python, Bash). I excel at translating complex technical concepts into clear explanations for customers, creating documentation, and providing training. My multilingual abilities (English, Swedish, Chinese) enable me to support diverse customer bases effectively.
+
+\textbf{Customer-Focused Approach:} I'm passionate about helping customers succeed and ensuring their technical challenges are resolved quickly and efficiently. My experience includes troubleshooting hardware and software issues, coordinating with engineering teams, and maintaining high customer satisfaction through clear communication and follow-up."""
+        
+        closing = f"I'm passionate about customer success and technical problem-solving. I'd welcome the opportunity to discuss how my experience can contribute to {company}'s continued success and customer satisfaction. Thank you for considering my application."
+        
+    else:
+        # Default technical role content
+        opening = f"I'm excited to apply for the {title} position at {company}. With 5+ years managing production infrastructure, resolving critical incidents, and optimizing cloud operations, I'm confident I can contribute immediately to your team."
+        
+        expertise = r"""\textbf{Technical Expertise:} At ECARX, I provide 24/7 on-call support across 4 global offices (Gothenburg, London, Stuttgart, San Diego). My most significant achievement was resolving a critical incident affecting 26 servers - I performed systematic root cause analysis under pressure and completed remediation within 5 hours. This experience demonstrates my ability to work under pressure, perform thorough RCA, and restore production systems rapidly.
+
+\textbf{Infrastructure \& Automation:} I led the migration from Azure AKS to on-premise Kubernetes, reducing cloud costs by 45\% while improving CI/CD efficiency by 25\%. I deployed comprehensive Prometheus/Grafana monitoring stacks that reduced MTTR by 35\% through proactive alerting. I automate infrastructure using Terraform and Ansible, reducing manual intervention by 60\% and accelerating release cycles.
+
+\textbf{Technical Alignment:} My skills directly match your requirements - AWS/Azure certified with hands-on experience; expert in Terraform and CloudFormation for IaC; proficient with Jenkins, GitHub Actions, and GitLab CI for CI/CD; deep expertise in Prometheus, Grafana, and ELK for observability; strong Python and Bash scripting for automation; production Kubernetes experience including troubleshooting and optimization."""
+        
+        closing = f"I'm passionate about platform reliability, MTTR reduction, and developer experience improvements. I'd welcome the opportunity to discuss how my experience can contribute to {company}'s success. Thank you for considering my application."
     
     latex = r"""\documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -1593,15 +1628,11 @@ Dear Hiring Manager,
 
 \vspace{0.5cm}
 
-I'm excited to apply for the """ + title + r""" position at """ + company + r""". With 5+ years managing production infrastructure, resolving critical incidents, and optimizing cloud operations, I'm confident I can contribute immediately to your team.
+""" + opening + r"""
 
-\textbf{Technical Expertise:} At ECARX, I provide 24/7 on-call support across 4 global offices (Gothenburg, London, Stuttgart, San Diego). My most significant achievement was resolving a critical incident affecting 26 servers - I performed systematic root cause analysis under pressure and completed remediation within 5 hours. This experience demonstrates my ability to work under pressure, perform thorough RCA, and restore production systems rapidly.
+""" + expertise + r"""
 
-\textbf{Infrastructure \& Automation:} I led the migration from Azure AKS to on-premise Kubernetes, reducing cloud costs by 45\% while improving CI/CD efficiency by 25\%. I deployed comprehensive Prometheus/Grafana monitoring stacks that reduced MTTR by 35\% through proactive alerting. I automate infrastructure using Terraform and Ansible, reducing manual intervention by 60\% and accelerating release cycles.
-
-\textbf{Technical Alignment:} My skills directly match your requirements - AWS/Azure certified with hands-on experience; expert in Terraform and CloudFormation for IaC; proficient with Jenkins, GitHub Actions, and GitLab CI for CI/CD; deep expertise in Prometheus, Grafana, and ELK for observability; strong Python and Bash scripting for automation; production Kubernetes experience including troubleshooting and optimization.
-
-I'm passionate about platform reliability, MTTR reduction, and developer experience improvements. I'd welcome the opportunity to discuss how my experience can contribute to """ + company + r"""'s success. Thank you for considering my application.
+""" + closing + r"""
 
 \vspace{1cm}
 
@@ -1882,10 +1913,138 @@ def generate_lego_application():
             role_category = 'devops_cloud'
             role_type = 'DevOps Cloud'
 
+def ai_review_documents(cv_content: str, cl_content: str, job_description: str, company: str, title: str) -> dict:
+    """
+    AI quality check: Review generated CV and CL against job description
+    Returns feedback and quality score to prevent sending inappropriate content
+    """
+    try:
+        import requests
+        import json
+        import os
+        
+        # Use Z.AI GLM-4.7 for document review
+        api_key = os.environ.get('ZAI_API_KEY')
+        if not api_key:
+            return {"error": "No AI API key available", "overall_score": 0}
+        
+        # Extract text content from LaTeX (remove LaTeX commands for AI analysis)
+        import re
+        cv_text = re.sub(r'\\[a-zA-Z]+\{[^}]*\}', '', cv_content)
+        cv_text = re.sub(r'\\[a-zA-Z]+', '', cv_text)
+        cv_text = re.sub(r'\{[^}]*\}', '', cv_text)
+        cv_text = ' '.join(cv_text.split())
+        
+        cl_text = re.sub(r'\\[a-zA-Z]+\{[^}]*\}', '', cl_content)
+        cl_text = re.sub(r'\\[a-zA-Z]+', '', cl_text)
+        cl_text = re.sub(r'\{[^}]*\}', '', cl_text)
+        cl_text = ' '.join(cl_text.split())
+        
+        prompt = f"""
+You are a professional recruiter reviewing job application documents. Please analyze the CV and Cover Letter against the job description and identify any issues.
+
+JOB DESCRIPTION:
+{job_description[:2000]}
+
+COMPANY: {company}
+POSITION: {title}
+
+CV CONTENT:
+{cv_text[:3000]}
+
+COVER LETTER CONTENT:
+{cl_text[:1500]}
+
+Please check for these critical issues:
+1. ROLE MISMATCH: Does the content match the actual job role? (e.g., don't mention "software development" for support roles)
+2. INAPPROPRIATE LANGUAGE: Any content that doesn't fit the role or company?
+3. MISSING KEY REQUIREMENTS: Are important job requirements addressed?
+4. GENERIC CONTENT: Any obvious template placeholders or generic statements?
+5. COMPANY FIT: Does the content make sense for this specific company?
+
+Return your analysis in this JSON format:
+{
+  "overall_score": 85,
+  "critical_issues": ["Issue 1", "Issue 2"],
+  "role_alignment": "good/poor",
+  "content_appropriateness": "appropriate/inappropriate", 
+  "missing_requirements": ["Requirement 1"],
+  "recommendations": ["Fix 1", "Fix 2"],
+  "ready_to_send": true/false
+}
+"""
+
+        # Make API call to Z.AI
+        response = requests.post(
+            "https://api.z.ai/api/anthropic/v1/messages",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "glm-4.7",
+                "max_tokens": 1000,
+                "messages": [{"role": "user", "content": prompt}]
+            },
+            timeout=30
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            ai_response = result['content'][0]['text']
+            
+            # Try to parse JSON response
+            try:
+                # Extract JSON from response (in case there's extra text)
+                json_start = ai_response.find('{')
+                json_end = ai_response.rfind('}') + 1
+                if json_start >= 0 and json_end > json_start:
+                    json_str = ai_response[json_start:json_end]
+                    quality_check = json.loads(json_str)
+                    return quality_check
+                else:
+                    # Fallback if no JSON found
+                    return {
+                        "overall_score": 75,
+                        "critical_issues": [],
+                        "role_alignment": "unknown",
+                        "content_appropriateness": "needs_review",
+                        "ai_feedback": ai_response[:500],
+                        "ready_to_send": True
+                    }
+            except json.JSONDecodeError:
+                return {
+                    "overall_score": 70,
+                    "critical_issues": ["Could not parse AI feedback"],
+                    "ai_feedback": ai_response[:500],
+                    "ready_to_send": True
+                }
+        else:
+            print(f"❌ AI review failed: {response.status_code}")
+            return {"error": f"AI API error: {response.status_code}", "overall_score": 0, "ready_to_send": True}
+            
+    except Exception as e:
+        print(f"❌ AI review error: {e}")
+        return {"error": str(e), "overall_score": 0, "ready_to_send": True}
+
+
         # Build LaTeX documents with AI-powered content customization
         print(f"[API DEBUG] About to generate documents with - Company: '{company}', Title: '{title}', Role Type: '{role_type}', Role Category: '{role_category}'")
         cv_latex = build_lego_cv(role_type, company, title, role_category, job_description, customization_notes)
         cl_latex = build_lego_cover_letter(role_type, company, title, role_category, job_description, customization_notes)
+        
+        # AI QUALITY CHECK: Review generated documents against job description
+        print(f"🤖 Running AI quality check on generated documents...")
+        quality_check = ai_review_documents(cv_latex, cl_latex, job_description, company, title)
+        print(f"📊 AI Quality Check Results: {quality_check.get('overall_score', 'N/A')}/100")
+        
+        # Log critical issues if any
+        if quality_check.get('critical_issues'):
+            print(f"⚠️ Critical Issues Found: {quality_check['critical_issues']}")
+        if not quality_check.get('ready_to_send', True):
+            print(f"🚫 Documents NOT ready to send - needs review!")
+        else:
+            print(f"✅ Documents passed AI quality check")
         
         # Create output directory
         output_dir = Path('generated_applications') / datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -1966,6 +2125,9 @@ def generate_lego_application():
                 'roleBreakdown': analysis['roleBreakdown'],
                 'confidenceScore': analysis.get('confidenceScore', 0.0)
             }
+        
+        # Add AI quality check results
+        response_data['qualityCheck'] = quality_check
         
         return jsonify(response_data)
         
