@@ -31,7 +31,7 @@ class CVTemplateManager:
         },
         'android_developer': {
             'keywords': ['android', 'kotlin', 'android app', 'apk', 'mobile app', 'aosp', 'android sdk', 'jetpack', 'react native', 'mobile developer'],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/android_developer_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
@@ -53,7 +53,7 @@ class CVTemplateManager:
                 'computer vision', 'nlp', 'natural language processing',
                 'data science', 'feature engineering', 'model evaluation'
             ],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/ai_product_engineer_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
@@ -97,13 +97,13 @@ class CVTemplateManager:
         # === DEVOPS/INFRASTRUCTURE (Priority 4) ===
         'devops_cloud': {
             'keywords': ['devops', 'cloud engineer', 'aws', 'azure', 'gcp', 'kubernetes', 'docker', 'terraform', 'ci/cd', 'infrastructure as code', 'iac', 'helm', 'argocd'],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/devops_cloud_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 4
         },
         'incident_management_sre': {
             'keywords': ['incident', 'sre', 'site reliability', 'on-call', 'monitoring', 'observability', 'mttr', 'production support', 'pagerduty', 'opsgenie', 'incident management'],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/incident_management_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 4
         },
@@ -117,7 +117,7 @@ class CVTemplateManager:
         # === IT SUPPORT / OPERATIONS (Priority 3) - Higher priority for customer support ===
         'it_support': {
             'keywords': ['it support', 'helpdesk', 'service desk', 'technical support', 'customer support', 'support engineer', 'it technician', 'desktop support', 'l1', 'l2', 'l3 support', 'itil', 'ticketing', 'user support', 'end user support', 'customer service'],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/incident_management_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 3
         },
