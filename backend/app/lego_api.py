@@ -1287,7 +1287,7 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
 \setlength{\parindent}{0pt}
 \pagestyle{empty}
 
-\definecolor{titlecolor}{RGB}{59,130,246}
+\definecolor{titlecolor}{RGB}{0,119,181}
 
 \titleformat{\section}{\Large\bfseries\color{titlecolor}}{}{0em}{}[\titlerule]
 \titlespacing*{\section}{0pt}{12pt}{6pt}
@@ -1577,7 +1577,7 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
 
 \geometry{margin=1in}
 \setlength{\parindent}{0pt}
-\definecolor{linkedinblue}{RGB}{59,130,246}
+\definecolor{linkedinblue}{RGB}{0,119,181}
 \hypersetup{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}
 
 \begin{document}
