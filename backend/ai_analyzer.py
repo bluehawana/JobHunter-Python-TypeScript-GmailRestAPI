@@ -64,7 +64,13 @@ class AIAnalyzer:
             model: Minimax model to use (MiniMax-M2 for M2)
         """
         # Try to get API key from multiple sources
-        self.api_key = api_key or os.getenv('MINIMAX_API_KEY') or os.getenv('maxmini_apikey')
+        self.api_key = (
+            api_key or 
+            os.getenv('ANTHROPIC_API_KEY') or  # MiniMax via Anthropic SDK
+            os.getenv('MINIMAX_SECRET_KEY') or  # Alternative name
+            os.getenv('MINIMAX_API_KEY') or 
+            os.getenv('maxmini_apikey')
+        )
         self.model = model
         
         # Initialize Anthropic client with MiniMax base URL
