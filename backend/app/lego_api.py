@@ -393,47 +393,56 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
             print(f"📍 Found priority company: {company}")
             break
     
-    # First pass: Look for title in first few lines (usually at the top)
-    # Also look for "As a [Job Title]" pattern which is common
-    for i, line in enumerate(lines[:30]):  # Extended search range
-        if len(line) > 100 or len(line) < 3:
-            continue
-        
+    # First pass: Look for title using "As a [Job Title]" pattern (highest priority)
+    for i, line in enumerate(lines[:30]):
         line_lower = line.lower()
         
         # Pattern: "As a [Job Title]" or "As an [Job Title]"
-        if line_lower.startswith('as a ') or line_lower.startswith('as an '):
-            # Extract the job title after "as a" or "as an"
-            start_idx = 5 if line_lower.startswith('as a ') else 6
+        if 'as a ' in line_lower or 'as an ' in line_lower:
+            # Find the position of "as a" or "as an"
+            if 'as a ' in line_lower:
+                start_idx = line_lower.find('as a ') + 5
+            else:
+                start_idx = line_lower.find('as an ') + 6
+            
             potential_title = line[start_idx:].strip()
             # Take text until comma or "you will"
             if ',' in potential_title:
                 potential_title = potential_title.split(',')[0].strip()
             if ' you will' in potential_title.lower():
                 potential_title = potential_title.split(' you will')[0].strip()
-            if potential_title and len(potential_title) < 80:
+            if potential_title and len(potential_title) < 80 and len(potential_title) > 5:
                 title = potential_title
                 print(f"📍 Found title via 'As a [Title]' pattern: {title}")
                 break
-        
-        # Check if this line is likely a job title
-        # It should contain job keywords and be reasonably short
-        if any(keyword in line_lower for keyword in job_keywords):
-            # Skip lines that are clearly not titles
-            skip_phrases = [
-                'som ', 'kommer du', 'du kommer', 'vi söker', 'we are looking',
-                'about the job', 'om jobbet', 'responsibilities', 'ansvar',
-                'provide', 'providing', 'you will', 'du kommer att', 'are you'
-            ]
-            if any(phrase in line_lower for phrase in skip_phrases):
+    
+    # Second pass: Look for title in first few lines if not found via "As a" pattern
+    if title == 'Position':
+        for i, line in enumerate(lines[:30]):
+            if len(line) > 100 or len(line) < 3:
                 continue
             
-            # This looks like a title
-            cleaned = line.strip(' -–—:')
-            if len(cleaned) < 80:
-                title = cleaned
-                print(f"📍 Found title in line {i}: {title}")
-                break
+            line_lower = line.lower()
+            
+            # Check if this line is likely a job title
+            # It should contain job keywords and be reasonably short
+            if any(keyword in line_lower for keyword in job_keywords):
+                # Skip lines that are clearly not titles
+                skip_phrases = [
+                    'som ', 'kommer du', 'du kommer', 'vi söker', 'we are looking',
+                    'about the job', 'om jobbet', 'responsibilities', 'ansvar',
+                    'provide', 'providing', 'you will', 'du kommer att', 'are you',
+                    'high quality', 'customers'
+                ]
+                if any(phrase in line_lower for phrase in skip_phrases):
+                    continue
+                
+                # This looks like a title
+                cleaned = line.strip(' -–—:')
+                if len(cleaned) < 80:
+                    title = cleaned
+                    print(f"📍 Found title in line {i}: {title}")
+                    break
     
     # Second pass: Look for company name (only if not already found in priority check)
     if company == 'Company':
@@ -552,22 +561,44 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
                 if company != 'Company':
                     break
     
-    # Third pass: Look for company in URL-like patterns or specific mentions
-    # For Göteborgs Stad, look for "Intraservice" or "Göteborgs Stad"
+    # Third pass: Look for company names that appear multiple times (strong signal)
+    # Also look for specific patterns
     if company == 'Company':
-        for line in lines[:30]:
-            if 'göteborgs stad' in line.lower() or 'goteborgs stad' in line.lower():
-                company = 'Göteborgs Stad'
-                print(f"📍 Found 'Göteborgs Stad' in text")
+        # Count capitalized words that appear multiple times
+        from collections import Counter
+        words = []
+        for line in lines:
+            # Extract capitalized words (potential company names)
+            line_words = line.split()
+            for word in line_words:
+                # Must start with capital, be 3+ chars, not be common words
+                if (word and len(word) >= 3 and word[0].isupper() and 
+                    word.lower() not in ['the', 'and', 'are', 'you', 'will', 'about', 'get', 'know']):
+                    words.append(word)
+        
+        # Find words that appear 3+ times (likely company name)
+        word_counts = Counter(words)
+        for word, count in word_counts.most_common(10):
+            if count >= 3 and len(word) <= 20:
+                company = word
+                print(f"📍 Found company via frequency analysis: {company} (appears {count} times)")
                 break
-            if 'intraservice' in line.lower():
-                # Check if it mentions both
-                if 'göteborgs stad' in ' '.join(lines[:30]).lower():
+        
+        # Specific company patterns
+        if company == 'Company':
+            for line in lines[:30]:
+                if 'göteborgs stad' in line.lower() or 'goteborgs stad' in line.lower():
                     company = 'Göteborgs Stad'
-                else:
-                    company = 'Intraservice'
-                print(f"📍 Found company mention: {company}")
-                break
+                    print(f"📍 Found 'Göteborgs Stad' in text")
+                    break
+                if 'intraservice' in line.lower():
+                    # Check if it mentions both
+                    if 'göteborgs stad' in ' '.join(lines[:30]).lower():
+                        company = 'Göteborgs Stad'
+                    else:
+                        company = 'Intraservice'
+                    print(f"📍 Found company mention: {company}")
+                    break
     
     # Clean up: Remove Swedish stop words if they ended up in company/title
     swedish_stopwords = ['att', 'och', 'för', 'med', 'är', 'som', 'på', 'i', 'av', 'till']
