@@ -481,37 +481,37 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
                                     break
                     if company != 'Company':
                         break
-            
-            # Look for explicit company mentions
-            company_patterns = [
-                ('company:', 1),
-                ('företag:', 1),
-                ('arbetsgivare:', 1),
-                ('organisation:', 1),
-            ]
-            
-            for pattern, offset in company_patterns:
-                if pattern in line_lower:
-                    # Check if it's a header (company name on next line)
-                    if line_lower.strip() == pattern:
-                        if i + offset < len(lines):
-                            potential = lines[i + offset].strip()
+                
+                # Look for explicit company mentions
+                company_patterns = [
+                    ('company:', 1),
+                    ('företag:', 1),
+                    ('arbetsgivare:', 1),
+                    ('organisation:', 1),
+                ]
+                
+                for pattern, offset in company_patterns:
+                    if pattern in line_lower:
+                        # Check if it's a header (company name on next line)
+                        if line_lower.strip() == pattern:
+                            if i + offset < len(lines):
+                                potential = lines[i + offset].strip()
+                                if potential and len(potential) < 50:
+                                    company = potential
+                                    print(f"📍 Found company after '{pattern}': {company}")
+                                    break
+                        else:
+                            # Company name on same line
+                            idx = line_lower.index(pattern) + len(pattern)
+                            potential = line[idx:].strip(' -–—:,.')
+                            potential = potential.split(',')[0].split('.')[0].strip()
                             if potential and len(potential) < 50:
                                 company = potential
-                                print(f"📍 Found company after '{pattern}': {company}")
+                                print(f"📍 Found company inline with '{pattern}': {company}")
                                 break
-                    else:
-                        # Company name on same line
-                        idx = line_lower.index(pattern) + len(pattern)
-                        potential = line[idx:].strip(' -–—:,.')
-                        potential = potential.split(',')[0].split('.')[0].strip()
-                        if potential and len(potential) < 50:
-                            company = potential
-                            print(f"📍 Found company inline with '{pattern}': {company}")
-                            break
-            
-            if company != 'Company':
-                break
+                
+                if company != 'Company':
+                    break
     
     # Third pass: Look for company in URL-like patterns or specific mentions
     # For Göteborgs Stad, look for "Intraservice" or "Göteborgs Stad"
