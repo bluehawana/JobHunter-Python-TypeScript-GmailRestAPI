@@ -567,14 +567,25 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
         # Count capitalized words that appear multiple times
         from collections import Counter
         words = []
+        
+        # Common words to exclude (not company names)
+        exclude_words = {
+            'the', 'and', 'are', 'you', 'will', 'about', 'get', 'know', 'our', 'your',
+            'customer', 'customers', 'support', 'engineer', 'manager', 'developer',
+            'team', 'work', 'job', 'role', 'position', 'company', 'responsibilities',
+            'requirements', 'experience', 'skills', 'qualifications', 'benefits',
+            'apply', 'application', 'contact', 'email', 'phone', 'location'
+        }
+        
         for line in lines:
             # Extract capitalized words (potential company names)
             line_words = line.split()
             for word in line_words:
                 # Must start with capital, be 3+ chars, not be common words
-                if (word and len(word) >= 3 and word[0].isupper() and 
-                    word.lower() not in ['the', 'and', 'are', 'you', 'will', 'about', 'get', 'know']):
-                    words.append(word)
+                clean_word = word.strip('.,;:!?()')
+                if (clean_word and len(clean_word) >= 3 and clean_word[0].isupper() and 
+                    clean_word.lower() not in exclude_words):
+                    words.append(clean_word)
         
         # Find words that appear 3+ times (likely company name)
         word_counts = Counter(words)
