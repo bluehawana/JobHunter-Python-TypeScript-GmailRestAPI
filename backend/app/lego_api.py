@@ -2037,7 +2037,232 @@ def generate_comprehensive_application():
         return jsonify({'error': str(e)}), 500
 
 
-@lego_api.route('/api/regenerate-application', methods=['POST'])
+@lego_api.route('/api/generate-direct-zai', methods=['POST'])
+def generate_direct_zai():
+    """Generate CV and Cover Letter using direct Z.AI GLM-4.7 call"""
+    try:
+        data = request.json
+        job_description = data.get('jobDescription', '')
+        
+        if not job_description:
+            return jsonify({'error': 'Job description required'}), 400
+        
+        # Direct Z.AI GLM-4.7 call via HTTP
+        import requests
+        
+        api_key = os.environ.get('ANTHROPIC_API_KEY')
+        base_url = os.environ.get('ANTHROPIC_BASE_URL', 'https://api.z.ai/api/anthropic')
+        
+        if not api_key:
+            return jsonify({'error': 'API key not configured'}), 500
+        
+        url = f"{base_url}/v1/messages"
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {api_key}',
+            'anthropic-version': '2023-06-01'
+        }
+        
+        prompt = f"""Analyze this job description and generate a complete professional CV and Cover Letter.
+
+JOB DESCRIPTION:
+{job_description}
+
+Please provide:
+1. Company name
+2. Job title  
+3. Role category (devops_cloud, fullstack_developer, backend_developer, etc.)
+4. Complete LaTeX CV code (3 pages, professional format)
+5. Complete LaTeX Cover Letter code (1 page, matching design)
+
+Format your response as JSON:
+{{
+  "company": "extracted company name",
+  "title": "extracted job title", 
+  "roleType": "role category",
+  "cvLatex": "complete LaTeX CV code here",
+  "clLatex": "complete LaTeX cover letter code here"
+}}"""
+
+        payload = {
+            "model": "glm-4.7",
+            "max_tokens": 8000,
+            "messages": [{"role": "user", "content": prompt}]
+        }
+        
+        print("🚀 Making direct Z.AI GLM-4.7 request...")
+        response = requests.post(url, headers=headers, json=payload, timeout=60)
+        
+        if response.status_code == 200:
+            result_data = response.json()
+            print("✅ Z.AI GLM-4.7 request successful!")
+            
+            # Extract text from response
+            ai_response = ""
+            if 'content' in result_data:
+                for block in result_data['content']:
+                    if block.get('type') == 'text':
+                        ai_response += block.get('text', '')
+            
+            # Try to extract JSON from the response
+            import json
+            import re
+            
+            # Find JSON in the response
+            json_match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+            if json_match:
+                result = json.loads(json_match.group())
+                
+                # Create output directory and compile PDFs
+                output_dir = Path('generated_applications') / datetime.now().strftime('%Y%m%d_%H%M%S')
+                output_dir.mkdir(parents=True, exist_ok=True)
+                
+                # Save and compile CV
+                cv_tex_path = output_dir / 'cv.tex'
+                with open(cv_tex_path, 'w', encoding='utf-8') as f:
+                    f.write(result['cvLatex'])
+                
+                # Save and compile CL
+                cl_tex_path = output_dir / 'cl.tex'
+                with open(cl_tex_path, 'w', encoding='utf-8') as f:
+                    f.write(result['clLatex'])
+                
+                # Compile PDFs
+                for tex_file in [cv_tex_path, cl_tex_path]:
+                    subprocess.run(
+                        ['pdflatex', '-interaction=nonstopmode', '-output-directory', str(output_dir), str(tex_file)],
+                        capture_output=True,
+                        timeout=30
+                    )
+                
+                return jsonify({
+                    'success': True,
+                    'analysis': {
+                        'company': result.get('company', 'Company'),
+                        'title': result.get('title', 'Position'),
+                        'roleType': result.get('roleType', 'Professional')
+                    },
+                    'documents': {
+                        'cvUrl': f'/api/download/{output_dir.name}/cv.pdf',
+                        'clUrl': f'/api/download/{output_dir.name}/cl.pdf'
+                    },
+                    'aiResponse': ai_response[:500] + '...' if len(ai_response) > 500 else ai_response,
+                    'model': 'Z.AI GLM-4.7'
+                })
+            else:
+                return jsonify({'error': 'Could not parse AI response'}), 500
+        else:
+            print(f"❌ Z.AI request failed: {response.status_code}")
+            print(f"📝 Response: {response.text}")
+            return jsonify({'error': f'Z.AI API error: {response.status_code}'}), 500
+            
+    except Exception as e:
+        print(f"Error in direct Z.AI generation: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+def generate_direct_minimax():
+    """Generate CV and Cover Letter using direct MiniMax M2 call"""
+    try:
+        data = request.json
+        job_description = data.get('jobDescription', '')
+        
+        if not job_description:
+            return jsonify({'error': 'Job description required'}), 400
+        
+        # Direct MiniMax M2 call
+        import anthropic
+        
+        client = anthropic.Anthropic(
+            api_key=os.environ.get('ANTHROPIC_API_KEY'),
+            base_url=os.environ.get('ANTHROPIC_BASE_URL', 'https://api.minimax.io/anthropic')
+        )
+        
+        prompt = f"""Analyze this job description and generate a complete professional CV and Cover Letter.
+
+JOB DESCRIPTION:
+{job_description}
+
+Please provide:
+1. Company name
+2. Job title  
+3. Role category (devops_cloud, fullstack_developer, backend_developer, etc.)
+4. Complete LaTeX CV code (3 pages, professional format)
+5. Complete LaTeX Cover Letter code (1 page, matching design)
+
+Format your response as JSON:
+{{
+  "company": "extracted company name",
+  "title": "extracted job title", 
+  "roleType": "role category",
+  "cvLatex": "complete LaTeX CV code here",
+  "clLatex": "complete LaTeX cover letter code here"
+}}"""
+
+        message = client.messages.create(
+            model="claude-3-5-sonnet-20241022",
+            max_tokens=8000,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        
+        # Parse the AI response
+        ai_response = message.content[0].text
+        
+        # Try to extract JSON from the response
+        import json
+        import re
+        
+        # Find JSON in the response
+        json_match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+        if json_match:
+            result = json.loads(json_match.group())
+            
+            # Create output directory and compile PDFs
+            output_dir = Path('generated_applications') / datetime.now().strftime('%Y%m%d_%H%M%S')
+            output_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Save and compile CV
+            cv_tex_path = output_dir / 'cv.tex'
+            with open(cv_tex_path, 'w', encoding='utf-8') as f:
+                f.write(result['cvLatex'])
+            
+            # Save and compile CL
+            cl_tex_path = output_dir / 'cl.tex'
+            with open(cl_tex_path, 'w', encoding='utf-8') as f:
+                f.write(result['clLatex'])
+            
+            # Compile PDFs
+            for tex_file in [cv_tex_path, cl_tex_path]:
+                subprocess.run(
+                    ['pdflatex', '-interaction=nonstopmode', '-output-directory', str(output_dir), str(tex_file)],
+                    capture_output=True,
+                    timeout=30
+                )
+            
+            return jsonify({
+                'success': True,
+                'analysis': {
+                    'company': result.get('company', 'Company'),
+                    'title': result.get('title', 'Position'),
+                    'roleType': result.get('roleType', 'Professional')
+                },
+                'documents': {
+                    'cvUrl': f'/api/download/{output_dir.name}/cv.pdf',
+                    'clUrl': f'/api/download/{output_dir.name}/cl.pdf'
+                },
+                'aiResponse': ai_response[:500] + '...' if len(ai_response) > 500 else ai_response
+            })
+        else:
+            return jsonify({'error': 'Could not parse AI response'}), 500
+            
+    except Exception as e:
+        print(f"Error in direct MiniMax generation: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
 def regenerate_application():
     """Regenerate application with user feedback"""
     try:
