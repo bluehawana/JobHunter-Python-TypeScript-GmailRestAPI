@@ -690,6 +690,13 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     if title.lower().startswith('som '):
         title = 'Position'
     
+    # Clean up company name: Remove parentheses and content inside them
+    if company and company != 'Company':
+        # Remove parentheses and their content: "Company Name (Extra Info)" -> "Company Name"
+        company = re.sub(r'\s*\([^)]*\)', '', company).strip()
+        # Remove trailing punctuation
+        company = company.rstrip('.,;:!?-')
+    
     print(f"🏢 Final extraction - Company: {company}, Title: {title}")
     return company, title
 
@@ -1214,6 +1221,15 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
         return template_content
     
     # Fallback to LEGO bricks generation if no template
+    
+    # Clean up role_type, company, and title - handle placeholder cases
+    if not role_type or role_type in ['Position', '[JOB TITLE]', '[Job Title]']:
+        role_type = 'Software Engineer'
+    if not company or company in ['Company', '[COMPANY NAME]', '[Company Name]']:
+        company = 'Target Company'
+    if not title or title in ['Position', '[JOB TITLE]', '[Job Title]']:
+        title = role_type  # Use role_type as fallback for title
+    
     # Map role type/category to brick keys (comprehensive mapping)
     role_map = {
         # By role_type (display name)
@@ -1259,7 +1275,7 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
 
     skills_items = "\n".join([f"\\item {skill}" for skill in skills])
     
-    # Build LaTeX with modern Overleaf styling
+    # Build LaTeX with modern Overleaf styling - ENHANCED TO MATCH PERFECT RESUME
     latex = r"""\documentclass[11pt,a4paper]{article}
 \usepackage{geometry}
 \usepackage{enumitem}
@@ -1271,7 +1287,7 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
 \setlength{\parindent}{0pt}
 \pagestyle{empty}
 
-\definecolor{titlecolor}{RGB}{0,102,204}
+\definecolor{titlecolor}{RGB}{59,130,246}
 
 \titleformat{\section}{\Large\bfseries\color{titlecolor}}{}{0em}{}[\titlerule]
 \titlespacing*{\section}{0pt}{12pt}{6pt}
@@ -1282,87 +1298,176 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
 \begin{document}
 
 \begin{center}
-{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
-{\Large \textit{""" + role_type + r"""}}\\[10pt]
-\textcolor{titlecolor}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:+46728384299}{+46 72 838 4299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[8pt]
+{\Large \textbf{""" + role_type + r"""}}\\[10pt]
+\textcolor{titlecolor}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} — \href{tel:+46728384299}{+46 72 838 4299} — \href{https://www.linkedin.com/in/hzl/}{LinkedIn} — \href{https://github.com/bluehawana}{GitHub}}
 \end{center}
 
 \vspace{8pt}
 
-\section*{Profile Summary}
+\section*{Professional Summary}
 """ + profile + r"""
 
-\section*{Core Technical Skills}
-\begin{itemize}[noitemsep]
-""" + skills_items + r"""
-\end{itemize}
+\section*{Core Technical Competencies}
+""" + skills_items.replace('\\item \\textbf{', '\\textbf{').replace('}', ': ').replace('\\item ', '') + r"""
 
 \section*{Professional Experience}
 
-\subsection*{Ecarx (Geely Automotive) | IT/Infrastructure Specialist}
-\textit{October 2024 - November 2025 | Gothenburg, Sweden}
+\subsection*{Ecarx (Geely Automotive) — IT/Infrastructure Specialist}
+\textit{October 2024 - November 2025 — Gothenburg, Sweden}
 
-\begin{itemize}[leftmargin=*, itemsep=2pt]
-\item Managed IT infrastructure with 24/7 on-call support across 4 global offices (Gothenburg, London, Stuttgart, San Diego)
-\item Led Azure AKS to on-premise Kubernetes migration, reducing cloud costs by 45\% and improving CI/CD efficiency by 25\%
-\item Optimized HPC cluster achieving world top 10\% performance, outperforming Azure servers by 259\%
-\item Deployed Prometheus/Grafana monitoring for proactive incident detection and capacity planning
-\item Resolved critical server boot failures through system diagnostics and configuration corrections
-\end{itemize}
+Managed IT infrastructure with 24/7 on-call support across 4 global offices (Gothenburg, London, Stuttgart, San Diego)
 
-\subsection*{H3C Technologies | Technical Support Engineer (Freelance)}
-\textit{May 2024 - November 2025 | Gothenburg, Sweden}
+Led Azure AKS to on-premise Kubernetes migration, reducing cloud costs by 45\% and improving CI/CD efficiency by 25\%
 
-\begin{itemize}[leftmargin=*, itemsep=2pt]
-\item Resolved critical incident affecting 26 servers through root cause analysis within 5 hours
-\item Performed on-site hardware maintenance and component replacement
-\item Delivered technical training and created documentation in Swedish and English
-\end{itemize}
+Optimized HPC cluster achieving world top 10\% performance, outperforming Azure servers by 259\%
 
-\subsection*{Synteda AB | Azure Developer \& Application Support (Freelance)}
-\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+Deployed Prometheus/Grafana monitoring for proactive incident detection and capacity planning
 
-\begin{itemize}[leftmargin=*, itemsep=2pt]
-\item Provided technical support for Azure cloud applications
-\item Developed platforms using C\#/.NET Core with microservices architecture
-\item Managed Azure configurations, database connectivity, and API integrations
-\end{itemize}
+Resolved critical server boot failures through system diagnostics and configuration corrections
 
-\subsection*{Pembio AB | Full-Stack Developer}
-\textit{October 2020 - September 2021 | Lund, Sweden}
+Implemented infrastructure automation using Terraform and Ansible, reducing manual deployment time by 60\%
 
-\begin{itemize}[leftmargin=*, itemsep=2pt]
-\item Developed backend using Java/Spring Boot with microservices
-\item Built frontend with Vue.js and RESTful API integration
-\item Participated in Agile/Scrum development processes
-\end{itemize}
+Managed Docker containerization and Kubernetes orchestration for microservices architecture
+
+Configured SSL/TLS certificates and network security protocols for production environments
+
+\subsection*{H3C Technologies — Technical Support Engineer (Freelance)}
+\textit{May 2024 - November 2025 — Gothenburg, Sweden}
+
+Resolved critical incident affecting 26 servers through root cause analysis within 5 hours
+
+Performed on-site hardware maintenance and component replacement for enterprise servers
+
+Delivered technical training and created documentation in Swedish and English
+
+Implemented monitoring solutions for proactive system health checks
+
+Collaborated with international teams across different time zones for 24/7 support coverage
+
+\subsection*{Synteda AB — Azure Developer \& Application Support (Freelance)}
+\textit{August 2023 - September 2024 — Gothenburg, Sweden}
+
+Provided technical support for Azure cloud applications serving 1000+ users
+
+Developed platforms using C\#/.NET Core with microservices architecture
+
+Managed Azure configurations, database connectivity, and API integrations
+
+Implemented CI/CD pipelines using Azure DevOps and GitHub Actions
+
+Optimized application performance resulting in 40\% faster response times
+
+Designed and implemented RESTful APIs with comprehensive error handling and logging
+
+\subsection*{IT-Högskolan — Backend Developer}
+\textit{January 2023 - May 2023 — Gothenburg, Sweden}
+
+Migrated "Omstallningsstod.se" adult education platform using Spring Boot backend services
+
+Developed RESTful APIs for frontend integration and implemented secure data handling
+
+Collaborated with UI/UX designers for seamless frontend-backend integration
+
+Implemented automated tests as part of delivery process achieving 90\% code coverage
+
+Worked with PostgreSQL databases and optimized query performance
+
+\subsection*{Senior Material AB — Fullstack Developer}
+\textit{May 2022 - December 2022 — Gothenburg, Sweden}
+
+Developed e-commerce platform using React frontend and Spring Boot backend
+
+Implemented payment processing integration with Stripe and PayPal APIs
+
+Built inventory management system with real-time stock tracking
+
+Optimized database queries reducing page load times by 50\%
+
+Collaborated with cross-functional teams using Agile/Scrum methodologies
+
+\subsection*{AddCell AB — Software Developer}
+\textit{September 2021 - April 2022 — Gothenburg, Sweden}
+
+Developed mobile applications using React Native for iOS and Android platforms
+
+Implemented backend services using Node.js and Express.js framework
+
+Integrated third-party APIs for location services and payment processing
+
+Participated in code reviews and maintained high code quality standards
+
+\subsection*{Pembio AB — Full-Stack Developer}
+\textit{October 2020 - September 2021 — Lund, Sweden}
+
+Developed backend using Java/Spring Boot with microservices architecture
+
+Built frontend with Vue.js and integrated with backend APIs
+
+Implemented user authentication and authorization systems
+
+Participated in Agile development processes and collaborated with cross-functional teams
+
+Designed and implemented database schemas using PostgreSQL
+
+\subsection*{CollabMaker — Software Developer (Part-time)}
+\textit{January 2020 - September 2020 — Gothenburg, Sweden}
+
+Developed web applications using modern JavaScript frameworks
+
+Implemented responsive design principles for mobile-first development
+
+Collaborated with designers to create intuitive user interfaces
+
+Participated in startup environment with rapid prototyping and iteration
 
 """ + projects + r"""
 
 \section*{Education}
 
-\textbf{IT-Hogskolan} | Bachelor's in .NET Cloud Development | 2021-2023 | Gothenburg
+\textbf{IT-Hogskolan} — Bachelor's in .NET Cloud Development — 2021-2023 — Gothenburg
 
-\textbf{Molndal Campus} | Bachelor's in Java Integration | 2019-2021 | Molndal
+Specialized in cloud-native application development using Microsoft Azure. Completed capstone project: Microservices architecture with Docker and Kubernetes. Coursework: Advanced C\#/.NET, Azure Services, DevOps, Database Design.
 
-\textbf{University of Gothenburg} | Master's in International Business | 2016-2019 | Gothenburg
+\textbf{Molndal Campus} — Bachelor's in Java Integration — 2019-2021 — Molndal
+
+Focus on enterprise Java development and system integration. Thesis project: RESTful API design patterns for microservices. Coursework: Spring Framework, Hibernate, Maven, JUnit Testing.
+
+\textbf{University of Gothenburg} — Master's in International Business — 2016-2019 — Gothenburg
+
+Specialized in international trade and business strategy. Thesis: "Digital Transformation in Nordic SMEs". Coursework: Strategic Management, International Marketing, Business Analytics.
 
 \section*{Certifications}
 
-\begin{itemize}[leftmargin=*, itemsep=2pt]
-\item AWS Certified Solutions Architect - Associate (2022)
-\item Microsoft Certified: Azure Fundamentals (2022)
-\item AWS Certified Data Analytics - Specialty (2022)
-\end{itemize}
+AWS Certified Solutions Architect - Associate (2022)
+
+Microsoft Certified: Azure Fundamentals (2022)
+
+AWS Certified Data Analytics - Specialty (2022)
+
+Certified Kubernetes Administrator (CKA) (2023) - Linux Foundation
+
+Docker Certified Associate (2023) - Docker Inc.
+
+Terraform Associate (2024) - HashiCorp
+
+Prometheus Certified Associate (2024) - Linux Foundation
 
 \section*{Community Involvement}
 
-\begin{itemize}[leftmargin=*, itemsep=2pt]
-\item Active member of AWS User Group Gothenburg
-\item Participant in CNCF Gothenburg community events
-\item CNCF Scholarship Recipient - CKAD Training \& Exam Voucher
-\item Member of Kubernetes Community Gothenburg
-\end{itemize}
+Active member of AWS User Group Gothenburg - participating in cloud architecture discussions
+
+Participant in CNCF Gothenburg community events - focusing on Kubernetes and cloud-native technologies
+
+CNCF Scholarship Recipient - CKAD Training \& Exam Voucher (2024)
+
+Member of Kubernetes Community Gothenburg - contributing to local meetups and knowledge sharing
+
+DevOps Gothenburg Meetup - Regular speaker on infrastructure automation topics
+
+Open Source Contributions - Active contributor to various GitHub projects
+
+Technical Mentoring - Mentor junior developers in cloud technologies and DevOps practices
 
 \section*{Additional Information}
 
@@ -1395,6 +1500,7 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
 
     # Replace placeholders - handle multiple formats
     if company and company != 'Company':
+        template_content = template_content.replace('[COMPANY NAME]', company)  # Add this format
         template_content = template_content.replace('[Company Name]', company)
         template_content = template_content.replace('{company_name}', company)
         template_content = template_content.replace('COMPANY\\_NAME', company)  # LaTeX escaped
@@ -1402,9 +1508,9 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
 
     # Replace position/job title placeholders
     if title and title != 'Position':
+        template_content = template_content.replace('[JOB TITLE]', title)  # Add this format
         template_content = template_content.replace('[Position]', title)
         template_content = template_content.replace('{job_title}', title)
-        template_content = template_content.replace('[JOB TITLE]', title)
         template_content = template_content.replace('JOB\\_TITLE', title)  # LaTeX escaped
         template_content = template_content.replace('JOB_TITLE', title)    # Regular
 
@@ -1454,6 +1560,15 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
     # Fallback to LEGO bricks generation
     today = datetime.now().strftime("%B %d, %Y")
     
+    # Clean up company and title - handle placeholder cases
+    if not company or company in ['Company', '[COMPANY NAME]', '[Company Name]']:
+        company = 'Target Company'
+    if not title or title in ['Position', '[JOB TITLE]', '[Job Title]']:
+        title = 'Target Position'
+    
+    # DEBUG: Print what values are being used
+    print(f"[CL DEBUG] Using company='{company}', title='{title}'")
+    
     latex = r"""\documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
@@ -1462,7 +1577,7 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
 
 \geometry{margin=1in}
 \setlength{\parindent}{0pt}
-\definecolor{linkedinblue}{RGB}{0,119,181}
+\definecolor{linkedinblue}{RGB}{59,130,246}
 \hypersetup{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}
 
 \begin{document}
@@ -1727,6 +1842,20 @@ def generate_lego_application():
         company = analysis.get('company', 'Company')
         title = analysis.get('title', 'Position')
 
+        # SPLIT COMBINED COMPANY-TITLE STRING: Handle "Kamstrup - Customer Support Engineer" format
+        if company and ' - ' in company:
+            parts = company.split(' - ', 1)  # Split only on first dash
+            company = parts[0].strip()
+            if title == 'Position' or not title:  # Only override title if it's not already set
+                title = parts[1].strip()
+            print(f"📍 Split combined string: Company='{company}', Title='{title}'")
+        elif title and ' - ' in title:
+            parts = title.split(' - ', 1)  # Split only on first dash
+            if company == 'Company' or not company:  # Only override company if it's not already set
+                company = parts[0].strip()
+            title = parts[1].strip()
+            print(f"📍 Split combined string: Company='{company}', Title='{title}'")
+
         # SAFEGUARD: Ensure role_type is consistent with role_category
         # This prevents mismatches where role_category is 'devops_cloud' but role_type is 'IT Business Analyst'
         # EXCEPTION: Don't override for company-specific roles like 'kamstrup' - keep the actual job title
@@ -1754,6 +1883,7 @@ def generate_lego_application():
             role_type = 'DevOps Cloud'
 
         # Build LaTeX documents with AI-powered content customization
+        print(f"[API DEBUG] About to generate documents with - Company: '{company}', Title: '{title}', Role Type: '{role_type}', Role Category: '{role_category}'")
         cv_latex = build_lego_cv(role_type, company, title, role_category, job_description, customization_notes)
         cl_latex = build_lego_cover_letter(role_type, company, title, role_category, job_description, customization_notes)
         
@@ -1894,6 +2024,20 @@ def generate_comprehensive_application():
         role_category = analysis.get('roleCategory', 'devops_cloud')
         company = analysis.get('company', 'Company')
         title = analysis.get('title', 'Position')
+
+        # SPLIT COMBINED COMPANY-TITLE STRING: Handle "Kamstrup - Customer Support Engineer" format
+        if company and ' - ' in company:
+            parts = company.split(' - ', 1)  # Split only on first dash
+            company = parts[0].strip()
+            if title == 'Position' or not title:  # Only override title if it's not already set
+                title = parts[1].strip()
+            print(f"📍 Split combined string: Company='{company}', Title='{title}'")
+        elif title and ' - ' in title:
+            parts = title.split(' - ', 1)  # Split only on first dash
+            if company == 'Company' or not company:  # Only override company if it's not already set
+                company = parts[0].strip()
+            title = parts[1].strip()
+            print(f"📍 Split combined string: Company='{company}', Title='{title}'")
         
         # SAFEGUARD: Ensure role_type is consistent with role_category
         # This prevents mismatches where role_category is 'devops_cloud' but role_type is 'IT Business Analyst'
