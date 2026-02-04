@@ -53,8 +53,8 @@ class CVTemplateManager:
                 'computer vision', 'nlp', 'natural language processing',
                 'data science', 'feature engineering', 'model evaluation'
             ],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
 
@@ -70,8 +70,8 @@ class CVTemplateManager:
                 'openai api', 'claude api', 'gpt api', 'ai apis',
                 'generative ai solutions', 'ai solutions', 'llm-based applications'
             ],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 2
         },
 
@@ -89,8 +89,8 @@ class CVTemplateManager:
                 'generative ai solutions', 'ai solutions', 'llm-based applications',
                 'vector search', 'semantic search', 'applied use of', 'use cases powered by'
             ],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 3
         },
 
@@ -103,14 +103,14 @@ class CVTemplateManager:
         },
         'incident_management_sre': {
             'keywords': ['incident', 'sre', 'site reliability', 'on-call', 'monitoring', 'observability', 'mttr', 'production support', 'pagerduty', 'opsgenie', 'incident management'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 4
         },
         'platform_engineer': {
             'keywords': ['platform engineer', 'platform team', 'internal tools', 'developer experience', 'devex', 'infrastructure platform', 'golden path'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 5
         },
 
@@ -133,24 +133,24 @@ class CVTemplateManager:
         # === FINOPS / COST OPTIMIZATION (Priority 5) ===
         'finops': {
             'keywords': ['finops', 'cloud cost', 'cost optimization', 'cloud economics', 'cloud billing', 'reserved instances', 'savings plans', 'cost management', 'cloud financial'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 5
         },
 
         # === ARCHITECT ROLES (Priority 6) ===
         'integration_architect': {
             'keywords': ['integration architect', 'solution architect', 'enterprise architect', 'api architect', 'system integration', 'middleware', 'esb', 'mulesoft', 'api gateway'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 6
         },
 
         # === GENERIC CLOUD (Priority 7) - Fallback ===
         'cloud_engineer': {
             'keywords': ['cloud', 'infrastructure', 'cloud platform', 'cloud architecture', 'cloud migration', 'cloud native'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 7
         }
     }
