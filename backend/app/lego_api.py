@@ -394,11 +394,27 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
             break
     
     # First pass: Look for title in first few lines (usually at the top)
-    for i, line in enumerate(lines[:10]):
+    # Also look for "As a [Job Title]" pattern which is common
+    for i, line in enumerate(lines[:30]):  # Extended search range
         if len(line) > 100 or len(line) < 3:
             continue
         
         line_lower = line.lower()
+        
+        # Pattern: "As a [Job Title]" or "As an [Job Title]"
+        if line_lower.startswith('as a ') or line_lower.startswith('as an '):
+            # Extract the job title after "as a" or "as an"
+            start_idx = 5 if line_lower.startswith('as a ') else 6
+            potential_title = line[start_idx:].strip()
+            # Take text until comma or "you will"
+            if ',' in potential_title:
+                potential_title = potential_title.split(',')[0].strip()
+            if ' you will' in potential_title.lower():
+                potential_title = potential_title.split(' you will')[0].strip()
+            if potential_title and len(potential_title) < 80:
+                title = potential_title
+                print(f"📍 Found title via 'As a [Title]' pattern: {title}")
+                break
         
         # Check if this line is likely a job title
         # It should contain job keywords and be reasonably short
@@ -406,7 +422,8 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
             # Skip lines that are clearly not titles
             skip_phrases = [
                 'som ', 'kommer du', 'du kommer', 'vi söker', 'we are looking',
-                'about the job', 'om jobbet', 'responsibilities', 'ansvar'
+                'about the job', 'om jobbet', 'responsibilities', 'ansvar',
+                'provide', 'providing', 'you will', 'du kommer att', 'are you'
             ]
             if any(phrase in line_lower for phrase in skip_phrases):
                 continue
@@ -425,7 +442,7 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
             line_lower = line.lower()
             
             # Check for "Get to know us" section
-            if 'get to know us' in line_lower or 'about us' in line_lower:
+            if 'get to know us' in line_lower or 'about us' in line_lower or 'get to know' in line_lower:
                 # Look for "At [Company]" in the same line or next few lines
                 search_lines = [line] + lines[i+1:min(i+4, len(lines))]
                 for search_line in search_lines:
@@ -441,9 +458,9 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
                 if company != 'Company':
                     break
         
-        # Pattern 2: "At [Company]" anywhere in first 20 lines
+        # Pattern 2: "At [Company]" anywhere in text (extended search)
         if company == 'Company':
-            for i, line in enumerate(lines[:20]):
+            for i, line in enumerate(lines):
                 line_lower = line.lower()
                 
                 if line_lower.startswith('at ') or ' at ' in line_lower:
