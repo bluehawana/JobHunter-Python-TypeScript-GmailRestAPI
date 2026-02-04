@@ -25,20 +25,20 @@ class CVTemplateManager:
         # === SPECIALIZED ROLES (Priority 1) - Check these first ===
         'it_business_analyst': {
             'keywords': ['business analyst', 'it analyst', 'it business analyst', 'business requirements', 'stakeholder', 'business process', 'gap analysis', 'power bi', 'visio', 'workshop', 'requirements gathering', 'business case', 'process improvement', 'digitalization', 'bridge between'],
-            'cv_template': 'job_applications/incluso_it_business_analyst/Incluso_IT_Business_Analyst_CV.tex',
-            'cl_template': 'job_applications/incluso_it_business_analyst/Incluso_IT_Business_Analyst_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
         'android_developer': {
             'keywords': ['android', 'kotlin', 'android app', 'apk', 'mobile app', 'aosp', 'android sdk', 'jetpack', 'react native', 'mobile developer'],
-            'cv_template': 'job_applications/ecarx_android_developer/Ecarx_Android_Developer_CV.tex',
-            'cl_template': 'job_applications/ecarx_android_developer/Ecarx_Android_Developer_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
         'devops_fintech': {
             'keywords': ['fintech', 'financial', 'banking', 'payment', 'trading', 'nasdaq', 'finance', 'post-trade', 'settlement', 'compliance'],
-            'cv_template': 'job_applications/nasdaq_devops_cloud/Nasdaq_DevOps_Cloud_Harvad_CV.tex',
-            'cl_template': 'job_applications/nasdaq_devops_cloud/Nasdaq_DevOps_Cloud_Harvad_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
         'ai_product_engineer': {
@@ -53,8 +53,8 @@ class CVTemplateManager:
                 'computer vision', 'nlp', 'natural language processing',
                 'data science', 'feature engineering', 'model evaluation'
             ],
-            'cv_template': 'job_applications/omnimodular_ai_product_engineer/Omnimodular_AI_Product_Engineer_CV.tex',
-            'cl_template': 'job_applications/omnimodular_ai_product_engineer/Omnimodular_AI_Product_Engineer_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
 
@@ -70,8 +70,8 @@ class CVTemplateManager:
                 'openai api', 'claude api', 'gpt api', 'ai apis',
                 'generative ai solutions', 'ai solutions', 'llm-based applications'
             ],
-            'cv_template': 'job_applications/ahlsell_fullstack/Ahlsell_Fullstack_CV.tex',
-            'cl_template': 'job_applications/ahlsell_fullstack/Ahlsell_Fullstack_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 2
         },
 
@@ -89,60 +89,68 @@ class CVTemplateManager:
                 'generative ai solutions', 'ai solutions', 'llm-based applications',
                 'vector search', 'semantic search', 'applied use of', 'use cases powered by'
             ],
-            'cv_template': 'job_applications/eworks_java/eWorks_Complete_CV_20251120.tex',
-            'cl_template': 'job_applications/eworks_java/eWorks_Complete_CL_20251120.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 3
         },
 
         # === DEVOPS/INFRASTRUCTURE (Priority 4) ===
         'devops_cloud': {
             'keywords': ['devops', 'cloud engineer', 'aws', 'azure', 'gcp', 'kubernetes', 'docker', 'terraform', 'ci/cd', 'infrastructure as code', 'iac', 'helm', 'argocd'],
-            'cv_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CV.tex',
-            'cl_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 4
         },
         'incident_management_sre': {
             'keywords': ['incident', 'sre', 'site reliability', 'on-call', 'monitoring', 'observability', 'mttr', 'production support', 'pagerduty', 'opsgenie', 'incident management'],
-            'cv_template': 'job_applications/tata_incident_management/Tata_Incident_Management_Harvad_CV.tex',
-            'cl_template': 'job_applications/tata_incident_management/Tata_Incident_Management_Harvad_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 4
         },
         'platform_engineer': {
             'keywords': ['platform engineer', 'platform team', 'internal tools', 'developer experience', 'devex', 'infrastructure platform', 'golden path'],
-            'cv_template': 'job_applications/essity/Essity_Cloud_DevOps_CV_Overleaf.tex',
-            'cl_template': 'job_applications/essity/Essity_Cloud_DevOps_CL_Overleaf.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 5
         },
 
         # === IT SUPPORT / OPERATIONS (Priority 5) ===
         'it_support': {
             'keywords': ['it support', 'helpdesk', 'service desk', 'technical support', 'support engineer', 'it technician', 'desktop support', 'l1', 'l2', 'l3 support', 'itil', 'ticketing'],
-            'cv_template': 'job_applications/tata_incident_management/Tata_Incident_Management_Harvad_CV.tex',
-            'cl_template': 'job_applications/tata_incident_management/Tata_Incident_Management_Harvad_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 5
+        },
+
+        # === KAMSTRUP (Priority 1 - Company Specific) ===
+        'kamstrup': {
+            'keywords': ['kamstrup'],
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'priority': 1
         },
 
         # === FINOPS / COST OPTIMIZATION (Priority 5) ===
         'finops': {
             'keywords': ['finops', 'cloud cost', 'cost optimization', 'cloud economics', 'cloud billing', 'reserved instances', 'savings plans', 'cost management', 'cloud financial'],
-            'cv_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CV.tex',
-            'cl_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 5
         },
 
         # === ARCHITECT ROLES (Priority 6) ===
         'integration_architect': {
             'keywords': ['integration architect', 'solution architect', 'enterprise architect', 'api architect', 'system integration', 'middleware', 'esb', 'mulesoft', 'api gateway'],
-            'cv_template': 'job_applications/gothenburg_devops_cicd/Gothenburg_DevOps_CICD_Harvad_CV.tex',
-            'cl_template': 'job_applications/gothenburg_devops_cicd/Gothenburg_DevOps_CICD_Harvad_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 6
         },
 
         # === GENERIC CLOUD (Priority 7) - Fallback ===
         'cloud_engineer': {
             'keywords': ['cloud', 'infrastructure', 'cloud platform', 'cloud architecture', 'cloud migration', 'cloud native'],
-            'cv_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CV.tex',
-            'cl_template': 'job_applications/alten_cloud/ALTEN_Cloud_Engineer_Harvad_CL.tex',
+            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 7
         }
     }

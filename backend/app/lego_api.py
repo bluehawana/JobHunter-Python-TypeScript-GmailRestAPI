@@ -1378,13 +1378,13 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
 
 \geometry{margin=1in}
 \setlength{\parindent}{0pt}
-\definecolor{headerblue}{RGB}{77, 166, 255}  % Light blue for header
-\hypersetup{colorlinks=true, linkcolor=headerblue, urlcolor=headerblue}
+\definecolor{darkblue}{RGB}{0,51,102}
+\hypersetup{colorlinks=true, linkcolor=darkblue, urlcolor=darkblue}
 
 \begin{document}
 
-% Header with job information (light blue)
-{\color{headerblue}\textbf{""" + company + r"""}\\
+% Header with job information (dark blue - matching CV)
+{\color{darkblue}\textbf{""" + company + r"""}\\
 """ + title + r"""\\
 Gothenburg, Sweden}
 
@@ -1412,12 +1412,12 @@ Harvad (Hongzhi) Li
 \vspace{\fill}
 
 % Line separator
-{\color{headerblue}\hrule height 0.5pt}
+{\color{darkblue}\hrule height 0.5pt}
 
 \vspace{0.3cm}
 
 % Footer with address and date
-{\color{headerblue}Ebbe Lieberathsgatan 27\\
+{\color{darkblue}Ebbe Lieberathsgatan 27\\
 41265, Gothenburg, Sweden\\
 \hfill \today}
 
