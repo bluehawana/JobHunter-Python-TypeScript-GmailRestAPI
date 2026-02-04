@@ -45,7 +45,7 @@ class LaTeXJobEditor:
 \\pagestyle{empty}
 
 % Color definitions
-\\definecolor{linkedinblue}{RGB}{0,51,102}
+\\definecolor{linkedinblue}{RGB}{0,119,181}
 \\definecolor{lightgray}{RGB}{128,128,128}
 
 % Hyperlink setup
