@@ -689,7 +689,11 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
         role_scores = {}
     
     # Map role category to display name
-    role_type = role_category.replace('_', ' ').title()
+    # For company-specific roles, use a more appropriate display name
+    if role_category == 'kamstrup':
+        role_type = 'Customer Support Engineer'  # Use the actual job role, not company name
+    else:
+        role_type = role_category.replace('_', ' ').title()
     
     # Extract keywords if not from AI - make it role-specific
     if not ai_result or not tech_keywords:
