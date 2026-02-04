@@ -1756,7 +1756,9 @@ def download_file(folder, filename):
     try:
         file_path = Path('generated_applications') / folder / filename
         if file_path.exists():
-            return send_file(file_path, as_attachment=True)
+            # Set proper filename for download
+            download_name = filename
+            return send_file(file_path, as_attachment=True, download_name=download_name)
         return jsonify({'error': 'File not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -1768,7 +1770,7 @@ def preview_file(folder, filename):
     try:
         file_path = Path('generated_applications') / folder / filename
         if file_path.exists():
-            return send_file(file_path, mimetype='application/pdf')
+            return send_file(file_path, mimetype='application/pdf', download_name=filename)
         return jsonify({'error': 'File not found'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
