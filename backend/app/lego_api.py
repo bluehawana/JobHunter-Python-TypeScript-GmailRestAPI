@@ -642,12 +642,28 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
                 'technical support', 'customer support', 'hardware', 'software', 
                 'troubleshooting', 'incident management', 'ticketing', 'servicenow',
                 'help desk', 'remote support', 'networking', 'configuration',
-                'windows', 'linux', 'active directory', 'office 365', 'azure ad'
+                'windows', 'linux', 'active directory', 'office 365', 'azure ad',
+                'system administration', 'user support', 'it infrastructure',
+                'hardware support', 'software support', 'network support',
+                'problem solving', 'customer service', 'technical documentation',
+                'training', 'onboarding', 'escalation', 'sla', 'itil'
             ],
             'devops_sre': [
                 'kubernetes', 'docker', 'terraform', 'ansible', 'jenkins', 'github actions',
                 'prometheus', 'grafana', 'elk', 'aws', 'azure', 'gcp', 'python', 'bash',
-                'ci/cd', 'devops', 'sre', 'incident management', 'monitoring', 'observability'
+                'ci/cd', 'devops', 'sre', 'incident management', 'monitoring', 'observability',
+                'infrastructure as code', 'automation', 'reliability', 'scalability',
+                'load balancing', 'high availability', 'disaster recovery', 'backup',
+                'linux', 'networking', 'security', 'performance tuning', 'troubleshooting',
+                'on-call', 'incident response', 'postmortem', 'runbook', 'alerting'
+            ],
+            'infrastructure_engineer': [
+                'infrastructure', 'networking', 'virtualization', 'vmware', 'hyper-v',
+                'storage', 'san', 'nas', 'backup', 'disaster recovery', 'high availability',
+                'load balancing', 'firewall', 'vpn', 'dns', 'dhcp', 'active directory',
+                'windows server', 'linux', 'unix', 'scripting', 'automation', 'monitoring',
+                'capacity planning', 'performance tuning', 'security', 'compliance',
+                'data center', 'cloud migration', 'hybrid cloud', 'aws', 'azure', 'gcp'
             ],
             'backend_developer': [
                 'python', 'java', 'go', 'node.js', 'spring boot', 'django', 'flask',
