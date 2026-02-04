@@ -73,23 +73,14 @@ class AIAnalyzer:
         )
         self.model = model
         
-        # Initialize Anthropic client with MiniMax base URL
-        if ANTHROPIC_AVAILABLE and self.api_key:
-            # For international users
-            base_url = os.getenv('ANTHROPIC_BASE_URL', 'https://api.minimax.io/anthropic')
-            # For China users, use: https://api.minimaxi.com/anthropic
-            
-            self.client = anthropic.Anthropic(
-                api_key=self.api_key,
-                base_url=base_url
-            )
-            logger.info(f"Initialized Anthropic client with base_url: {base_url}")
+        # Initialize configuration (no anthropic client needed - using HTTP requests)
+        if self.api_key:
+            base_url = os.getenv('ANTHROPIC_BASE_URL', 'https://api.z.ai/api/anthropic')
+            logger.info(f"Configured for Z.AI GLM-4.7 with base_url: {base_url}")
+            self.client = None  # We use HTTP requests instead
         else:
             self.client = None
-            if not ANTHROPIC_AVAILABLE:
-                logger.warning("Anthropic SDK not available")
-            if not self.api_key:
-                logger.warning("API key not configured")
+            logger.warning("API key not configured")
         
         # Role categories loaded from cv_templates.py for single source of truth
         from cv_templates import CVTemplateManager
@@ -115,16 +106,12 @@ class AIAnalyzer:
     
     def is_available(self) -> bool:
         """Check if AI analysis is available"""
-        available = bool(self.api_key and self.client and ANTHROPIC_AVAILABLE)
+        # For HTTP requests, we only need the API key and requests library
+        available = bool(self.api_key)
         if available:
-            logger.info("AI Analyzer is available with Minimax M2")
+            logger.info("AI Analyzer is available with Z.AI GLM-4.7 (HTTP)")
         else:
-            if not ANTHROPIC_AVAILABLE:
-                logger.warning("AI Analyzer not available - anthropic package not installed")
-            elif not self.api_key:
-                logger.warning("AI Analyzer not available - API key not configured")
-            else:
-                logger.warning("AI Analyzer not available - client not initialized")
+            logger.warning("AI Analyzer not available - API key not configured")
         return available
     
     def analyze_job_description(self, job_description: str) -> Optional[Dict]:
@@ -190,9 +177,14 @@ class AIAnalyzer:
                             ai_response_text += block.get('text', '')
                 
                 # Create a mock response object for compatibility with existing parsing
+                class MockBlock:
+                    def __init__(self, text):
+                        self.type = "text"
+                        self.text = text
+                
                 class MockResponse:
                     def __init__(self, text):
-                        self.content = [type('obj', (object,), {'text': text})]
+                        self.content = [MockBlock(text)]
                 
                 response = MockResponse(ai_response_text)
             else:
