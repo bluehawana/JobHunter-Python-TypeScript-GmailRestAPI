@@ -718,10 +718,13 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
         except Exception as e:
             print(f"❌ Error extracting from job URL: {e}")
     
-    # Try AI analysis first (MiniMax M2)
+    # Try AI analysis first (MiniMax M2) - DISABLED due to insufficient balance
     ai_result = None
     confidence = 0.0
-    if ai_analyzer.is_available():
+    # Temporarily disable AI analysis to avoid 500 errors
+    use_ai = False  # Set to True when API balance is restored
+    
+    if use_ai and ai_analyzer.is_available():
         ai_result = ai_analyzer.analyze_job_description(job_description)
         if ai_result:
             role_category = ai_result['role_category']
@@ -949,7 +952,10 @@ def customize_template(template_content: str, company: str, title: str, role_typ
         template_content = template_content.replace(match.group(0), replacement, 1)
 
     # AI-powered content customization if job description provided
-    if job_description and ai_analyzer.is_available():
+    # TEMPORARILY DISABLED due to insufficient AI API balance
+    use_ai_customization = False  # Set to True when API balance is restored
+    
+    if use_ai_customization and job_description and ai_analyzer.is_available():
         try:
             # Analyze job to extract key requirements
             ai_result = ai_analyzer.analyze_job_description(job_description)
