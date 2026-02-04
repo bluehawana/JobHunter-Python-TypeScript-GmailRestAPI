@@ -377,9 +377,10 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
         'ingenjör', 'utvecklare', 'specialist', 'arkitekt', 'chef'
     ]
     
-    # PRIORITY: Check for explicit "Göteborgs Stad" or similar city/government names first
+    # PRIORITY: Check for explicit company names first
     full_text = ' '.join(lines).lower()
     priority_companies = [
+        ('kamstrup', 'Kamstrup'),
         ('göteborgs stad', 'Göteborgs Stad'),
         ('goteborgs stad', 'Göteborgs Stad'),
         ('city of gothenburg', 'Göteborgs Stad'),
@@ -446,26 +447,97 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     
     # Second pass: Look for company name (only if not already found in priority check)
     if company == 'Company':
-        # Pattern 1: "Get to know us" or "About us" followed by "At [Company]"
-        for i, line in enumerate(lines):
+        # STEP 1: Look in first few lines (top of JD)
+        for i, line in enumerate(lines[:5]):
             line_lower = line.lower()
             
-            # Check for "Get to know us" section
-            if 'get to know us' in line_lower or 'about us' in line_lower or 'get to know' in line_lower:
-                # Look for "At [Company]" in the same line or next few lines
-                search_lines = [line] + lines[i+1:min(i+4, len(lines))]
-                for search_line in search_lines:
-                    if ' at ' in search_line.lower():
-                        at_index = search_line.lower().find(' at ')
-                        potential_company = search_line[at_index + 4:].strip().rstrip(',.:?!')
-                        # Take first part before comma/period
-                        potential_company = potential_company.split(',')[0].split('.')[0].strip()
-                        if potential_company and len(potential_company) < 50 and len(potential_company.split()) <= 4:
-                            company = potential_company
-                            print(f"📍 Found company in 'Get to know us At [Company]' pattern: {company}")
-                            break
-                if company != 'Company':
+            # Skip lines that are clearly job titles or descriptions
+            if any(keyword in line_lower for keyword in job_keywords):
+                continue
+            
+            # Look for company patterns in top lines
+            if ' at ' in line_lower or line.strip().endswith(' -') or line.strip().endswith(' |'):
+                # Extract potential company name
+                if ' at ' in line_lower:
+                    at_index = line_lower.find(' at ')
+                    potential_company = line[at_index + 4:].strip().rstrip(',.:?!-|')
+                elif line.strip().endswith(' -') or line.strip().endswith(' |'):
+                    potential_company = line.strip().rstrip(' -|').strip()
+                else:
+                    continue
+                
+                # Clean and validate
+                potential_company = potential_company.split(',')[0].split('.')[0].strip()
+                if potential_company and len(potential_company) < 50 and len(potential_company.split()) <= 4:
+                    company = potential_company
+                    print(f"📍 Found company in top lines: {company}")
                     break
+        
+        # STEP 2: Look in middle section (lines 5-20)
+        if company == 'Company':
+            for i, line in enumerate(lines[5:20], 5):
+                line_lower = line.lower()
+                
+                # Look for "At [Company]" pattern in middle section
+                if ' at ' in line_lower:
+                    at_index = line_lower.find(' at ')
+                    potential_company = line[at_index + 4:].strip().rstrip(',.:?!')
+                    potential_company = potential_company.split(',')[0].split('.')[0].strip()
+                    if potential_company and len(potential_company) < 50 and len(potential_company.split()) <= 4:
+                        company = potential_company
+                        print(f"📍 Found company in middle section: {company}")
+                        break
+        
+        # STEP 3: Look in "About Us" / company description sections (bottom of JD)
+        if company == 'Company':
+            company_section_patterns = [
+                'get to know us', 'about us', 'get to know', 'about the company',
+                'our company', 'who we are', 'about our company', 'company culture',
+                'our team', 'our mission', 'our purpose', 'our vision', 'our story',
+                'about our organization', 'join us', 'why work with us', 'our values'
+            ]
+            
+            for i, line in enumerate(lines):
+                line_lower = line.lower()
+                
+                # Check if this line starts a company description section
+                if any(pattern in line_lower for pattern in company_section_patterns):
+                    # Search in this line and next several lines for company name
+                    search_lines = [line] + lines[i+1:min(i+8, len(lines))]
+                    
+                    for search_line in search_lines:
+                        search_lower = search_line.lower()
+                        
+                        # Pattern: "At [Company]," or "At [Company]."
+                        if ' at ' in search_lower:
+                            at_index = search_lower.find(' at ')
+                            potential_company = search_line[at_index + 4:].strip().rstrip(',.:?!')
+                            potential_company = potential_company.split(',')[0].split('.')[0].strip()
+                            if potential_company and len(potential_company) < 50 and len(potential_company.split()) <= 4:
+                                company = potential_company
+                                print(f"📍 Found company in 'About Us At [Company]' pattern: {company}")
+                                break
+                        
+                        # Pattern: Company name at start of sentence in company description
+                        words = search_line.split()
+                        for j, word in enumerate(words):
+                            if word and len(word) > 2 and word[0].isupper():
+                                # Skip common words that aren't company names
+                                common_words = ['The', 'Our', 'We', 'You', 'This', 'That', 'With', 'And', 'But', 'For', 'In', 'On', 'At', 'To', 'From', 'As', 'By', 'Of', 'Or', 'So', 'If', 'When', 'Where', 'Why', 'How', 'What', 'Who']
+                                if word not in common_words:
+                                    # Take 1-2 words as potential company name
+                                    potential_company = ' '.join(words[j:j+2]).rstrip(',.:?!')
+                                    potential_company = potential_company.split(',')[0].split('.')[0].strip()
+                                    if len(potential_company.split()) <= 2 and len(potential_company) < 30 and potential_company.replace(' ', '').isalpha():
+                                        company = potential_company
+                                        print(f"📍 Found company in company description: {company}")
+                                        break
+                        
+                        if company != 'Company':
+                            break
+                    
+                    if company != 'Company':
+                        break
         
         # Pattern 2: "At [Company]" anywhere in text (extended search)
         if company == 'Company':
