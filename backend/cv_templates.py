@@ -25,20 +25,20 @@ class CVTemplateManager:
         # === SPECIALIZED ROLES (Priority 1) - Check these first ===
         'it_business_analyst': {
             'keywords': ['business analyst', 'it analyst', 'it business analyst', 'business requirements', 'stakeholder', 'business process', 'gap analysis', 'power bi', 'visio', 'workshop', 'requirements gathering', 'business case', 'process improvement', 'digitalization', 'bridge between'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
         'android_developer': {
             'keywords': ['android', 'kotlin', 'android app', 'apk', 'mobile app', 'aosp', 'android sdk', 'jetpack', 'react native', 'mobile developer'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
         'devops_fintech': {
             'keywords': ['fintech', 'financial', 'banking', 'payment', 'trading', 'nasdaq', 'finance', 'post-trade', 'settlement', 'compliance'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
         'ai_product_engineer': {
@@ -97,8 +97,8 @@ class CVTemplateManager:
         # === DEVOPS/INFRASTRUCTURE (Priority 4) ===
         'devops_cloud': {
             'keywords': ['devops', 'cloud engineer', 'aws', 'azure', 'gcp', 'kubernetes', 'docker', 'terraform', 'ci/cd', 'infrastructure as code', 'iac', 'helm', 'argocd'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 4
         },
         'incident_management_sre': {
@@ -114,19 +114,19 @@ class CVTemplateManager:
             'priority': 5
         },
 
-        # === IT SUPPORT / OPERATIONS (Priority 5) ===
+        # === IT SUPPORT / OPERATIONS (Priority 3) - Higher priority for customer support ===
         'it_support': {
-            'keywords': ['it support', 'helpdesk', 'service desk', 'technical support', 'customer support', 'support engineer', 'it technician', 'desktop support', 'l1', 'l2', 'l3 support', 'itil', 'ticketing'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
-            'priority': 5
+            'keywords': ['it support', 'helpdesk', 'service desk', 'technical support', 'customer support', 'support engineer', 'it technician', 'desktop support', 'l1', 'l2', 'l3 support', 'itil', 'ticketing', 'user support', 'end user support', 'customer service'],
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
+            'priority': 3
         },
 
         # === KAMSTRUP (Priority 1 - Company Specific) ===
         'kamstrup': {
-            'keywords': ['kamstrup'],
-            'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
-            'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
+            'keywords': ['kamstrup', 'customer support engineer', 'kamstrup customer support'],
+            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
 

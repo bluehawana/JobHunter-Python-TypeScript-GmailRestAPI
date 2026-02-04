@@ -107,7 +107,7 @@ class AIAnalyzer:
             'devops_cloud': 'Cloud infrastructure, DevOps, AWS/Azure/GCP, Kubernetes, Docker, Terraform, CI/CD',
             'incident_management_sre': 'SRE, incident management, on-call, production support, monitoring, observability',
             'platform_engineer': 'Platform engineering, internal tools, developer experience, infrastructure platform',
-            'it_support': 'IT support, helpdesk, service desk, technical support, ITIL, ticketing systems',
+            'it_support': 'IT support, customer support, technical support, helpdesk, service desk, user support, troubleshooting user issues, ITIL, ticketing systems, customer service',
             'finops': 'FinOps, cloud cost optimization, cloud economics, billing, reserved instances',
             'integration_architect': 'Solution/integration architect, API architecture, system integration, middleware',
             'cloud_engineer': 'Generic cloud engineering, cloud platform, cloud migration, cloud native'
@@ -213,12 +213,18 @@ CLASSIFICATION RULES (follow strictly):
 4. If job mentions FinTech, banking, trading, payment, Nasdaq -> select 'devops_fintech'
 5. ONLY select 'ai_product_engineer' if the job is PRIMARILY about BUILDING AI systems (model training, model fine-tuning, prompt engineering, RAG systems, vector databases, embeddings). Do NOT select this if the job just mentions using/integrating AI APIs (like OpenAI, Azure AI, AWS Bedrock) as one of many features.
 6. If job mentions building web applications with React/Node/Flask/Django AND also mentions AI/ML integration -> select 'fullstack_developer' (software engineer with AI skills, not AI engineer)
-7. If job mentions DevOps, Kubernetes, Docker, Terraform, CI/CD (without financial focus) -> select 'devops_cloud'
-8. If job mentions SRE, incident, on-call, monitoring -> select 'incident_management_sre'
-9. If job mentions customer support, technical support, support engineer, IT support, helpdesk, service desk -> select 'it_support'
+7. IMPORTANT: If job mentions "customer support", "technical support", "support engineer", "helpdesk", "service desk", "user support" -> select 'it_support' (takes priority over DevOps even if networking/troubleshooting mentioned)
+8. If job mentions DevOps, Kubernetes, Docker, Terraform, CI/CD (without customer support focus) -> select 'devops_cloud'
+9. If job mentions SRE, incident, on-call, monitoring -> select 'incident_management_sre'
 10. If job mentions FinOps, cloud cost optimization -> select 'finops'
 11. If job mentions architect, integration, middleware -> select 'integration_architect'
 12. Default to 'devops_cloud' if unclear
+
+CUSTOMER SUPPORT vs DEVOPS DISTINCTION:
+- Customer Support: Primary focus is helping users/customers with technical issues, troubleshooting user problems, providing technical assistance
+- DevOps: Primary focus is infrastructure automation, CI/CD pipelines, cloud platforms, system reliability
+- If job mentions BOTH customer support AND DevOps technologies -> customer support wins (it's likely a technical support role that uses DevOps tools)
+- Keywords like "networking" and "troubleshooting" can apply to both, but customer-facing roles should be classified as 'it_support'
 
 IMPORTANT DISTINCTION - AI Product Engineer vs Software Engineer with AI skills:
 - AI Product Engineer: Primary focus is BUILDING AI/ML systems - model training, fine-tuning, MLOps, prompt engineering, RAG, vector databases
