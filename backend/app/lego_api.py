@@ -458,29 +458,29 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
                         if 'göteborgs stad' in context or 'goteborgs stad' in context:
                             company = 'Göteborgs Stad'
                             print(f"📍 Found 'Göteborgs Stad' in context of Förvaltning/bolag")
-                    elif len(potential_company) < 50 and potential_company not in ['att', 'och', 'för', 'med']:
-                        company = potential_company
-                        print(f"📍 Found company via 'Förvaltning/bolag': {company}")
-                    break
-            
-            # Look for "Om oss" section
-            if line_lower in ['om oss', 'about us', 'about the company', 'om företaget']:
-                # Company name is often in the next few lines
-                for j in range(i + 1, min(i + 5, len(lines))):
-                    potential = lines[j].strip()
-                    # Look for capitalized text that could be a company name
-                    if potential and len(potential) < 50 and potential[0].isupper():
-                        # Filter out common Swedish words
-                        words = potential.split()
-                        if len(words) <= 4:
-                            # Check it's not a common Swedish phrase
-                            common_words = ['att', 'och', 'för', 'med', 'är', 'vi', 'som', 'på', 'i', 'av', 'till']
-                            if not any(w.lower() in common_words for w in words[:2]):  # Check first 2 words
-                                company = potential
-                                print(f"📍 Found company in 'Om oss' section: {company}")
-                                break
-                if company != 'Company':
-                    break
+                        elif len(potential_company) < 50 and potential_company not in ['att', 'och', 'för', 'med']:
+                            company = potential_company
+                            print(f"📍 Found company via 'Förvaltning/bolag': {company}")
+                        break
+                
+                # Look for "Om oss" section
+                if line_lower in ['om oss', 'about us', 'about the company', 'om företaget']:
+                    # Company name is often in the next few lines
+                    for j in range(i + 1, min(i + 5, len(lines))):
+                        potential = lines[j].strip()
+                        # Look for capitalized text that could be a company name
+                        if potential and len(potential) < 50 and potential[0].isupper():
+                            # Filter out common Swedish words
+                            words = potential.split()
+                            if len(words) <= 4:
+                                # Check it's not a common Swedish phrase
+                                common_words = ['att', 'och', 'för', 'med', 'är', 'vi', 'som', 'på', 'i', 'av', 'till']
+                                if not any(w.lower() in common_words for w in words[:2]):  # Check first 2 words
+                                    company = potential
+                                    print(f"📍 Found company in 'Om oss' section: {company}")
+                                    break
+                    if company != 'Company':
+                        break
             
             # Look for explicit company mentions
             company_patterns = [
