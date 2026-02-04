@@ -1309,16 +1309,18 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
         for acronym in acronyms:
             title = re.sub(r'\b' + acronym.title() + r'\b', acronym, title, flags=re.IGNORECASE)
 
-    # Replace both old and new placeholder formats
-    # Handle LaTeX escaped underscores and regular underscores
+    # Replace placeholders - handle multiple formats
     if company and company != 'Company':
         template_content = template_content.replace('[Company Name]', company)
+        template_content = template_content.replace('{company_name}', company)
         template_content = template_content.replace('COMPANY\\_NAME', company)  # LaTeX escaped
         template_content = template_content.replace('COMPANY_NAME', company)    # Regular
 
-    # Replace [Position] placeholder and new format
+    # Replace position/job title placeholders
     if title and title != 'Position':
         template_content = template_content.replace('[Position]', title)
+        template_content = template_content.replace('{job_title}', title)
+        template_content = template_content.replace('[JOB TITLE]', title)
         template_content = template_content.replace('JOB\\_TITLE', title)  # LaTeX escaped
         template_content = template_content.replace('JOB_TITLE', title)    # Regular
 
@@ -1376,13 +1378,13 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
 
 \geometry{margin=1in}
 \setlength{\parindent}{0pt}
-\definecolor{linkedinblue}{RGB}{0,119,181}
-\hypersetup{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}
+\definecolor{headerblue}{RGB}{77, 166, 255}  % Light blue for header
+\hypersetup{colorlinks=true, linkcolor=headerblue, urlcolor=headerblue}
 
 \begin{document}
 
-% Header with job information (simple left-aligned, LinkedIn blue)
-{\color{linkedinblue}""" + company + r"""\\
+% Header with job information (light blue)
+{\color{headerblue}\textbf{""" + company + r"""}\\
 """ + title + r"""\\
 Gothenburg, Sweden}
 
@@ -1410,12 +1412,12 @@ Harvad (Hongzhi) Li
 \vspace{\fill}
 
 % Line separator
-{\color{linkedinblue}\hrule height 0.5pt}
+{\color{headerblue}\hrule height 0.5pt}
 
 \vspace{0.3cm}
 
 % Footer with address and date
-{\color{linkedinblue}Ebbe Lieberathsgatan 27\\
+{\color{headerblue}Ebbe Lieberathsgatan 27\\
 41265, Gothenburg, Sweden\\
 \hfill \today}
 
