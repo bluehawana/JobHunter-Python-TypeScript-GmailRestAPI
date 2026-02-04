@@ -372,7 +372,8 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     # Job title keywords (English and Swedish)
     job_keywords = [
         'engineer', 'developer', 'specialist', 'manager', 'architect', 
-        'lead', 'senior', 'junior', 'consultant', 'analyst',
+        'lead', 'senior', 'junior', 'consultant', 'analyst', 'support',
+        'coordinator', 'administrator', 'technician',
         'ingenjör', 'utvecklare', 'specialist', 'arkitekt', 'chef'
     ]
     
@@ -419,29 +420,50 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     
     # Second pass: Look for company name (only if not already found in priority check)
     if company == 'Company':
-        # Check for "At [Company]" or "Get to know us At [Company]" pattern
-        for i, line in enumerate(lines[:20]):
+        # Pattern 1: "Get to know us" or "About us" followed by "At [Company]"
+        for i, line in enumerate(lines):
             line_lower = line.lower()
             
-            # Pattern: "At CompanyName" or "Get to know us At CompanyName"
-            if line_lower.startswith('at ') or ' at ' in line_lower:
-                # Extract company name after "at"
-                if line_lower.startswith('at '):
-                    potential_company = line[3:].strip().rstrip(',.:')
-                else:
-                    # Find "at" and extract what comes after
-                    at_index = line_lower.find(' at ')
-                    if at_index != -1:
-                        potential_company = line[at_index + 4:].strip().rstrip(',.:')
+            # Check for "Get to know us" section
+            if 'get to know us' in line_lower or 'about us' in line_lower:
+                # Look for "At [Company]" in the same line or next few lines
+                search_lines = [line] + lines[i+1:min(i+4, len(lines))]
+                for search_line in search_lines:
+                    if ' at ' in search_line.lower():
+                        at_index = search_line.lower().find(' at ')
+                        potential_company = search_line[at_index + 4:].strip().rstrip(',.:?!')
+                        # Take first part before comma/period
+                        potential_company = potential_company.split(',')[0].split('.')[0].strip()
+                        if potential_company and len(potential_company) < 50 and len(potential_company.split()) <= 4:
+                            company = potential_company
+                            print(f"📍 Found company in 'Get to know us At [Company]' pattern: {company}")
+                            break
+                if company != 'Company':
+                    break
+        
+        # Pattern 2: "At [Company]" anywhere in first 20 lines
+        if company == 'Company':
+            for i, line in enumerate(lines[:20]):
+                line_lower = line.lower()
                 
-                # Check if it looks like a company name (capitalized, not too long)
-                if potential_company and len(potential_company) < 50 and potential_company[0].isupper():
-                    # Take only the first word/phrase before comma or period
-                    potential_company = potential_company.split(',')[0].split('.')[0].strip()
-                    if len(potential_company.split()) <= 3:  # Company names are usually 1-3 words
-                        company = potential_company
-                        print(f"📍 Found company via 'At [Company]' pattern: {company}")
-                        break
+                if line_lower.startswith('at ') or ' at ' in line_lower:
+                    # Extract company name after "at"
+                    if line_lower.startswith('at '):
+                        potential_company = line[3:].strip().rstrip(',.:')
+                    else:
+                        # Find "at" and extract what comes after
+                        at_index = line_lower.find(' at ')
+                        if at_index != -1:
+                            potential_company = line[at_index + 4:].strip().rstrip(',.:')
+                    
+                    # Check if it looks like a company name (capitalized, not too long)
+                    if potential_company and len(potential_company) < 50 and potential_company[0].isupper():
+                        # Take only the first word/phrase before comma or period
+                        potential_company = potential_company.split(',')[0].split('.')[0].strip()
+                        if len(potential_company.split()) <= 3:  # Company names are usually 1-3 words
+                            company = potential_company
+                            print(f"📍 Found company via 'At [Company]' pattern: {company}")
+                            break
         
         # Check for Swedish "Förvaltning/bolag" pattern (Göteborgs Stad specific)
         if company == 'Company':
@@ -610,15 +632,48 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     # Map role category to display name
     role_type = role_category.replace('_', ' ').title()
     
-    # Extract keywords if not from AI
+    # Extract keywords if not from AI - make it role-specific
     if not ai_result or not tech_keywords:
         tech_keywords = []
-        keyword_list = [
-            'kubernetes', 'docker', 'terraform', 'ansible', 'jenkins', 'github actions',
-            'prometheus', 'grafana', 'elk', 'aws', 'azure', 'gcp', 'python', 'bash',
-            'react', 'typescript', 'node.js', 'go', 'java', 'spring boot',
-            'ci/cd', 'devops', 'sre', 'incident management', 'monitoring', 'observability'
-        ]
+        
+        # Define role-specific keyword lists
+        role_keyword_map = {
+            'it_support': [
+                'technical support', 'customer support', 'hardware', 'software', 
+                'troubleshooting', 'incident management', 'ticketing', 'servicenow',
+                'help desk', 'remote support', 'networking', 'configuration',
+                'windows', 'linux', 'active directory', 'office 365', 'azure ad'
+            ],
+            'devops_sre': [
+                'kubernetes', 'docker', 'terraform', 'ansible', 'jenkins', 'github actions',
+                'prometheus', 'grafana', 'elk', 'aws', 'azure', 'gcp', 'python', 'bash',
+                'ci/cd', 'devops', 'sre', 'incident management', 'monitoring', 'observability'
+            ],
+            'backend_developer': [
+                'python', 'java', 'go', 'node.js', 'spring boot', 'django', 'flask',
+                'rest api', 'graphql', 'microservices', 'postgresql', 'mongodb', 'redis',
+                'kafka', 'rabbitmq', 'docker', 'kubernetes'
+            ],
+            'frontend_developer': [
+                'react', 'vue', 'angular', 'typescript', 'javascript', 'html', 'css',
+                'webpack', 'redux', 'next.js', 'tailwind', 'responsive design', 'ui/ux'
+            ],
+            'fullstack_developer': [
+                'react', 'typescript', 'node.js', 'python', 'java', 'rest api',
+                'postgresql', 'mongodb', 'docker', 'aws', 'azure', 'ci/cd'
+            ],
+            'cloud_architect': [
+                'aws', 'azure', 'gcp', 'cloud architecture', 'terraform', 'kubernetes',
+                'microservices', 'serverless', 'lambda', 'api gateway', 'vpc', 'iam'
+            ],
+            'data_engineer': [
+                'python', 'spark', 'airflow', 'kafka', 'sql', 'etl', 'data pipeline',
+                'bigquery', 'redshift', 'snowflake', 'databricks', 'hadoop'
+            ]
+        }
+        
+        # Get keywords for the detected role, or use general keywords
+        keyword_list = role_keyword_map.get(role_category, role_keyword_map['devops_sre'])
         
         for keyword in keyword_list:
             if keyword in job_lower:
