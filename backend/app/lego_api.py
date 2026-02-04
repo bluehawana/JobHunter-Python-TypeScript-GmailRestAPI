@@ -721,8 +721,8 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     # Try AI analysis first (MiniMax M2) - DISABLED due to insufficient balance
     ai_result = None
     confidence = 0.0
-    # Temporarily disable AI analysis to avoid 500 errors
-    use_ai = False  # Set to True when API balance is restored
+    # AI analysis re-enabled - API balance restored
+    use_ai = True  # AI analysis is now available
     
     if use_ai and ai_analyzer.is_available():
         ai_result = ai_analyzer.analyze_job_description(job_description)
@@ -951,9 +951,8 @@ def customize_template(template_content: str, company: str, title: str, role_typ
         replacement = f'{{\\Large {clean_title}}}'
         template_content = template_content.replace(match.group(0), replacement, 1)
 
-    # AI-powered content customization if job description provided
-    # TEMPORARILY DISABLED due to insufficient AI API balance
-    use_ai_customization = False  # Set to True when API balance is restored
+    # AI-powered content customization re-enabled - API balance restored
+    use_ai_customization = True  # AI customization is now available
     
     if use_ai_customization and job_description and ai_analyzer.is_available():
         try:
