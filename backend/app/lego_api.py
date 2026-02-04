@@ -1145,6 +1145,9 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
         'Ai Product Engineer': 'ai_product_engineer',
         'Backend Developer': 'backend_developer',
         'It Business Analyst': 'it_business_analyst',
+        'IT Support': 'it_support_specialist',
+        'Customer Support Engineer': 'it_support_specialist',
+        'Technical Support': 'it_support_specialist',
         'Cloud Engineer': 'devops_engineer',
         'Platform Engineer': 'devops_engineer',
         # By role_category (internal key)
@@ -1155,6 +1158,7 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
         'ai_product_engineer': 'ai_product_engineer',
         'backend_developer': 'backend_developer',
         'it_business_analyst': 'it_business_analyst',
+        'it_support': 'it_support_specialist',
         'cloud_engineer': 'devops_engineer',
         'platform_engineer': 'devops_engineer',
         'devops_fintech': 'devops_engineer',
@@ -1378,13 +1382,13 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
 
 \geometry{margin=1in}
 \setlength{\parindent}{0pt}
-\definecolor{darkblue}{RGB}{0,51,102}
-\hypersetup{colorlinks=true, linkcolor=darkblue, urlcolor=darkblue}
+\definecolor{linkedinblue}{RGB}{0,119,181}
+\hypersetup{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}
 
 \begin{document}
 
-% Header with job information (dark blue - matching CV)
-{\color{darkblue}\textbf{""" + company + r"""}\\
+% Header with job information (LinkedIn blue - matching CV)
+{\color{linkedinblue}\textbf{""" + company + r"""}\\
 """ + title + r"""\\
 Gothenburg, Sweden}
 
@@ -1412,12 +1416,12 @@ Harvad (Hongzhi) Li
 \vspace{\fill}
 
 % Line separator
-{\color{darkblue}\hrule height 0.5pt}
+{\color{linkedinblue}\hrule height 0.5pt}
 
 \vspace{0.3cm}
 
 % Footer with address and date
-{\color{darkblue}Ebbe Lieberathsgatan 27\\
+{\color{linkedinblue}Ebbe Lieberathsgatan 27\\
 41265, Gothenburg, Sweden\\
 \hfill \today}
 
