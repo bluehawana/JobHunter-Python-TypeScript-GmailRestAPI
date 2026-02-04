@@ -215,7 +215,7 @@ CLASSIFICATION RULES (follow strictly):
 6. If job mentions building web applications with React/Node/Flask/Django AND also mentions AI/ML integration -> select 'fullstack_developer' (software engineer with AI skills, not AI engineer)
 7. If job mentions DevOps, Kubernetes, Docker, Terraform, CI/CD (without financial focus) -> select 'devops_cloud'
 8. If job mentions SRE, incident, on-call, monitoring -> select 'incident_management_sre'
-9. If job mentions IT support, helpdesk, service desk -> select 'it_support'
+9. If job mentions customer support, technical support, support engineer, IT support, helpdesk, service desk -> select 'it_support'
 10. If job mentions FinOps, cloud cost optimization -> select 'finops'
 11. If job mentions architect, integration, middleware -> select 'integration_architect'
 12. Default to 'devops_cloud' if unclear

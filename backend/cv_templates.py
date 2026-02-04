@@ -116,7 +116,7 @@ class CVTemplateManager:
 
         # === IT SUPPORT / OPERATIONS (Priority 5) ===
         'it_support': {
-            'keywords': ['it support', 'helpdesk', 'service desk', 'technical support', 'support engineer', 'it technician', 'desktop support', 'l1', 'l2', 'l3 support', 'itil', 'ticketing'],
+            'keywords': ['it support', 'helpdesk', 'service desk', 'technical support', 'customer support', 'support engineer', 'it technician', 'desktop support', 'l1', 'l2', 'l3 support', 'itil', 'ticketing'],
             'cv_template': 'latex_sources/cv_hongzhi_li_modern.tex',
             'cl_template': 'latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 5
