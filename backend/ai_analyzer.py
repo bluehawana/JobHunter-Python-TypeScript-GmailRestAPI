@@ -145,18 +145,60 @@ class AIAnalyzer:
             # Construct prompt for Minimax M2
             prompt = self._build_analysis_prompt(job_description)
             
-            # Call Minimax API via Anthropic SDK
-            logger.info("Calling MiniMax M2 via Anthropic SDK...")
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=4096,
-                messages=[
+            # Call Minimax API via direct HTTP requests (more reliable than anthropic client)
+            logger.info("Calling MiniMax M2.1 via HTTP requests...")
+            
+            import requests
+            import os
+            
+            api_key = os.environ.get('ANTHROPIC_API_KEY')
+            base_url = os.environ.get('ANTHROPIC_BASE_URL', 'https://api.minimax.io/anthropic')
+            
+            if not api_key:
+                logger.error("ANTHROPIC_API_KEY not found")
+                return None
+            
+            url = f"{base_url}/v1/messages"
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {api_key}',
+                'anthropic-version': '2023-06-01'
+            }
+            
+            payload = {
+                "model": "glm-4.7",  # Z.AI GLM-4.7 model
+                "max_tokens": 4096,
+                "messages": [
                     {
                         "role": "user",
                         "content": prompt
                     }
                 ]
-            )
+            }
+            
+            http_response = requests.post(url, headers=headers, json=payload, timeout=60)
+            
+            if http_response.status_code == 200:
+                result_data = http_response.json()
+                logger.info("✅ MiniMax M2.1 HTTP request successful!")
+                
+                # Extract text from response
+                ai_response_text = ""
+                if 'content' in result_data:
+                    for block in result_data['content']:
+                        if block.get('type') == 'text':
+                            ai_response_text += block.get('text', '')
+                
+                # Create a mock response object for compatibility with existing parsing
+                class MockResponse:
+                    def __init__(self, text):
+                        self.content = [type('obj', (object,), {'text': text})]
+                
+                response = MockResponse(ai_response_text)
+            else:
+                logger.error(f"❌ MiniMax M2.1 HTTP request failed: {http_response.status_code}")
+                logger.error(f"📝 Response: {http_response.text}")
+                return None
             
             # Parse response
             result = self._parse_ai_response(response)
