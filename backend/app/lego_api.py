@@ -419,11 +419,36 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     
     # Second pass: Look for company name (only if not already found in priority check)
     if company == 'Company':
-        # Check for Swedish "Förvaltning/bolag" pattern (Göteborgs Stad specific)
-        for i, line in enumerate(lines):
+        # Check for "At [Company]" or "Get to know us At [Company]" pattern
+        for i, line in enumerate(lines[:20]):
             line_lower = line.lower()
             
-            if 'förvaltning/bolag' in line_lower or 'förvaltning / bolag' in line_lower:
+            # Pattern: "At CompanyName" or "Get to know us At CompanyName"
+            if line_lower.startswith('at ') or ' at ' in line_lower:
+                # Extract company name after "at"
+                if line_lower.startswith('at '):
+                    potential_company = line[3:].strip().rstrip(',.:')
+                else:
+                    # Find "at" and extract what comes after
+                    at_index = line_lower.find(' at ')
+                    if at_index != -1:
+                        potential_company = line[at_index + 4:].strip().rstrip(',.:')
+                
+                # Check if it looks like a company name (capitalized, not too long)
+                if potential_company and len(potential_company) < 50 and potential_company[0].isupper():
+                    # Take only the first word/phrase before comma or period
+                    potential_company = potential_company.split(',')[0].split('.')[0].strip()
+                    if len(potential_company.split()) <= 3:  # Company names are usually 1-3 words
+                        company = potential_company
+                        print(f"📍 Found company via 'At [Company]' pattern: {company}")
+                        break
+        
+        # Check for Swedish "Förvaltning/bolag" pattern (Göteborgs Stad specific)
+        if company == 'Company':
+            for i, line in enumerate(lines):
+                line_lower = line.lower()
+                
+                if 'förvaltning/bolag' in line_lower or 'förvaltning / bolag' in line_lower:
                 # Next line usually contains the department/company name
                 if i + 1 < len(lines):
                     potential_company = lines[i + 1].strip()
