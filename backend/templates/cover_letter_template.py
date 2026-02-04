@@ -60,13 +60,13 @@ COVER_LETTER_TEMPLATE = r"""
 
 \geometry{{margin=1in}}
 \setlength{{\parindent}}{{0pt}}
-\definecolor{{linkedinblue}}{{RGB}}{{0,119,181}}
-\hypersetup{{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}}
+\definecolor{{headerblue}}{{RGB}}{{77, 166, 255}}
+\hypersetup{{colorlinks=true, linkcolor=headerblue, urlcolor=headerblue}}
 
 \begin{{document}}
 
-% Header with job information (simple left-aligned)
-{{\color{{linkedinblue}}{company_name}\\
+% Header with job information (light blue)
+{{\color{{headerblue}}\textbf{{{company_name}}}\\
 {job_title}\\
 Gothenburg, Sweden}}
 
@@ -86,12 +86,12 @@ Harvad (Hongzhi) Li
 \vspace{{\fill}}
 
 % Line separator
-{{\color{{linkedinblue}}\hrule height 0.5pt}}
+{{\color{{headerblue}}\hrule height 0.5pt}}
 
 \vspace{{0.3cm}}
 
 % Footer with address and date
-{{\color{{linkedinblue}}Ebbe Lieberathsgatan 27\\
+{{\color{{headerblue}}Ebbe Lieberathsgatan 27\\
 412 65, Gothenburg, Sweden\\
 \hfill \today}}
 
