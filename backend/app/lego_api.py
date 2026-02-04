@@ -449,15 +449,15 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
                 line_lower = line.lower()
                 
                 if 'förvaltning/bolag' in line_lower or 'förvaltning / bolag' in line_lower:
-                # Next line usually contains the department/company name
-                if i + 1 < len(lines):
-                    potential_company = lines[i + 1].strip()
-                    # For Swedish government jobs, prefer the main organization over department
-                    # Check if "Göteborgs Stad" or similar appears in surrounding context
-                    context = ' '.join(lines[max(0, i-5):min(len(lines), i+10)]).lower()
-                    if 'göteborgs stad' in context or 'goteborgs stad' in context:
-                        company = 'Göteborgs Stad'
-                        print(f"📍 Found 'Göteborgs Stad' in context of Förvaltning/bolag")
+                    # Next line usually contains the department/company name
+                    if i + 1 < len(lines):
+                        potential_company = lines[i + 1].strip()
+                        # For Swedish government jobs, prefer the main organization over department
+                        # Check if "Göteborgs Stad" or similar appears in surrounding context
+                        context = ' '.join(lines[max(0, i-5):min(len(lines), i+10)]).lower()
+                        if 'göteborgs stad' in context or 'goteborgs stad' in context:
+                            company = 'Göteborgs Stad'
+                            print(f"📍 Found 'Göteborgs Stad' in context of Förvaltning/bolag")
                     elif len(potential_company) < 50 and potential_company not in ['att', 'och', 'för', 'med']:
                         company = potential_company
                         print(f"📍 Found company via 'Förvaltning/bolag': {company}")
