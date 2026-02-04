@@ -1648,11 +1648,13 @@ def generate_lego_application():
 
         # SAFEGUARD: Ensure role_type is consistent with role_category
         # This prevents mismatches where role_category is 'devops_cloud' but role_type is 'IT Business Analyst'
-        expected_role_type = role_category.replace('_', ' ').title()
-        if role_type != expected_role_type:
-            print(f"⚠️ Role type mismatch detected: roleType='{role_type}', roleCategory='{role_category}'")
-            print(f"🔧 Correcting role_type from '{role_type}' to '{expected_role_type}'")
-            role_type = expected_role_type
+        # EXCEPTION: Don't override for company-specific roles like 'kamstrup' - keep the actual job title
+        if role_category not in ['kamstrup']:  # Add other company-specific roles here if needed
+            expected_role_type = role_category.replace('_', ' ').title()
+            if role_type != expected_role_type:
+                print(f"⚠️ Role type mismatch detected: roleType='{role_type}', roleCategory='{role_category}'")
+                print(f"🔧 Correcting role_type from '{role_type}' to '{expected_role_type}'")
+                role_type = expected_role_type
 
         # Handle template selection failures gracefully
         try:
@@ -1814,11 +1816,13 @@ def generate_comprehensive_application():
         
         # SAFEGUARD: Ensure role_type is consistent with role_category
         # This prevents mismatches where role_category is 'devops_cloud' but role_type is 'IT Business Analyst'
-        expected_role_type = role_category.replace('_', ' ').title()
-        if role_type != expected_role_type:
-            print(f"⚠️ Role type mismatch detected: roleType='{role_type}', roleCategory='{role_category}'")
-            print(f"🔧 Correcting role_type from '{role_type}' to '{expected_role_type}'")
-            role_type = expected_role_type
+        # EXCEPTION: Don't override for company-specific roles like 'kamstrup' - keep the actual job title
+        if role_category not in ['kamstrup']:  # Add other company-specific roles here if needed
+            expected_role_type = role_category.replace('_', ' ').title()
+            if role_type != expected_role_type:
+                print(f"⚠️ Role type mismatch detected: roleType='{role_type}', roleCategory='{role_category}'")
+                print(f"🔧 Correcting role_type from '{role_type}' to '{expected_role_type}'")
+                role_type = expected_role_type
         
         # Build LaTeX documents with comprehensive AI-powered customization
         cv_latex = build_lego_cv(role_type, company, title, role_category, job_description)
