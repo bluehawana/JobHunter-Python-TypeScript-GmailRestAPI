@@ -386,6 +386,49 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     lines = [line.strip() for line in job_description.split('\n') if line.strip()]
     company = 'Company'
     title = 'Position'
+    explicit_company_provided = False
+    
+    # PRIORITY: Check for explicit "Company name: XXX" and "Job title: XXX" format at the very beginning
+    if lines:
+        # Check first few lines for explicit company name and job title
+        for i, line in enumerate(lines[:3]):  # Check first 3 lines
+            line_stripped = line.strip()
+            
+            # Check for "Company name: XXX"
+            company_match = re.match(r'^Company\s+name\s*:\s*(.+)$', line_stripped, re.IGNORECASE)
+            if company_match:
+                company = company_match.group(1).strip()
+                explicit_company_provided = True
+                print(f"📍 Extracted company from 'Company name:' format: {company}")
+                lines[i] = ''  # Remove this line
+            
+            # Check for "Job title: XXX"
+            title_match = re.match(r'^Job\s+title\s*:\s*(.+)$', line_stripped, re.IGNORECASE)
+            if title_match:
+                title = title_match.group(1).strip()
+                print(f"📍 Extracted job title from 'Job title:' format: {title}")
+                lines[i] = ''  # Remove this line
+        
+        # Clean up empty lines and update job_description
+        lines = [l for l in lines if l.strip()]
+        job_description = '\n'.join(lines)
+        
+        # If both company and title were explicitly provided, return immediately
+        if explicit_company_provided and title != 'Position':
+            print(f"📍 Using explicit company and title: {company} - {title}")
+            return (company, title)
+    
+    # If explicit company was provided, return it immediately without further checks
+    if explicit_company_provided:
+        # Still try to extract title from remaining text
+        for line in lines[:5]:
+            if len(line) < 100 and any(keyword in line.lower() for keyword in 
+                ['engineer', 'developer', 'specialist', 'manager', 'architect', 'lead', 'senior', 
+                 'junior', 'consultant', 'analyst', 'designer', 'coordinator', 'director', 'support']):
+                title = line
+                print(f"📍 Extracted job title: {title}")
+                break
+        return (company, title)
     
     # STRATEGY 0: Check for priority companies FIRST (most reliable)
     full_text = ' '.join(lines).lower()
@@ -430,7 +473,9 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     ]
     
     for search_term, proper_name in priority_companies:
-        if search_term in full_text:
+        # Use word boundaries to match whole words only (e.g., "uber" not in "kubernetes")
+        pattern = r'\b' + re.escape(search_term) + r'\b'
+        if re.search(pattern, full_text, re.IGNORECASE):
             company = proper_name
             print(f"📍 Found priority company: {company}")
             break

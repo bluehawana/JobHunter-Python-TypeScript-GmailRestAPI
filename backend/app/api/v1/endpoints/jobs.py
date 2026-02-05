@@ -468,8 +468,8 @@ async def test_job_integration(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Integration test failed: {str(e)}")
-@rou
-ter.post("/extract-from-url", response_model=JobUrlResponse)
+
+@router.post("/extract-from-url", response_model=JobUrlResponse)
 async def extract_job_from_url(
     request: JobUrlRequest,
     current_user: dict = Depends(get_current_user)

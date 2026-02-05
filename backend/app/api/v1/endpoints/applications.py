@@ -148,8 +148,9 @@ async def delete_application(
     current_user: dict = Depends(get_current_user)
 ):
     """Delete an application"""
-    return {"message": f"Application {application_id} deleted successfully"}clas
-s TailoredApplicationRequest(BaseModel):
+    return {"message": f"Application {application_id} deleted successfully"}
+
+class TailoredApplicationRequest(BaseModel):
     job_details: dict
     application_type: str = "android_focused"  # android_focused, fullstack, generic
 
