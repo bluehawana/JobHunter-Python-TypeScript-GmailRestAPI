@@ -4,7 +4,7 @@
 
 set -e
 
-SERVER="root@jobs.bluehawana.com"
+SERVER="harvad@jobs.bluehawana.com"
 PORT="22"
 REMOTE_PATH="/var/www/lego-job-generator"
 SERVICE_NAME="lego-backend"
