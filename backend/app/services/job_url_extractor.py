@@ -225,42 +225,47 @@ class JobUrlExtractor:
             # Determine if Swedish or English
             is_swedish = any(word in page_text.lower()[:1000] for word in ['till', 'hos', 'på', 'utvecklare', 'ingenjör', 'söker vi'])
             
-            prompt = f"""You are an expert at extracting job information from web pages. Analyze this job posting and extract the key details.
+            prompt = f"""Extract job information from this webpage. This is CRITICAL - you must identify the ACTUAL hiring company, NOT the recruitment agency.
 
 URL: {url}
-RAW TITLE: {raw_title}
+RAW TITLE FROM PAGE: {raw_title}
 
-PAGE CONTENT (first 5000 chars):
+FULL PAGE TEXT (first 5000 chars):
 {page_text}
 
-DESCRIPTION:
-{description[:1000]}
+CRITICAL INSTRUCTIONS:
 
-CRITICAL RULES:
-1. **Company Name**: Extract the ACTUAL hiring company, NOT the recruitment agency
-   - Recruitment agencies (Computer Sweden, Academic Work, TNG, etc.) should be IGNORED
-   - Look for phrases like "till [Company]", "hos [Company]", "at [Company]"
+1. **COMPANY NAME** - Find the ACTUAL company hiring:
+   - Look for "till [Company]", "hos [Company]", "at [Company]"
+   - IGNORE recruitment agencies: Computer Sweden, Academic Work, TNG, Randstad, Manpower, Wise Professionals
    - Example: "Fullstackutvecklare till Aros Kapital - Computer Sweden Recruitment"
-     → Company: "Aros Kapital" (NOT "Computer Sweden Recruitment")
-
-2. **Job Title**: Translate Swedish titles to English
+     ✅ CORRECT: "Aros Kapital" (the actual company)
+     ❌ WRONG: "Computer Sweden Recruitment" (just the recruiter)
+   
+2. **JOB TITLE** - Clean and translate:
    - fullstackutvecklare → Full-Stack Developer
    - backend-utvecklare → Backend Developer
    - systemutvecklare → System Developer
    - devops-ingenjör → DevOps Engineer
-   - Keep it clean and professional
+   - Remove company names from title
+   
+3. **LOCATION** - Extract city and country
 
-3. **Location**: Extract city/region (default to "Sweden" if unclear)
+EXAMPLES OF CORRECT EXTRACTION:
 
-TASK: Extract and return ONLY a JSON object with these fields:
-{{"title": "Clean English Job Title", "company": "Actual Company Name", "location": "City, Country"}}
+Input: "Fullstackutvecklare till Aros Kapital - Computer Sweden Recruitment"
+Output: {{"title": "Full-Stack Developer", "company": "Aros Kapital", "location": "Gothenburg, Sweden"}}
 
-Example outputs:
-- {{"title": "Full-Stack Developer", "company": "Aros Kapital", "location": "Gothenburg, Sweden"}}
-- {{"title": "DevOps Engineer", "company": "Kamstrup", "location": "Malmö, Sweden"}}
-- {{"title": "Backend Developer", "company": "Spotify", "location": "Stockholm, Sweden"}}
+Input: "Backend Developer at Spotify - TNG Recruitment"
+Output: {{"title": "Backend Developer", "company": "Spotify", "location": "Stockholm, Sweden"}}
 
-Return ONLY the JSON, no explanation."""
+Input: "Systemutvecklare hos Volvo Cars"
+Output: {{"title": "System Developer", "company": "Volvo Cars", "location": "Gothenburg, Sweden"}}
+
+NOW EXTRACT FROM THE PAGE ABOVE.
+
+Return ONLY valid JSON in this exact format:
+{{"title": "Job Title", "company": "Company Name", "location": "City, Country"}}"""
 
             url_api = f"{base_url}/v1/messages"
             headers = {
@@ -275,25 +280,33 @@ Return ONLY the JSON, no explanation."""
                 "messages": [{"role": "user", "content": prompt}]
             }
             
+            logger.info(f"🤖 Calling AI to extract from: {url}")
             response = req.post(url_api, headers=headers, json=payload, timeout=20)
             
             if response.status_code == 200:
                 result = response.json()
                 if 'content' in result and len(result['content']) > 0:
                     text = result['content'][0].get('text', '{}')
+                    logger.info(f"🤖 AI Response: {text}")
                     # Extract JSON from response
                     json_match = re.search(r'\{[^}]+\}', text)
                     if json_match:
                         parsed = json.loads(json_match.group())
-                        logger.info(f"✅ AI extracted from page: {parsed}")
+                        logger.info(f"✅ AI extracted: Company='{parsed.get('company')}', Title='{parsed.get('title')}'")
                         return parsed
+                    else:
+                        logger.warning(f"⚠️ No JSON found in AI response: {text}")
+            else:
+                logger.warning(f"⚠️ AI API failed with status {response.status_code}: {response.text}")
             
-            logger.warning(f"AI extraction failed, status: {response.status_code}")
             # Fallback to regex
+            logger.info("Falling back to regex parsing")
             return self._parse_swedish_title_regex(raw_title, url)
             
         except Exception as e:
             logger.warning(f"AI page extraction failed: {e}, using regex fallback")
+            import traceback
+            logger.warning(traceback.format_exc())
             return self._parse_swedish_title_regex(raw_title, url)
     
     def _parse_swedish_job_title_with_ai(self, raw_title: str, description: str, url: str) -> Dict:
@@ -386,7 +399,9 @@ Return ONLY a JSON object:
     
     def _parse_swedish_title_regex(self, raw_title: str, url: str) -> Dict:
         """Fallback regex parsing for Swedish job titles"""
-        # Remove recruitment agency names first (they appear after dash at the end)
+        logger.info(f"🔧 Regex parsing: '{raw_title}'")
+        
+        # STEP 1: Remove recruitment agency names FIRST (they appear after dash at the end)
         recruitment_agencies = [
             'Computer Sweden Recruitment', 'Computer Sweden', 'Academic Work', 
             'TNG', 'Randstad', 'Manpower', 'Wise Professionals', 'Poolia',
@@ -396,21 +411,23 @@ Return ONLY a JSON object:
         cleaned_title = raw_title
         for agency in recruitment_agencies:
             # Remove " - Agency" or " | Agency" from end
-            if cleaned_title.endswith(f' - {agency}'):
-                cleaned_title = cleaned_title[:-len(f' - {agency}')].strip()
-            elif cleaned_title.endswith(f' | {agency}'):
-                cleaned_title = cleaned_title[:-len(f' | {agency}')].strip()
+            if f' - {agency}' in cleaned_title:
+                cleaned_title = cleaned_title.replace(f' - {agency}', '').strip()
+                logger.info(f"🧹 Removed agency '{agency}': '{cleaned_title}'")
+            elif f' | {agency}' in cleaned_title:
+                cleaned_title = cleaned_title.replace(f' | {agency}', '').strip()
+                logger.info(f"🧹 Removed agency '{agency}': '{cleaned_title}'")
         
-        # Now parse the cleaned title
+        # STEP 2: Now parse the cleaned title
         # Common Swedish patterns: "Title till Company" or "Title at Company"
         patterns = [
-            r'(.+?)\s+till\s+(.+)',  # "Title till Company"
-            r'(.+?)\s+hos\s+(.+)',   # "Title hos Company"
-            r'(.+?)\s+på\s+(.+)',    # "Title på Company"
-            r'(.+?)\s+at\s+(.+)',    # "Title at Company"
+            (r'(.+?)\s+till\s+(.+)', 'till'),  # "Title till Company"
+            (r'(.+?)\s+hos\s+(.+)', 'hos'),    # "Title hos Company"
+            (r'(.+?)\s+på\s+(.+)', 'på'),      # "Title på Company"
+            (r'(.+?)\s+at\s+(.+)', 'at'),      # "Title at Company"
         ]
         
-        for pattern in patterns:
+        for pattern, keyword in patterns:
             match = re.match(pattern, cleaned_title, re.IGNORECASE)
             if match:
                 title_swedish = match.group(1).strip()
@@ -419,24 +436,25 @@ Return ONLY a JSON object:
                 # Translate common Swedish titles
                 title_english = self._translate_swedish_title(title_swedish)
                 
+                logger.info(f"✅ Regex matched '{keyword}' pattern: Company='{company}', Title='{title_english}'")
                 return {'title': title_english, 'company': company}
         
-        # If no pattern matches, try to extract from URL
+        # STEP 3: Try to extract from URL if no pattern matches
         url_parts = url.split('/')[-1].split('-')
-        if len(url_parts) > 2:
-            # URL like: "fullstackutvecklare-till-aros-kapital"
-            if 'till' in url_parts:
-                till_index = url_parts.index('till')
-                title_parts = url_parts[:till_index]
-                company_parts = url_parts[till_index+1:]
-                
-                title_swedish = ' '.join(title_parts)
-                company = ' '.join(company_parts).title()
-                title_english = self._translate_swedish_title(title_swedish)
-                
-                return {'title': title_english, 'company': company}
+        if len(url_parts) > 2 and 'till' in url_parts:
+            till_index = url_parts.index('till')
+            title_parts = url_parts[:till_index]
+            company_parts = url_parts[till_index+1:]
+            
+            title_swedish = ' '.join(title_parts)
+            company = ' '.join(company_parts).replace('-', ' ').title()
+            title_english = self._translate_swedish_title(title_swedish)
+            
+            logger.info(f"✅ Extracted from URL: Company='{company}', Title='{title_english}'")
+            return {'title': title_english, 'company': company}
         
-        # Last resort: return cleaned title
+        # STEP 4: Last resort - return cleaned title
+        logger.warning(f"⚠️ No pattern matched, returning cleaned title: '{cleaned_title}'")
         return {'title': cleaned_title, 'company': 'Unknown Company'}
     
     def _translate_swedish_title(self, swedish_title: str) -> str:
