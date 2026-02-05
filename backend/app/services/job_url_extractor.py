@@ -343,11 +343,11 @@ Return ONLY a JSON object:
                 '[class*="title"]', '[class*="job"]', '.role-title'
             ]
             
-            title = 'Unknown Position'
+            raw_title = 'Unknown Position'
             for selector in title_selectors:
                 elem = soup.select_one(selector)
                 if elem and len(elem.get_text(strip=True)) > 5:
-                    title = elem.get_text(strip=True)
+                    raw_title = elem.get_text(strip=True)
                     break
             
             # Extract company from domain or page
@@ -384,6 +384,22 @@ Return ONLY a JSON object:
                     description = elem.get_text(strip=True)
                     if len(description) > 100:  # Only use if substantial content
                         break
+            
+            # Check if this is a Swedish job posting (domain ends with .se or contains Swedish words)
+            is_swedish = (
+                '.se' in domain or 
+                any(word in raw_title.lower() for word in ['till', 'hos', 'på', 'utvecklare', 'ingenjör', 'konsult'])
+            )
+            
+            # Use AI parsing for Swedish titles
+            if is_swedish:
+                parsed = self._parse_swedish_job_title_with_ai(raw_title, description, url)
+                title = parsed.get('title', raw_title)
+                # Update company if AI found a better one
+                if parsed.get('company') and parsed.get('company') != 'Unknown Company':
+                    company = parsed.get('company')
+            else:
+                title = raw_title
             
             requirements = self._extract_requirements_from_text(description)
             
