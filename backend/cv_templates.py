@@ -18,7 +18,7 @@ class CVTemplateManager:
     """Manages CV templates for different roles"""
     
     # Role categories and their keywords
-    # Now using REAL templates from job_applications/ folder
+    # Now using REAL templates from templates/cv_templates/ folder
     # Priority: Lower number = higher priority (checked first)
     # Tip: More specific roles should have lower priority numbers
     ROLE_CATEGORIES = {
@@ -30,8 +30,26 @@ class CVTemplateManager:
             'priority': 1
         },
         'android_developer': {
-            'keywords': ['android', 'kotlin', 'android app', 'apk', 'mobile app', 'aosp', 'android sdk', 'jetpack', 'react native', 'mobile developer'],
+            'keywords': ['android', 'android app', 'apk', 'mobile app', 'aosp', 'android sdk', 'jetpack', 'mobile developer', 'android studio'],
             'cv_template': 'templates/cv_templates/android_developer_template.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
+            'priority': 1
+        },
+        'kotlin_app_developer': {
+            'keywords': ['kotlin', 'android auto', 'automotive', 'in-vehicle', 'ivi', 'infotainment', 'kotlin developer', 'kotlin android', 'app developer', 'mobile developer'],
+            'cv_template': 'templates/cv_templates/kotlin_app_developer_template.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
+            'priority': 1
+        },
+        'ios_developer': {
+            'keywords': ['ios', 'swift', 'swiftui', 'xcode', 'ios app', 'iphone', 'ipad', 'apple', 'cocoa', 'objective-c'],
+            'cv_template': 'templates/cv_templates/kotlin_app_developer_template.tex',  # Uses same template, shows React Native + Swift
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
+            'priority': 1
+        },
+        'react_native_developer': {
+            'keywords': ['react native', 'cross-platform', 'expo', 'react native app', 'mobile cross-platform'],
+            'cv_template': 'templates/cv_templates/kotlin_app_developer_template.tex',  # Uses same template, shows React Native
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
@@ -58,6 +76,20 @@ class CVTemplateManager:
             'priority': 1
         },
 
+        # === LANGUAGE-SPECIFIC DEVELOPERS (Priority 2) ===
+        'dotnet_developer': {
+            'keywords': ['c#', '.net', 'asp.net', '.net core', 'asp.net core', 'entity framework', 'blazor', 'xamarin', 'microsoft stack', 'azure', 'c sharp'],
+            'cv_template': 'templates/cv_templates/dotnet_developer_template.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
+            'priority': 2
+        },
+        'java_developer': {
+            'keywords': ['java', 'spring boot', 'spring framework', 'hibernate', 'jpa', 'maven', 'gradle', 'java developer'],
+            'cv_template': 'templates/cv_templates/java_developer_template.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
+            'priority': 2
+        },
+
         # === FULLSTACK (Priority 2) - Explicit fullstack keywords win ===
         'fullstack_developer': {
             'keywords': [
@@ -70,7 +102,7 @@ class CVTemplateManager:
                 'openai api', 'claude api', 'gpt api', 'ai apis',
                 'generative ai solutions', 'ai solutions', 'llm-based applications'
             ],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/fullstack_developer_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 2
         },
@@ -79,7 +111,6 @@ class CVTemplateManager:
         'backend_developer': {
             'keywords': [
                 'backend developer', 'back-end developer', 'api developer', 'software engineer', 'software developer',
-                'java developer', 'spring boot', 'spring framework', 'hibernate', 'jpa', 'kotlin',
                 'microservices', 'server-side', 'restful api', 'distributed systems', 'elasticsearch',
                 'cassandra', 'big data', 'search engines', 'petabyte', 'analytics systems',
                 # AI integration keywords (using AI, not building AI)
@@ -89,7 +120,7 @@ class CVTemplateManager:
                 'generative ai solutions', 'ai solutions', 'llm-based applications',
                 'vector search', 'semantic search', 'applied use of', 'use cases powered by'
             ],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/fullstack_developer_template.tex',  # Use fullstack as fallback
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 3
         },
@@ -109,7 +140,7 @@ class CVTemplateManager:
         },
         'platform_engineer': {
             'keywords': ['platform engineer', 'platform team', 'internal tools', 'developer experience', 'devex', 'infrastructure platform', 'golden path'],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/devops_cloud_template.tex',  # Use devops as fallback
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 5
         },
@@ -125,7 +156,7 @@ class CVTemplateManager:
         # === KAMSTRUP (Priority 1 - Company Specific) ===
         'kamstrup': {
             'keywords': ['kamstrup', 'customer support engineer', 'kamstrup customer support'],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/incident_management_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
@@ -133,7 +164,7 @@ class CVTemplateManager:
         # === FINOPS / COST OPTIMIZATION (Priority 5) ===
         'finops': {
             'keywords': ['finops', 'cloud cost', 'cost optimization', 'cloud economics', 'cloud billing', 'reserved instances', 'savings plans', 'cost management', 'cloud financial'],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/devops_cloud_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 5
         },
@@ -141,7 +172,7 @@ class CVTemplateManager:
         # === ARCHITECT ROLES (Priority 6) ===
         'integration_architect': {
             'keywords': ['integration architect', 'solution architect', 'enterprise architect', 'api architect', 'system integration', 'middleware', 'esb', 'mulesoft', 'api gateway'],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/fullstack_developer_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 6
         },
@@ -149,7 +180,7 @@ class CVTemplateManager:
         # === GENERIC CLOUD (Priority 7) - Fallback ===
         'cloud_engineer': {
             'keywords': ['cloud', 'infrastructure', 'cloud platform', 'cloud architecture', 'cloud migration', 'cloud native'],
-            'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
+            'cv_template': 'templates/cv_templates/devops_cloud_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 7
         }
