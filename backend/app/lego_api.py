@@ -423,6 +423,8 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
             potential_company = by_pattern.group(1).strip()
             # Clean up - remove trailing words that aren't part of company name
             potential_company = re.sub(r'\s+(Role|Location|Remote|Assignment|Seniority).*$', '', potential_company, flags=re.IGNORECASE)
+            # Remove "by" if it's at the start (shouldn't happen with regex, but safety check)
+            potential_company = re.sub(r'^by\s+', '', potential_company, flags=re.IGNORECASE)
             if len(potential_company) > 3 and len(potential_company) < 60:
                 company = potential_company
                 print(f"📍 Found company via 'by [Company]' pattern: {company}")
