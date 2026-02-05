@@ -221,17 +221,26 @@ class JobUrlExtractor:
             import json
             
             api_key = os.environ.get('ANTHROPIC_API_KEY')
+            backup_api_key = os.environ.get('ANTHROPIC_API_KEY_BACKUP')
             base_url = os.environ.get('ANTHROPIC_BASE_URL', 'https://api.z.ai/api/anthropic')
             
-            if not api_key:
+            if not api_key and not backup_api_key:
                 logger.warning("⚠️ No ANTHROPIC_API_KEY found in environment, falling back to regex")
                 return self._parse_swedish_title_regex(raw_title, url)
             
-            logger.info(f"🔑 API Key found: {api_key[:20]}...")
-            logger.info(f"🌐 Base URL: {base_url}")
+            # Try primary key first, then backup
+            api_keys_to_try = [api_key, backup_api_key] if api_key else [backup_api_key]
             
-            # Determine if Swedish or English
-            is_swedish = any(word in page_text.lower()[:1000] for word in ['till', 'hos', 'på', 'utvecklare', 'ingenjör', 'söker vi'])
+            for idx, current_key in enumerate(api_keys_to_try):
+                if not current_key:
+                    continue
+                    
+                key_label = "primary" if idx == 0 else "backup"
+                logger.info(f"🔑 Trying {key_label} API key: {current_key[:20]}...")
+                logger.info(f"🌐 Base URL: {base_url}")
+                
+                # Determine if Swedish or English
+                is_swedish = any(word in page_text.lower()[:1000] for word in ['till', 'hos', 'på', 'utvecklare', 'ingenjör', 'söker vi'])
             
             prompt = f"""Extract job information from this webpage. This is CRITICAL - you must identify the ACTUAL hiring company, NOT the recruitment agency.
 
@@ -275,47 +284,56 @@ NOW EXTRACT FROM THE PAGE ABOVE.
 Return ONLY valid JSON in this exact format:
 {{"title": "Job Title", "company": "Company Name", "location": "City, Country"}}"""
 
-            url_api = f"{base_url}/v1/messages"
-            headers = {
-                'Content-Type': 'application/json',
-                'Authorization': f'Bearer {api_key}',
-                'anthropic-version': '2023-06-01'
-            }
-            
-            payload = {
-                "model": "glm-4.7",
-                "max_tokens": 500,
-                "messages": [{"role": "user", "content": prompt}]
-            }
-            
-            logger.info(f"🤖 Calling AI to extract from: {url}")
-            logger.info(f"📤 Request URL: {url_api}")
-            
-            response = req.post(url_api, headers=headers, json=payload, timeout=20)
-            
-            logger.info(f"📥 Response status: {response.status_code}")
-            
-            if response.status_code == 200:
-                result = response.json()
-                if 'content' in result and len(result['content']) > 0:
-                    text = result['content'][0].get('text', '{}')
-                    logger.info(f"🤖 AI Response: {text}")
-                    # Extract JSON from response
-                    json_match = re.search(r'\{[^}]+\}', text)
-                    if json_match:
-                        parsed = json.loads(json_match.group())
-                        logger.info(f"✅ AI extracted: Company='{parsed.get('company')}', Title='{parsed.get('title')}'")
-                        return parsed
+                url_api = f"{base_url}/v1/messages"
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {current_key}',
+                    'anthropic-version': '2023-06-01'
+                }
+                
+                payload = {
+                    "model": "glm-4.6",
+                    "max_tokens": 500,
+                    "messages": [{"role": "user", "content": prompt}]
+                }
+                
+                logger.info(f"🤖 Calling AI ({key_label} key) to extract from: {url}")
+                logger.info(f"📤 Request URL: {url_api}")
+                
+                response = req.post(url_api, headers=headers, json=payload, timeout=20)
+                
+                logger.info(f"📥 Response status: {response.status_code}")
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    if 'content' in result and len(result['content']) > 0:
+                        text = result['content'][0].get('text', '{}')
+                        logger.info(f"🤖 AI Response: {text}")
+                        # Extract JSON from response
+                        json_match = re.search(r'\{[^}]+\}', text)
+                        if json_match:
+                            parsed = json.loads(json_match.group())
+                            logger.info(f"✅ AI extracted ({key_label} key): Company='{parsed.get('company')}', Title='{parsed.get('title')}'")
+                            return parsed
+                        else:
+                            logger.warning(f"⚠️ No JSON found in AI response: {text}")
                     else:
-                        logger.warning(f"⚠️ No JSON found in AI response: {text}")
+                        logger.warning(f"⚠️ No content in AI response: {result}")
+                elif response.status_code == 500:
+                    error_data = response.json() if response.headers.get('content-type') == 'application/json' else {}
+                    error_msg = error_data.get('error', {}).get('message', '')
+                    if 'insufficient balance' in error_msg:
+                        logger.warning(f"⚠️ {key_label.capitalize()} API key has insufficient balance, trying next key...")
+                        continue  # Try next API key
+                    else:
+                        logger.warning(f"⚠️ AI API failed with status {response.status_code}")
+                        logger.warning(f"📝 Response body: {response.text[:500]}")
                 else:
-                    logger.warning(f"⚠️ No content in AI response: {result}")
-            else:
-                logger.warning(f"⚠️ AI API failed with status {response.status_code}")
-                logger.warning(f"📝 Response body: {response.text[:500]}")
+                    logger.warning(f"⚠️ AI API failed with status {response.status_code}")
+                    logger.warning(f"📝 Response body: {response.text[:500]}")
             
-            # Fallback to regex
-            logger.info("⚙️ Falling back to regex parsing")
+            # All API keys failed, fallback to regex
+            logger.info("⚙️ All API keys exhausted, falling back to regex parsing")
             return self._parse_swedish_title_regex(raw_title, url)
             
         except Exception as e:
