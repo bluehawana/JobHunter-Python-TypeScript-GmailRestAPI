@@ -29,6 +29,12 @@ class CVTemplateManager:
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
             'priority': 1
         },
+        'project_manager': {
+            'keywords': ['project manager', 'technical project manager', 'pm', 'project lead', 'program manager', 'project coordinator', 'agile project', 'scrum master', 'project management', 'pmp', 'stakeholder management', 'budget management', 'risk management', 'project delivery', 'cross-functional teams'],
+            'cv_template': 'templates/cv_templates/project_manager_template.tex',
+            'cl_template': 'templates/cl_templates/project_manager_cl_template.tex',
+            'priority': 1
+        },
         'android_developer': {
             'keywords': ['android', 'android app', 'apk', 'mobile app', 'aosp', 'android sdk', 'jetpack', 'mobile developer', 'android studio'],
             'cv_template': 'templates/cv_templates/android_developer_template.tex',
