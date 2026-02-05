@@ -397,20 +397,35 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     
     # PRIORITY: Check for explicit company names first
     full_text = ' '.join(lines).lower()
+    
+    # Check for "by [Company]" or "Published by [Company]" pattern
+    by_pattern = re.search(r'(?:published\s+)?by\s+([A-Z][A-Za-z\s&]+(?:AB|Europe|Technology|Group|Ltd|Inc|GmbH)?)', job_description, re.IGNORECASE)
+    if by_pattern:
+        potential_company = by_pattern.group(1).strip()
+        # Clean up - remove trailing words that aren't part of company name
+        potential_company = re.sub(r'\s+(Role|Location|Remote|Assignment|Seniority).*$', '', potential_company, flags=re.IGNORECASE)
+        if len(potential_company) > 3 and len(potential_company) < 60:
+            company = potential_company
+            print(f"📍 Found company via 'by [Company]' pattern: {company}")
+    
+    # Priority company list
     priority_companies = [
+        ('infimotion', 'InfiMotion Technology Europe AB'),
         ('kamstrup', 'Kamstrup'),
         ('göteborgs stad', 'Göteborgs Stad'),
         ('goteborgs stad', 'Göteborgs Stad'),
         ('city of gothenburg', 'Göteborgs Stad'),
         ('stockholms stad', 'Stockholms Stad'),
         ('malmö stad', 'Malmö Stad'),
+        ('aros kapital', 'Aros Kapital'),
     ]
     
-    for search_term, proper_name in priority_companies:
-        if search_term in full_text:
-            company = proper_name
-            print(f"📍 Found priority company: {company}")
-            break
+    if company == 'Company':  # Only check if not already found
+        for search_term, proper_name in priority_companies:
+            if search_term in full_text:
+                company = proper_name
+                print(f"📍 Found priority company: {company}")
+                break
     
     # First pass: Look for title using "As a [Job Title]" pattern (highest priority)
     for i, line in enumerate(lines[:30]):
