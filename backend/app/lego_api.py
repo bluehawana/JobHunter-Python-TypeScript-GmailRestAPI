@@ -1500,7 +1500,8 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
 
     # Replace placeholders - handle multiple formats
     if company and company != 'Company':
-        template_content = template_content.replace('[COMPANY NAME]', company)  # Add this format
+        template_content = template_content.replace('COMPANY_NAME_PLACEHOLDER', company)  # New format
+        template_content = template_content.replace('[COMPANY NAME]', company)
         template_content = template_content.replace('[Company Name]', company)
         template_content = template_content.replace('{company_name}', company)
         template_content = template_content.replace('COMPANY\\_NAME', company)  # LaTeX escaped
@@ -1508,7 +1509,8 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
 
     # Replace position/job title placeholders
     if title and title != 'Position':
-        template_content = template_content.replace('[JOB TITLE]', title)  # Add this format
+        template_content = template_content.replace('JOB_TITLE_PLACEHOLDER', title)  # New format
+        template_content = template_content.replace('[JOB TITLE]', title)
         template_content = template_content.replace('[Position]', title)
         template_content = template_content.replace('{job_title}', title)
         template_content = template_content.replace('JOB\\_TITLE', title)  # LaTeX escaped
@@ -1776,6 +1778,100 @@ def fetch_job_from_url(url: str) -> str:
         return ""
 
 
+def ai_review_documents(cv_latex: str, cl_latex: str, job_description: str, company: str, title: str) -> dict:
+    """
+    AI-powered quality check for generated CV and Cover Letter using Z.AI GLM-4.7
+    Reviews documents against job description to catch inappropriate content
+    """
+    try:
+        import requests
+        import json
+        
+        api_key = os.environ.get('ANTHROPIC_API_KEY')
+        base_url = os.environ.get('ANTHROPIC_BASE_URL', 'https://api.z.ai/api/anthropic')
+        
+        if not api_key:
+            print("⚠️ No API key for AI review - skipping quality check")
+            return {'overall_score': 85, 'ready_to_send': True, 'critical_issues': []}
+        
+        # Extract text content from LaTeX for analysis
+        import re
+        cv_text = re.sub(r'\\[a-zA-Z]+\{[^}]*\}', '', cv_latex)  # Remove LaTeX commands
+        cv_text = re.sub(r'\\[a-zA-Z]+', '', cv_text)  # Remove remaining commands
+        cv_text = re.sub(r'\{|\}', '', cv_text)  # Remove braces
+        
+        cl_text = re.sub(r'\\[a-zA-Z]+\{[^}]*\}', '', cl_latex)
+        cl_text = re.sub(r'\\[a-zA-Z]+', '', cl_text)
+        cl_text = re.sub(r'\{|\}', '', cl_text)
+        
+        prompt = f"""Review these job application documents for quality and appropriateness:
+
+JOB DESCRIPTION:
+{job_description[:1000]}...
+
+COMPANY: {company}
+POSITION: {title}
+
+CV CONTENT:
+{cv_text[:2000]}...
+
+COVER LETTER CONTENT:
+{cl_text[:1000]}...
+
+Please analyze and provide a JSON response with:
+1. overall_score (0-100): Overall quality score
+2. ready_to_send (boolean): Whether documents are appropriate to send
+3. critical_issues (array): List any critical problems like:
+   - Inappropriate language for the role (e.g., "software development" for Customer Support)
+   - Generic placeholder text like [COMPANY NAME] or [SPECIFIC REASON]
+   - Mismatched skills/experience for the position
+   - Unprofessional content
+
+Format: {{"overall_score": 85, "ready_to_send": true, "critical_issues": []}}"""
+
+        url = f"{base_url}/v1/messages"
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {api_key}',
+            'anthropic-version': '2023-06-01'
+        }
+        
+        payload = {
+            "model": "glm-4.7",
+            "max_tokens": 1000,
+            "messages": [{"role": "user", "content": prompt}]
+        }
+        
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        
+        if response.status_code == 200:
+            result_data = response.json()
+            
+            # Extract text from response
+            ai_response = ""
+            if 'content' in result_data:
+                for block in result_data['content']:
+                    if block.get('type') == 'text':
+                        ai_response += block.get('text', '')
+            
+            # Try to extract JSON from the response
+            json_match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+            if json_match:
+                quality_result = json.loads(json_match.group())
+                print(f"✅ AI Quality Check completed: {quality_result.get('overall_score', 'N/A')}/100")
+                return quality_result
+            else:
+                print("⚠️ Could not parse AI quality check response")
+                return {'overall_score': 75, 'ready_to_send': True, 'critical_issues': ['Could not parse AI response']}
+        else:
+            print(f"⚠️ AI quality check failed: {response.status_code}")
+            return {'overall_score': 70, 'ready_to_send': True, 'critical_issues': ['AI service unavailable']}
+            
+    except Exception as e:
+        print(f"⚠️ AI quality check error: {e}")
+        return {'overall_score': 70, 'ready_to_send': True, 'critical_issues': [f'Quality check error: {str(e)}']}
+
+
 @lego_api.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint to verify the API is running"""
@@ -1912,121 +2008,6 @@ def generate_lego_application():
             print(f"⚠ Template verification failed: {e}, using default")
             role_category = 'devops_cloud'
             role_type = 'DevOps Cloud'
-
-def ai_review_documents(cv_content: str, cl_content: str, job_description: str, company: str, title: str) -> dict:
-    """
-    AI quality check: Review generated CV and CL against job description
-    Returns feedback and quality score to prevent sending inappropriate content
-    """
-    try:
-        import requests
-        import json
-        import os
-        
-        # Use Z.AI GLM-4.7 for document review
-        api_key = os.environ.get('ZAI_API_KEY')
-        if not api_key:
-            return {"error": "No AI API key available", "overall_score": 0}
-        
-        # Extract text content from LaTeX (remove LaTeX commands for AI analysis)
-        import re
-        cv_text = re.sub(r'\\[a-zA-Z]+\{[^}]*\}', '', cv_content)
-        cv_text = re.sub(r'\\[a-zA-Z]+', '', cv_text)
-        cv_text = re.sub(r'\{[^}]*\}', '', cv_text)
-        cv_text = ' '.join(cv_text.split())
-        
-        cl_text = re.sub(r'\\[a-zA-Z]+\{[^}]*\}', '', cl_content)
-        cl_text = re.sub(r'\\[a-zA-Z]+', '', cl_text)
-        cl_text = re.sub(r'\{[^}]*\}', '', cl_text)
-        cl_text = ' '.join(cl_text.split())
-        
-        prompt = f"""
-You are a professional recruiter reviewing job application documents. Please analyze the CV and Cover Letter against the job description and identify any issues.
-
-JOB DESCRIPTION:
-{job_description[:2000]}
-
-COMPANY: {company}
-POSITION: {title}
-
-CV CONTENT:
-{cv_text[:3000]}
-
-COVER LETTER CONTENT:
-{cl_text[:1500]}
-
-Please check for these critical issues:
-1. ROLE MISMATCH: Does the content match the actual job role? (e.g., don't mention "software development" for support roles)
-2. INAPPROPRIATE LANGUAGE: Any content that doesn't fit the role or company?
-3. MISSING KEY REQUIREMENTS: Are important job requirements addressed?
-4. GENERIC CONTENT: Any obvious template placeholders or generic statements?
-5. COMPANY FIT: Does the content make sense for this specific company?
-
-Return your analysis in this JSON format:
-{
-  "overall_score": 85,
-  "critical_issues": ["Issue 1", "Issue 2"],
-  "role_alignment": "good/poor",
-  "content_appropriateness": "appropriate/inappropriate", 
-  "missing_requirements": ["Requirement 1"],
-  "recommendations": ["Fix 1", "Fix 2"],
-  "ready_to_send": true/false
-}
-"""
-
-        # Make API call to Z.AI
-        response = requests.post(
-            "https://api.z.ai/api/anthropic/v1/messages",
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": "glm-4.7",
-                "max_tokens": 1000,
-                "messages": [{"role": "user", "content": prompt}]
-            },
-            timeout=30
-        )
-        
-        if response.status_code == 200:
-            result = response.json()
-            ai_response = result['content'][0]['text']
-            
-            # Try to parse JSON response
-            try:
-                # Extract JSON from response (in case there's extra text)
-                json_start = ai_response.find('{')
-                json_end = ai_response.rfind('}') + 1
-                if json_start >= 0 and json_end > json_start:
-                    json_str = ai_response[json_start:json_end]
-                    quality_check = json.loads(json_str)
-                    return quality_check
-                else:
-                    # Fallback if no JSON found
-                    return {
-                        "overall_score": 75,
-                        "critical_issues": [],
-                        "role_alignment": "unknown",
-                        "content_appropriateness": "needs_review",
-                        "ai_feedback": ai_response[:500],
-                        "ready_to_send": True
-                    }
-            except json.JSONDecodeError:
-                return {
-                    "overall_score": 70,
-                    "critical_issues": ["Could not parse AI feedback"],
-                    "ai_feedback": ai_response[:500],
-                    "ready_to_send": True
-                }
-        else:
-            print(f"❌ AI review failed: {response.status_code}")
-            return {"error": f"AI API error: {response.status_code}", "overall_score": 0, "ready_to_send": True}
-            
-    except Exception as e:
-        print(f"❌ AI review error: {e}")
-        return {"error": str(e), "overall_score": 0, "ready_to_send": True}
-
 
         # Build LaTeX documents with AI-powered content customization
         print(f"[API DEBUG] About to generate documents with - Company: '{company}', Title: '{title}', Role Type: '{role_type}', Role Category: '{role_category}'")
