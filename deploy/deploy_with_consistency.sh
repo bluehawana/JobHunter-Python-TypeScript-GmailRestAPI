@@ -4,8 +4,8 @@
 
 set -e
 
-SERVER="harvad@jobs.bluehawana.com"
-PORT="22"
+SERVER="alphavps"
+PORT=""  # Not needed with SSH alias
 REMOTE_PATH="/var/www/lego-job-generator"
 SERVICE_NAME="lego-backend"
 
@@ -25,7 +25,7 @@ echo ""
 # Step 2: Pull on server and restart atomically (single SSH session)
 echo "Step 2: Pull code and atomic restart on server..."
 echo "--------------------------------------------------"
-ssh $SERVER -p $PORT << 'ENDSSH'
+ssh $SERVER << 'ENDSSH'
 # Pull latest code
 echo "📥 Pulling latest code from git..."
 cd /var/www/lego-job-generator
@@ -73,7 +73,7 @@ echo ""
 # Step 3: Verify deployment
 echo "Step 3: Verifying deployment..."
 echo "-------------------------------"
-ssh $SERVER -p $PORT << 'ENDSSH'
+ssh $SERVER << 'ENDSSH'
 sudo systemctl status lego-backend --no-pager | head -15
 ENDSSH
 echo ""
