@@ -329,6 +329,95 @@ Return ONLY a JSON object:
         swedish_lower = swedish_title.lower().strip()
         return translations.get(swedish_lower, swedish_title.title())
     
+    def _parse_job_title_with_ai(self, raw_title: str, description: str, url: str, fallback_company: str) -> Dict:
+        """Use AI to parse English job titles and extract company names"""
+        try:
+            import os
+            import requests as req
+            import json
+            
+            api_key = os.environ.get('ANTHROPIC_API_KEY')
+            base_url = os.environ.get('ANTHROPIC_BASE_URL', 'https://api.z.ai/api/anthropic')
+            
+            if not api_key:
+                # Fallback to regex parsing
+                return self._parse_english_title_regex(raw_title, fallback_company)
+            
+            prompt = f"""Parse this job posting and extract the job title and company name.
+
+RAW TITLE: {raw_title}
+URL: {url}
+DESCRIPTION (first 500 chars): {description[:500]}
+FALLBACK COMPANY: {fallback_company}
+
+Job titles often use formats like:
+- "Senior Developer at Google"
+- "Software Engineer - Microsoft"
+- "Full Stack Developer | Amazon"
+- "DevOps Engineer (Netflix)"
+
+TASK:
+1. Identify the clean job title (remove company name if present)
+2. Identify the company name (extract from title if present, otherwise use fallback)
+3. Handle separators: "at", "-", "|", "()", "/"
+
+Return ONLY a JSON object:
+{{"title": "Clean Job Title", "company": "Company Name"}}"""
+
+            url_api = f"{base_url}/v1/messages"
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {api_key}',
+                'anthropic-version': '2023-06-01'
+            }
+            
+            payload = {
+                "model": "glm-4.7",
+                "max_tokens": 300,
+                "messages": [{"role": "user", "content": prompt}]
+            }
+            
+            response = req.post(url_api, headers=headers, json=payload, timeout=15)
+            
+            if response.status_code == 200:
+                result = response.json()
+                if 'content' in result and len(result['content']) > 0:
+                    text = result['content'][0].get('text', '{}')
+                    # Extract JSON from response
+                    json_match = re.search(r'\{[^}]+\}', text)
+                    if json_match:
+                        parsed = json.loads(json_match.group())
+                        logger.info(f"AI parsed English title: {parsed}")
+                        return parsed
+            
+            # Fallback to regex
+            return self._parse_english_title_regex(raw_title, fallback_company)
+            
+        except Exception as e:
+            logger.warning(f"AI parsing failed, using regex fallback: {e}")
+            return self._parse_english_title_regex(raw_title, fallback_company)
+    
+    def _parse_english_title_regex(self, raw_title: str, fallback_company: str) -> Dict:
+        """Fallback regex parsing for English job titles"""
+        # Common English patterns
+        patterns = [
+            r'(.+?)\s+at\s+(.+)',      # "Title at Company"
+            r'(.+?)\s+-\s+(.+)',       # "Title - Company"
+            r'(.+?)\s+\|\s+(.+)',      # "Title | Company"
+            r'(.+?)\s+\((.+?)\)',      # "Title (Company)"
+            r'(.+?)\s+/\s+(.+)',       # "Title / Company"
+        ]
+        
+        for pattern in patterns:
+            match = re.match(pattern, raw_title, re.IGNORECASE)
+            if match:
+                title = match.group(1).strip()
+                company = match.group(2).strip()
+                return {'title': title, 'company': company}
+        
+        # No pattern matched, return as-is
+        return {'title': raw_title, 'company': fallback_company}
+    
     def _extract_generic_job(self, url: str) -> Dict:
         """Extract job details from generic company career pages"""
         try:
@@ -391,15 +480,18 @@ Return ONLY a JSON object:
                 any(word in raw_title.lower() for word in ['till', 'hos', 'på', 'utvecklare', 'ingenjör', 'konsult'])
             )
             
-            # Use AI parsing for Swedish titles
+            # Use AI parsing for ALL job titles to handle complex formats
+            # Examples: "Senior Developer at Google", "Software Engineer - Microsoft", "Fullstackutvecklare till Aros Kapital"
             if is_swedish:
                 parsed = self._parse_swedish_job_title_with_ai(raw_title, description, url)
-                title = parsed.get('title', raw_title)
-                # Update company if AI found a better one
-                if parsed.get('company') and parsed.get('company') != 'Unknown Company':
-                    company = parsed.get('company')
             else:
-                title = raw_title
+                # Use AI for English titles too (handles "at", "-", "|" separators)
+                parsed = self._parse_job_title_with_ai(raw_title, description, url, company)
+            
+            title = parsed.get('title', raw_title)
+            # Update company if AI found a better one
+            if parsed.get('company') and parsed.get('company') != 'Unknown Company':
+                company = parsed.get('company')
             
             requirements = self._extract_requirements_from_text(description)
             
