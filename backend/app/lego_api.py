@@ -2126,8 +2126,37 @@ def generate_lego_application():
     try:
         data = request.json
         job_description = data.get('jobDescription', '')
+        job_url = data.get('jobUrl', '')
         analysis = data.get('analysis', {})
         customization_notes = data.get('customizationNotes', '')
+
+        # EXTRACT FROM URL IF PROVIDED: Use backend URL extraction for accurate parsing
+        if job_url and job_url.strip():
+            print(f"🔗 Extracting job details from URL: {job_url}")
+            try:
+                from app.services.job_url_extractor import JobUrlExtractor
+                extractor = JobUrlExtractor()
+                extraction_result = extractor.extract_job_details(job_url)
+                
+                if extraction_result.get('success') and extraction_result.get('job_details'):
+                    job_details = extraction_result['job_details']
+                    print(f"✅ URL Extraction successful:")
+                    print(f"   Company: {job_details.get('company')}")
+                    print(f"   Title: {job_details.get('title')}")
+                    print(f"   Location: {job_details.get('location')}")
+                    
+                    # Override analysis with extracted data (URL extraction is more accurate)
+                    if job_details.get('company'):
+                        analysis['company'] = job_details['company']
+                    if job_details.get('title'):
+                        analysis['title'] = job_details['title']
+                    if job_details.get('description') and not job_description:
+                        job_description = job_details['description']
+                else:
+                    print(f"⚠️ URL extraction failed: {extraction_result.get('error', 'Unknown error')}")
+            except Exception as e:
+                print(f"⚠️ URL extraction error: {e}")
+                # Continue with analysis data as fallback
 
         role_type = analysis.get('roleType', 'DevOps Engineer')
         role_category = analysis.get('roleCategory', 'devops_cloud')
