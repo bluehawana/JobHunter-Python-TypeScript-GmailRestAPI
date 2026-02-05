@@ -357,6 +357,24 @@ PROJECTS_BRICKS = {
 }
 
 
+def sanitize_filename(text: str) -> str:
+    """
+    Convert company name to safe filename format.
+    Examples:
+    - "Aros Kapital" -> "ArosKapital"
+    - "Göteborgs Stad" -> "GoteborgStad"
+    - "SKF Group" -> "SKFGroup"
+    """
+    # Remove special characters and replace spaces
+    text = text.replace(' ', '')
+    # Remove Swedish characters
+    text = text.replace('å', 'a').replace('ä', 'a').replace('ö', 'o')
+    text = text.replace('Å', 'A').replace('Ä', 'A').replace('Ö', 'O')
+    # Remove any remaining non-alphanumeric characters
+    text = ''.join(c for c in text if c.isalnum())
+    return text
+
+
 def extract_company_and_title_from_text(job_description: str) -> tuple:
     """
     Improved extraction of company name and job title from job description text.
@@ -2221,6 +2239,11 @@ def generate_lego_application():
         output_dir = Path('generated_applications') / datetime.now().strftime('%Y%m%d_%H%M%S')
         output_dir.mkdir(parents=True, exist_ok=True)
         
+        # Generate smart filenames based on company name
+        company_safe = sanitize_filename(company)
+        cv_filename = f'cv_harvad_{company_safe}.pdf'
+        cl_filename = f'cl_harvad_{company_safe}.pdf'
+        
         # Save LaTeX files
         cv_tex_path = output_dir / 'cv.tex'
         cl_tex_path = output_dir / 'cl.tex'
@@ -2231,9 +2254,9 @@ def generate_lego_application():
         with open(cl_tex_path, 'w', encoding='utf-8') as f:
             f.write(cl_latex)
         
-        # Compile to PDF
-        cv_pdf_path = output_dir / 'cv.pdf'
-        cl_pdf_path = output_dir / 'cl.pdf'
+        # Compile to PDF (temporary names)
+        cv_pdf_temp = output_dir / 'cv.pdf'
+        cl_pdf_temp = output_dir / 'cl.pdf'
         
         # Compile CV
         cv_result = subprocess.run(
@@ -2260,13 +2283,21 @@ def generate_lego_application():
             print(f"CL PDF compilation output: {cl_result.stdout}")
         
         # Check if PDFs were created
-        if not cv_pdf_path.exists():
-            print(f"ERROR: CV PDF was not created at {cv_pdf_path}")
+        if not cv_pdf_temp.exists():
+            print(f"ERROR: CV PDF was not created at {cv_pdf_temp}")
             return jsonify({'error': 'CV PDF compilation failed'}), 500
         
-        if not cl_pdf_path.exists():
-            print(f"ERROR: CL PDF was not created at {cl_pdf_path}")
+        if not cl_pdf_temp.exists():
+            print(f"ERROR: CL PDF was not created at {cl_pdf_temp}")
             return jsonify({'error': 'CL PDF compilation failed'}), 500
+        
+        # Rename PDFs to smart filenames
+        cv_pdf_path = output_dir / cv_filename
+        cl_pdf_path = output_dir / cl_filename
+        cv_pdf_temp.rename(cv_pdf_path)
+        cl_pdf_temp.rename(cl_pdf_path)
+        
+        print(f"✅ Generated files: {cv_filename}, {cl_filename}")
         
         # Clean up auxiliary files
         for ext in ['.aux', '.log', '.out']:
@@ -2277,10 +2308,10 @@ def generate_lego_application():
         response_data = {
             'success': True,
             'documents': {
-                'cvUrl': f'/api/download/{output_dir.name}/cv.pdf',
-                'clUrl': f'/api/download/{output_dir.name}/cl.pdf',
-                'cvPreview': f'/api/preview/{output_dir.name}/cv.pdf',
-                'clPreview': f'/api/preview/{output_dir.name}/cl.pdf'
+                'cvUrl': f'/api/download/{output_dir.name}/{cv_filename}',
+                'clUrl': f'/api/download/{output_dir.name}/{cl_filename}',
+                'cvPreview': f'/api/preview/{output_dir.name}/{cv_filename}',
+                'clPreview': f'/api/preview/{output_dir.name}/{cl_filename}'
             },
             'templateInfo': {
                 'selectedRole': role_category,
