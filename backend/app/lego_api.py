@@ -1498,23 +1498,28 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
         for acronym in acronyms:
             title = re.sub(r'\b' + acronym.title() + r'\b', acronym, title, flags=re.IGNORECASE)
 
-    # Replace placeholders - handle multiple formats
+    # Replace placeholders - CRITICAL: Replace longest placeholders FIRST to avoid partial replacements
+    # This prevents "COMPANY_NAME_PLACEHOLDER" from becoming "Aros Kapital_PLACEHOLDER" 
+    # when we later replace "COMPANY_NAME"
+    
     if company and company != 'Company':
-        template_content = template_content.replace('COMPANY_NAME_PLACEHOLDER', company)  # New format
+        # Replace longest patterns first
+        template_content = template_content.replace('COMPANY_NAME_PLACEHOLDER', company)
+        template_content = template_content.replace('COMPANY\\_NAME', company)  # LaTeX escaped
         template_content = template_content.replace('[COMPANY NAME]', company)
         template_content = template_content.replace('[Company Name]', company)
         template_content = template_content.replace('{company_name}', company)
-        template_content = template_content.replace('COMPANY\\_NAME', company)  # LaTeX escaped
-        template_content = template_content.replace('COMPANY_NAME', company)    # Regular
+        # Do NOT replace bare "COMPANY_NAME" as it might match parts of other placeholders
 
-    # Replace position/job title placeholders
+    # Replace position/job title placeholders - longest first
     if title and title != 'Position':
-        template_content = template_content.replace('JOB_TITLE_PLACEHOLDER', title)  # New format
+        # Replace longest patterns first
+        template_content = template_content.replace('JOB_TITLE_PLACEHOLDER', title)
+        template_content = template_content.replace('JOB\\_TITLE', title)  # LaTeX escaped
         template_content = template_content.replace('[JOB TITLE]', title)
         template_content = template_content.replace('[Position]', title)
         template_content = template_content.replace('{job_title}', title)
-        template_content = template_content.replace('JOB\\_TITLE', title)  # LaTeX escaped
-        template_content = template_content.replace('JOB_TITLE', title)    # Regular
+        # Do NOT replace bare "JOB_TITLE" as it might match parts of other placeholders
 
     # Replace any remaining placeholder patterns
     template_content = template_content.replace('[SPECIFIC REASON - customize per company]', 'your reputation for excellence and commitment to quality')
@@ -1549,6 +1554,161 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
     return template_content
 
 
+def ai_enhance_cover_letter(template_content: str, job_description: str, company: str, title: str) -> str:
+    """
+    Use GLM-4.7 to intelligently enhance cover letter with relevant experience
+    based on job description requirements
+    """
+    try:
+        import requests
+        import json
+        import re
+        
+        api_key = os.environ.get('ANTHROPIC_API_KEY')
+        base_url = os.environ.get('ANTHROPIC_BASE_URL', 'https://api.z.ai/api/anthropic')
+        
+        if not api_key:
+            print("⚠️ No API key - skipping AI enhancement")
+            return template_content
+        
+        # Extract key requirements from job description
+        jd_lower = job_description.lower()
+        
+        # Build context about candidate's full experience
+        candidate_context = """
+CANDIDATE BACKGROUND - Harvad (Hongzhi) Li:
+
+CHINA EXPERIENCE (2012-2016):
+- Market Manager at Bank of China (2015-2016): Corporate banking, client relationships, financial products
+- Corporate Finance Specialist at Industrial and Commercial Bank of China (2012-2015): Financial analysis, risk assessment, corporate lending, investment evaluation
+
+SWEDEN BUSINESS EXPERIENCE (2017-Present):
+- Entrepreneur & Co-founder, Hong Yan AB (2017-Present): Built restaurant business from 0 to 3.2M SEK revenue (2021), 25% annual growth
+- E-commerce & Payment Systems: Integrated Wix, Zettle, Stripe for online payments, booking systems, delivery services
+- Ranked #1 on Foodora (2021-2022), most recommended on Uber Eats and Tripadvisor
+- Business expansion: Online shopping, table reservations, delivery services integration
+
+WEB DEVELOPMENT & PROJECTS:
+- smrtmart.com: E-commerce platform (Next.js, React, Go, PostgreSQL, Stripe payment integration)
+- hongyanab.com: Company website with booking system, payment processing, customer management
+- bluehawana.com: Personal portfolio website showcasing technical projects
+- weather.bluehawana.com: ASCII-style weather forecast application
+- jobs.bluehawana.com: AI-powered job application platform (React, TypeScript, Python FastAPI)
+- models.bluehawana.com: NVIDIA NIM proxy Claude code demo platform
+- sagatoy.com: AI-powered interactive toy platform (React, Python, WebSockets, multi-LLM routing)
+
+TECHNICAL EXPERIENCE (2020-2025):
+- ECARX (2024-2025): IT/Infrastructure, Azure AKS, FinOps (45% cost reduction), monitoring, DevOps
+- Synteda (2023-2024): .NET development, Azure integration, full-stack applications
+- IT-Högskolan (2023): .NET Cloud Development, Azure DevOps, Terraform
+- Senior Material (2022): Platform architect, full-stack development, Microsoft ecosystem integration
+- Pembio (2020-2021): Full-stack development, Vue.js, Spring Boot, mission management system
+- CollabMaker (2020): Frontend development, React.js, career matching platform
+
+IT BUSINESS ANALYST CAPABILITIES:
+- Bridge between business and IT: Translate business requirements into technical solutions
+- Requirements gathering and stakeholder management (worked with Chinese and Swedish stakeholders)
+- Business process analysis and improvement (restaurant operations, e-commerce workflows)
+- System integration projects (Wix, Zettle, Stripe, Uber Eats, Foodora integrations)
+- Data analysis and reporting (sales analytics, customer insights, operational metrics)
+- Project coordination with technical teams and business stakeholders
+- Gap analysis and solution design for business problems
+
+CROSS-CULTURAL COMMUNICATION STRENGTHS:
+- Trilingual: English (Fluent), Swedish (B2), Chinese (Native)
+- Chinese-Swedish business bridge: Understand both cultures, work styles, and business practices
+- Experience working with Chinese banks (BOC, ICBC) and Swedish companies (ECARX, Synteda, Senior Material)
+- Cultural adaptation: Successfully transitioned from Chinese corporate banking to Swedish tech/startup environment
+- International team collaboration: Worked across 4 global offices at ECARX (China, Sweden, UK, Germany)
+- Client-facing experience in both Chinese and Swedish markets
+
+RELEVANT SKILLS FOR FINTECH/LENDING/BUSINESS:
+- Financial services experience (banking, corporate finance, lending, risk assessment)
+- Payment systems integration (Stripe, Zettle, Wix Payments)
+- E-commerce platforms and online payment processing
+- Business operations (payroll, accounting, inventory, customer management)
+- SME business growth and expansion strategies
+- Full-stack web development for business applications
+"""
+
+        prompt = f"""You are enhancing a cover letter for a job application. Based on the job description, intelligently select and emphasize the MOST RELEVANT experience from the candidate's background.
+
+JOB DESCRIPTION:
+{job_description[:1500]}
+
+COMPANY: {company}
+POSITION: {title}
+
+{candidate_context}
+
+CURRENT COVER LETTER TEMPLATE:
+{template_content}
+
+TASK: Enhance the cover letter by:
+1. If the job involves FINTECH/LENDING/FINANCE/PAYMENTS: Emphasize China banking experience, Sweden business experience with payment systems, e-commerce projects
+2. If the job involves FULL-STACK/WEB DEVELOPMENT: Emphasize web projects (smrtmart.com, hongyanab.com, jobs.bluehawana.com, sagatoy.com)
+3. If the job involves BUSINESS/ENTREPRENEURSHIP: Emphasize Hong Yan AB success story, SME growth, business expansion
+4. If the job involves TECHNICAL SUPPORT/IT: Emphasize ECARX experience, multilingual support, problem-solving
+5. If the job involves IT BUSINESS ANALYST/INTEGRATION: Emphasize bridge between business and IT, requirements gathering, stakeholder management, system integration projects
+6. If the job mentions CHINESE/ASIAN MARKETS or INTERNATIONAL: Emphasize Chinese-Swedish bilingual capabilities, cross-cultural communication, experience in both Chinese banks and Swedish tech companies
+7. If the job involves COMMUNICATION/STAKEHOLDER MANAGEMENT: Emphasize trilingual abilities (English, Swedish, Chinese), experience working with diverse teams across 4 global offices
+
+IMPORTANT:
+- Keep the existing LaTeX structure intact
+- Replace the generic "Body paragraph 2" section with specific, relevant experience
+- Mention 2-3 most relevant projects/experiences
+- Keep it concise (3-4 sentences per paragraph)
+- Maintain professional tone
+- Do NOT add placeholder text
+- Return ONLY the enhanced LaTeX code, no explanations
+
+Enhanced cover letter:"""
+
+        url = f"{base_url}/v1/messages"
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {api_key}',
+            'anthropic-version': '2023-06-01'
+        }
+        
+        payload = {
+            "model": "glm-4.7",
+            "max_tokens": 2000,
+            "messages": [{"role": "user", "content": prompt}]
+        }
+        
+        print("🤖 Calling GLM-4.7 to enhance cover letter with relevant experience...")
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        
+        if response.status_code == 200:
+            result = response.json()
+            if 'content' in result and len(result['content']) > 0:
+                enhanced_content = result['content'][0].get('text', '')
+                
+                # Clean up the response - remove markdown code blocks if present
+                enhanced_content = re.sub(r'```latex\n', '', enhanced_content)
+                enhanced_content = re.sub(r'```\n?', '', enhanced_content)
+                enhanced_content = enhanced_content.strip()
+                
+                # Validate it's still valid LaTeX
+                if '\\documentclass' in enhanced_content and '\\begin{document}' in enhanced_content:
+                    print("✅ Cover letter enhanced with relevant experience")
+                    return enhanced_content
+                else:
+                    print("⚠️ AI response not valid LaTeX, using original template")
+                    return template_content
+            else:
+                print("⚠️ Empty AI response, using original template")
+                return template_content
+        else:
+            print(f"⚠️ AI API error: {response.status_code}, using original template")
+            return template_content
+            
+    except Exception as e:
+        print(f"⚠️ Error in AI enhancement: {e}, using original template")
+        return template_content
+
+
 def build_lego_cover_letter(role_type: str, company: str, title: str, role_category: str = None, job_description: str = "", customization_notes: str = "") -> str:
     """Build cover letter using LEGO bricks - Template-based with customization"""
 
@@ -1564,6 +1724,11 @@ def build_lego_cover_letter(role_type: str, company: str, title: str, role_categ
             # Customize with company/title
             template_content = customize_cover_letter(template_content, company, title)
             print(f"[CL] Template customized successfully")
+            
+            # AI Enhancement: Use GLM-4.7 to add relevant experience based on job description
+            if job_description and len(job_description) > 100:
+                template_content = ai_enhance_cover_letter(template_content, job_description, company, title)
+            
             return template_content
         else:
             print(f"[CL] No CL template found for role: {role_category}")
