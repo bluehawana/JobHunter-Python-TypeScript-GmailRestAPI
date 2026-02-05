@@ -7,7 +7,7 @@ set -e
 SERVER="root@jobs.bluehawana.com"
 PORT="22"
 REMOTE_PATH="/var/www/lego-job-generator"
-SERVICE_NAME="lego-job-generator"
+SERVICE_NAME="lego-backend"
 
 echo "🚀 Deploying with Guaranteed Consistency"
 echo "=========================================="
@@ -25,7 +25,7 @@ echo ""
 # Step 2: Pull on server and restart atomically (single SSH session)
 echo "Step 2: Pull code and atomic restart on server..."
 echo "--------------------------------------------------"
-ssh $SERVER -p $PORT << 'ENDSSH'
+ssh -t $SERVER -p $PORT << 'ENDSSH'
 # Pull latest code
 echo "📥 Pulling latest code from git..."
 cd /var/www/lego-job-generator
@@ -42,7 +42,7 @@ pip install -q -r requirements.txt
 echo "🔄 Atomic restart (all workers reload together)..."
 # Stop service completely
 echo "🛑 Stopping service..."
-sudo systemctl stop lego-job-generator
+sudo systemctl stop lego-backend
 
 # Wait for all workers to die
 sleep 2
@@ -56,7 +56,7 @@ fi
 
 # Start service with fresh workers
 echo "🚀 Starting service with fresh workers..."
-sudo systemctl start lego-job-generator
+sudo systemctl start lego-backend
 
 # Wait for service to be ready
 sleep 3
@@ -73,8 +73,8 @@ echo ""
 # Step 3: Verify deployment
 echo "Step 3: Verifying deployment..."
 echo "-------------------------------"
-ssh $SERVER -p $PORT << 'ENDSSH'
-sudo systemctl status lego-job-generator --no-pager | head -15
+ssh -t $SERVER -p $PORT << 'ENDSSH'
+sudo systemctl status lego-backend --no-pager | head -15
 ENDSSH
 echo ""
 
