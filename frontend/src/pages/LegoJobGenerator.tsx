@@ -112,7 +112,10 @@ const LegoJobGenerator: React.FC = () => {
   const downloadDocuments = () => {
     if (generatedDocs) {
       // Create temporary links and trigger downloads
-      const downloadFile = (url: string, filename: string) => {
+      const downloadFile = (url: string) => {
+        // Extract the actual filename from the URL (e.g., /api/download/20260205_145627/cv_harvad_CompanyName.pdf)
+        const filename = url.split('/').pop() || 'document.pdf';
+        
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
@@ -122,12 +125,12 @@ const LegoJobGenerator: React.FC = () => {
         document.body.removeChild(link);
       };
       
-      // Download CV
-      downloadFile(generatedDocs.cvUrl, 'cv.pdf');
+      // Download CV with smart filename
+      downloadFile(generatedDocs.cvUrl);
       
       // Download CL with a small delay to avoid browser blocking
       setTimeout(() => {
-        downloadFile(generatedDocs.clUrl, 'cl.pdf');
+        downloadFile(generatedDocs.clUrl);
       }, 100);
     }
   };

@@ -378,7 +378,7 @@ def sanitize_filename(text: str) -> str:
 def extract_company_and_title_from_text(job_description: str) -> tuple:
     """
     Improved extraction of company name and job title from job description text.
-    Handles Swedish job sites like Göteborgs Stad better.
+    Handles LinkedIn format including concatenated text without line breaks.
     
     Returns:
         tuple: (company_name, job_title)
@@ -387,6 +387,119 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     company = 'Company'
     title = 'Position'
     
+    # STRATEGY 0: Check for priority companies FIRST (most reliable)
+    full_text = ' '.join(lines).lower()
+    priority_companies = [
+        ('microsoft', 'Microsoft'),
+        ('google', 'Google'),
+        ('amazon', 'Amazon'),
+        ('meta', 'Meta'),
+        ('apple', 'Apple'),
+        ('nvidia', 'NVIDIA'),
+        ('intel', 'Intel'),
+        ('amd', 'AMD'),
+        ('ibm', 'IBM'),
+        ('oracle', 'Oracle'),
+        ('salesforce', 'Salesforce'),
+        ('adobe', 'Adobe'),
+        ('netflix', 'Netflix'),
+        ('uber', 'Uber'),
+        ('airbnb', 'Airbnb'),
+        ('tesla', 'Tesla'),
+        ('infimotion', 'InfiMotion Technology Europe AB'),
+        ('kamstrup', 'Kamstrup'),
+        ('volvo', 'Volvo Cars'),
+        ('ericsson', 'Ericsson'),
+        ('spotify', 'Spotify'),
+        ('klarna', 'Klarna'),
+        ('göteborgs stad', 'Göteborgs Stad'),
+        ('goteborgs stad', 'Göteborgs Stad'),
+        ('city of gothenburg', 'Göteborgs Stad'),
+        ('stockholms stad', 'Stockholms Stad'),
+        ('malmö stad', 'Malmö Stad'),
+        ('aros kapital', 'Aros Kapital'),
+        ('h&m', 'H&M'),
+        ('ikea', 'IKEA'),
+        ('scania', 'Scania'),
+        ('saab', 'Saab'),
+        ('electrolux', 'Electrolux'),
+        ('skf', 'SKF'),
+        ('abb', 'ABB'),
+        ('atlas copco', 'Atlas Copco'),
+        ('sandvik', 'Sandvik'),
+    ]
+    
+    for search_term, proper_name in priority_companies:
+        if search_term in full_text:
+            company = proper_name
+            print(f"📍 Found priority company: {company}")
+            break
+    
+    # STRATEGY 0.5: LinkedIn concatenated format (no line breaks)
+    # Pattern: "MicrosoftShareShow more optionsCloud Solution Architect-Power PlatformSweden"
+    if len(lines) == 1 or (len(lines) > 0 and len(lines[0]) > 100):
+        text = lines[0] if len(lines) > 0 else job_description
+        
+        # Remove known LinkedIn UI noise
+        text_cleaned = re.sub(r'(Share|Show more options|Apply|Save|Matches your job preferences|Promoted by hirer|Responses managed off LinkedIn)', '', text, flags=re.IGNORECASE)
+        
+        # Split on location/time to get text before that
+        text_before_location = re.split(r'Sweden|Gothenburg|Stockholm|Remote|·|\d+\s*(?:hour|day|week|month)s?\s*ago', text_cleaned)[0]
+        
+        # Look for job title pattern
+        job_title_pattern = r'([A-Z][a-zA-Z\s\-/\.&]+(?:Engineer|Developer|Specialist|Manager|Architect|Lead|Senior|Consultant|Analyst|Coordinator|Administrator|Designer|Product)(?:[\s\-][A-Z][a-zA-Z\s\-/\.&]*)?)'
+        title_matches = re.findall(job_title_pattern, text_before_location)
+        
+        if title_matches and company != 'Company':
+            # Take the last match (most likely the actual title after company name)
+            title = title_matches[-1].strip()
+            print(f"📍 Extracted from concatenated LinkedIn format - Company: {company}, Title: {title}")
+            return (company, title)
+    
+    # STRATEGY 1: LinkedIn format - First line is company, second line is title
+    # This is the MOST COMMON format when copying from LinkedIn
+    # But sometimes there's noise in first line, so check first 5 lines for company + title pattern
+    
+    job_keywords = [
+        'engineer', 'developer', 'specialist', 'manager', 'architect', 
+        'lead', 'senior', 'junior', 'consultant', 'analyst', 'support',
+        'coordinator', 'administrator', 'technician', 'designer', 'product',
+        'ingenjör', 'utvecklare', 'specialist', 'arkitekt', 'chef'
+    ]
+    
+    for i in range(min(5, len(lines) - 1)):
+        potential_company = lines[i].strip()
+        potential_title = lines[i + 1].strip()
+        
+        # Validate company (should be short, no job keywords, no time references)
+        invalid_company_patterns = [
+            r'\d+\s*(hour|day|week|month|year|minute)s?\s*(ago)?',  # Time patterns
+            r'(engineer|developer|specialist|manager|architect|lead|senior|junior|consultant|analyst)',  # Job keywords
+            r'^(the|a|an)\s+',  # Articles
+            r'·',  # LinkedIn separator
+            r'(services|solutions|systems)$',  # Generic words that are usually not company names alone
+        ]
+        
+        is_valid_company = (
+            len(potential_company) < 60 and 
+            len(potential_company) > 2 and
+            not any(re.search(pattern, potential_company, re.IGNORECASE) for pattern in invalid_company_patterns)
+        )
+        
+        # Validate title (should contain job keywords, be reasonably short)
+        is_valid_title = (
+            len(potential_title) < 100 and 
+            len(potential_title) > 5 and
+            any(keyword in potential_title.lower() for keyword in job_keywords)
+        )
+        
+        if is_valid_company and is_valid_title:
+            company = potential_company
+            title = potential_title
+            print(f"📍 LinkedIn format detected at line {i} - Company: {company}, Title: {title}")
+            return (company, title)
+    
+    # STRATEGY 2: If LinkedIn format fails, use advanced extraction
     # Job title keywords (English and Swedish)
     job_keywords = [
         'engineer', 'developer', 'specialist', 'manager', 'architect', 
@@ -400,8 +513,10 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     
     # SMART COMPANY DETECTION: Look for company suffixes (AB, Ltd, Inc, GmbH, etc.)
     company_suffix_patterns = [
-        r'(?:by\s+)?([A-Z][A-Za-z\s&\-]+)\s+(AB|Ltd|Limited|Inc|Incorporated|GmbH|AG|SA|AS|Oy|ApS|BV|NV|SRL|Srl|SpA|S\.p\.A\.|Co\.|Corp|Corporation|Group|Europe|Technology|Solutions|Systems|Services|Consulting)',
-        r'(?:by\s+)?([A-Z][A-Za-z\s&\-]+)\s+(Europe\s+AB|Technology\s+AB|Sweden\s+AB|Nordic\s+AB)',
+        r'(?:by|till|to|på|hos|at|for|from)\s+([A-Z][A-Za-z\s&\-]+)\s+(AB|Ltd|Limited|Inc|Incorporated|GmbH|AG|SA|AS|Oy|ApS|BV|NV|SRL|Srl|SpA|S\.p\.A\.|Co\.|Corp|Corporation|Group|Europe|Technology|Solutions|Systems|Services|Consulting)',
+        r'(?:by|till|to|på|hos|at|for|from)\s+([A-Z][A-Za-z\s&\-]+)\s+(Europe\s+AB|Technology\s+AB|Sweden\s+AB|Nordic\s+AB)',
+        r'([A-Z][A-Za-z\s&\-]+)\s+(AB|Ltd|Limited|Inc|Incorporated|GmbH|AG|SA|AS|Oy|ApS|BV|NV|SRL|Srl|SpA|S\.p\.A\.|Co\.|Corp|Corporation|Group|Europe|Technology|Solutions|Systems|Services|Consulting)',
+        r'([A-Z][A-Za-z\s&\-]+)\s+(Europe\s+AB|Technology\s+AB|Sweden\s+AB|Nordic\s+AB)',
     ]
     
     for pattern in company_suffix_patterns:
@@ -410,8 +525,8 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
             # Take the first match
             company_parts = matches[0] if isinstance(matches[0], tuple) else (matches[0],)
             potential_company = ' '.join(company_parts).strip()
-            # Clean up - remove job-related words and "by" prefix
-            potential_company = re.sub(r'^by\s+', '', potential_company, flags=re.IGNORECASE).strip()
+            # Clean up - remove ALL prepositions that might prefix company names
+            potential_company = re.sub(r'^(by|till|to|på|hos|at|for|from)\s+', '', potential_company, flags=re.IGNORECASE).strip()
             if not any(word in potential_company.lower() for word in ['role', 'position', 'job', 'vacancy', 'opening']):
                 company = potential_company
                 print(f"📍 Found company via suffix pattern: {company}")
@@ -426,12 +541,26 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
             potential_company = re.sub(r'\s+(Role|Location|Remote|Assignment|Seniority).*$', '', potential_company, flags=re.IGNORECASE)
             # Remove "by" if it's at the start (shouldn't happen with regex, but safety check)
             potential_company = re.sub(r'^by\s+', '', potential_company, flags=re.IGNORECASE)
-            if len(potential_company) > 3 and len(potential_company) < 60:
+            
+            # FILTER OUT: Time-related text (hour ago, day ago, etc.) and invalid patterns
+            invalid_patterns = [
+                r'\d+\s*(hour|day|week|month|year|minute|second)s?\s*(ago)?',  # Time patterns
+                r'^(hour|day|week|month)\s+ag',  # Partial time text like "hour ag"
+                r'^(the|a|an)\s+',  # Articles
+            ]
+            is_invalid = any(re.search(pattern, potential_company, re.IGNORECASE) for pattern in invalid_patterns)
+            
+            if not is_invalid and len(potential_company) > 3 and len(potential_company) < 60:
                 company = potential_company
                 print(f"📍 Found company via 'by [Company]' pattern: {company}")
     
     # Priority company list (fallback for known companies)
     priority_companies = [
+        ('microsoft', 'Microsoft'),
+        ('google', 'Google'),
+        ('amazon', 'Amazon'),
+        ('meta', 'Meta'),
+        ('apple', 'Apple'),
         ('infimotion', 'InfiMotion Technology Europe AB'),
         ('kamstrup', 'Kamstrup'),
         ('göteborgs stad', 'Göteborgs Stad'),
@@ -443,6 +572,15 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
         ('volvo', 'Volvo Cars'),
         ('ericsson', 'Ericsson'),
         ('spotify', 'Spotify'),
+        ('h&m', 'H&M'),
+        ('ikea', 'IKEA'),
+        ('scania', 'Scania'),
+        ('saab', 'Saab'),
+        ('electrolux', 'Electrolux'),
+        ('skf', 'SKF'),
+        ('abb', 'ABB'),
+        ('atlas copco', 'Atlas Copco'),
+        ('sandvik', 'Sandvik'),
     ]
     
     if company == 'Company':  # Only check if not already found
@@ -768,6 +906,46 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     company = 'Company'
     title = 'Position'
     
+    # PRIORITY: Check for well-known companies FIRST before any other extraction
+    # This prevents misextraction from job description text
+    priority_companies = [
+        ('microsoft', 'Microsoft'),
+        ('google', 'Google'),
+        ('amazon', 'Amazon'),
+        ('meta', 'Meta'),
+        ('apple', 'Apple'),
+        ('nvidia', 'NVIDIA'),
+        ('intel', 'Intel'),
+        ('amd', 'AMD'),
+        ('ibm', 'IBM'),
+        ('oracle', 'Oracle'),
+        ('salesforce', 'Salesforce'),
+        ('adobe', 'Adobe'),
+        ('netflix', 'Netflix'),
+        ('uber', 'Uber'),
+        ('airbnb', 'Airbnb'),
+        ('tesla', 'Tesla'),
+        ('volvo', 'Volvo Cars'),
+        ('ericsson', 'Ericsson'),
+        ('spotify', 'Spotify'),
+        ('klarna', 'Klarna'),
+        ('h&m', 'H&M'),
+        ('ikea', 'IKEA'),
+        ('scania', 'Scania'),
+        ('saab', 'Saab'),
+        ('electrolux', 'Electrolux'),
+        ('skf', 'SKF'),
+        ('abb', 'ABB'),
+        ('atlas copco', 'Atlas Copco'),
+        ('sandvik', 'Sandvik'),
+    ]
+    
+    for search_term, proper_name in priority_companies:
+        if search_term in job_lower:
+            company = proper_name
+            print(f"📍 Priority company detected: {company}")
+            break
+    
     # Try to extract company and title from job URL if provided
     if job_url:
         try:
@@ -779,17 +957,28 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
             
             if extraction_result.get('success') and extraction_result.get('job_details'):
                 job_details = extraction_result['job_details']
-                company = job_details.get('company', 'Company')
+                # Only override company if we didn't find a priority company
+                if company == 'Company':
+                    company = job_details.get('company', 'Company')
                 title = job_details.get('title', 'Position')
                 print(f"✅ URL extraction successful: {title} at {company}")
             else:
                 print(f"⚠️ URL extraction failed: {extraction_result.get('error', 'Unknown error')}")
                 # Fallback to text-based extraction
-                company, title = extract_company_and_title_from_text(job_description)
+                extracted_company, title = extract_company_and_title_from_text(job_description)
+                # Only use extracted company if we didn't find a priority company
+                if company == 'Company':
+                    company = extracted_company
         except Exception as e:
             print(f"❌ Error extracting from job URL: {e}")
             # Fallback to text-based extraction
-            company, title = extract_company_and_title_from_text(job_description)
+            extracted_company, title = extract_company_and_title_from_text(job_description)
+            # Only use extracted company if we didn't find a priority company
+            if company == 'Company':
+                company = extracted_company
+    elif company == 'Company':
+        # No URL provided and no priority company found, use text extraction
+        company, title = extract_company_and_title_from_text(job_description)
     
     # Try AI analysis first (MiniMax M2) - DISABLED due to insufficient balance
     ai_result = None
