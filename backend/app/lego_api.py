@@ -714,16 +714,24 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     if job_url:
         try:
             print(f"🔍 Attempting to extract job info from URL: {job_url}")
-            # Use the enhanced universal job extractor
-            job_info = extract_linkedin_job_info_from_content(job_description, job_url)
-            if job_info['success']:
-                company = job_info['company']
-                title = job_info['title']
-                print(f"✅ Job extraction successful: {title} at {company}")
+            # Use the NEW JobUrlExtractor service for accurate extraction
+            from app.services.job_url_extractor import JobUrlExtractor
+            extractor = JobUrlExtractor()
+            extraction_result = extractor.extract_job_details(job_url)
+            
+            if extraction_result.get('success') and extraction_result.get('job_details'):
+                job_details = extraction_result['job_details']
+                company = job_details.get('company', 'Company')
+                title = job_details.get('title', 'Position')
+                print(f"✅ URL extraction successful: {title} at {company}")
             else:
-                print(f"⚠️ Job extraction failed, using fallback values")
+                print(f"⚠️ URL extraction failed: {extraction_result.get('error', 'Unknown error')}")
+                # Fallback to text-based extraction
+                company, title = extract_company_and_title_from_text(job_description)
         except Exception as e:
             print(f"❌ Error extracting from job URL: {e}")
+            # Fallback to text-based extraction
+            company, title = extract_company_and_title_from_text(job_description)
     
     # Try AI analysis first (MiniMax M2) - DISABLED due to insufficient balance
     ai_result = None
