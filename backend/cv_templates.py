@@ -30,7 +30,23 @@ class CVTemplateManager:
             'priority': 1
         },
         'project_manager': {
-            'keywords': ['project manager', 'technical project manager', 'pm', 'project lead', 'program manager', 'project coordinator', 'agile project', 'scrum master', 'project management', 'pmp', 'stakeholder management', 'budget management', 'risk management', 'project delivery', 'cross-functional teams'],
+            'keywords': [
+                # Explicit project manager titles (highest priority)
+                'project manager', 'senior project manager', 'technical project manager', 
+                'engineering project manager', 'it project manager', 'software project manager',
+                'pm role', 'project lead', 'program manager', 'project coordinator',
+                # Project management activities
+                'project management', 'managing projects', 'lead projects', 'oversee projects',
+                'project delivery', 'project execution', 'project planning',
+                # PM-specific skills
+                'stakeholder management', 'budget management', 'risk management', 
+                'project governance', 'project portfolio', 'pmp', 'prince2',
+                'agile project management', 'scrum master', 'project methodology',
+                # PM responsibilities
+                'coordinate project work', 'manage decision points', 'mitigate risks',
+                'ensure project objectives', 'project content delivery', 'sales campaigns',
+                'rfq responses', 'rfi responses', 'project issues management'
+            ],
             'cv_template': 'templates/cv_templates/project_manager_template.tex',
             'cl_template': 'templates/cl_templates/project_manager_cl_template.tex',
             'priority': 1
