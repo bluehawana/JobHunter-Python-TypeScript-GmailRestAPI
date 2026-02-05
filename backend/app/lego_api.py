@@ -400,8 +400,8 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     
     # SMART COMPANY DETECTION: Look for company suffixes (AB, Ltd, Inc, GmbH, etc.)
     company_suffix_patterns = [
-        r'([A-Z][A-Za-z\s&\-]+)\s+(AB|Ltd|Limited|Inc|Incorporated|GmbH|AG|SA|AS|Oy|ApS|BV|NV|SRL|Srl|SpA|S\.p\.A\.|Co\.|Corp|Corporation|Group|Europe|Technology|Solutions|Systems|Services|Consulting)',
-        r'([A-Z][A-Za-z\s&\-]+)\s+(Europe\s+AB|Technology\s+AB|Sweden\s+AB|Nordic\s+AB)',
+        r'(?:by\s+)?([A-Z][A-Za-z\s&\-]+)\s+(AB|Ltd|Limited|Inc|Incorporated|GmbH|AG|SA|AS|Oy|ApS|BV|NV|SRL|Srl|SpA|S\.p\.A\.|Co\.|Corp|Corporation|Group|Europe|Technology|Solutions|Systems|Services|Consulting)',
+        r'(?:by\s+)?([A-Z][A-Za-z\s&\-]+)\s+(Europe\s+AB|Technology\s+AB|Sweden\s+AB|Nordic\s+AB)',
     ]
     
     for pattern in company_suffix_patterns:
@@ -410,7 +410,8 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
             # Take the first match
             company_parts = matches[0] if isinstance(matches[0], tuple) else (matches[0],)
             potential_company = ' '.join(company_parts).strip()
-            # Clean up - remove job-related words
+            # Clean up - remove job-related words and "by" prefix
+            potential_company = re.sub(r'^by\s+', '', potential_company, flags=re.IGNORECASE).strip()
             if not any(word in potential_company.lower() for word in ['role', 'position', 'job', 'vacancy', 'opening']):
                 company = potential_company
                 print(f"📍 Found company via suffix pattern: {company}")
