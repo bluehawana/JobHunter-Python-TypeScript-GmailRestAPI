@@ -8,7 +8,7 @@ echo "🔄 Atomic Restart - Ensuring All Workers Reload Together"
 echo "=========================================================="
 echo ""
 
-SERVICE_NAME="lego-job-generator"
+SERVICE_NAME="lego-backend"
 HEALTH_CHECK_URL="http://127.0.0.1:5000/health"
 MAX_WAIT=30
 

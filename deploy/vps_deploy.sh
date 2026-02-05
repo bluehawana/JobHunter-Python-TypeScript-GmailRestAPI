@@ -31,7 +31,7 @@ echo "-------------------------------------------------------"
 
 # Stop service completely
 echo "🛑 Stopping service..."
-sudo systemctl stop lego-job-generator
+sudo systemctl stop lego-backend
 
 # Wait for all workers to die
 sleep 2
@@ -45,7 +45,7 @@ fi
 
 # Start service with fresh workers
 echo "🚀 Starting service with fresh workers..."
-sudo systemctl start lego-job-generator
+sudo systemctl start lego-backend
 
 # Wait for service to be ready
 sleep 3
@@ -60,7 +60,7 @@ fi
 echo ""
 echo "Step 4: Verify deployment..."
 echo "----------------------------"
-sudo systemctl status lego-job-generator --no-pager | head -15
+sudo systemctl status lego-backend --no-pager | head -15
 
 echo ""
 echo "✅ DEPLOYMENT COMPLETE!"
