@@ -1,0 +1,220 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\geometry{margin=0.75in}
+\pagestyle{empty}
+
+\definecolor{linkedinblue}{RGB}{0,119,181}
+
+\hypersetup{colorlinks=true, linkcolor=linkedinblue, urlcolor=linkedinblue}
+
+\titleformat{\section}{\Large\bfseries\color{linkedinblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+\begin{document}
+\pagestyle{empty}
+
+\begin{center}
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large C\# .NET Developer}\\[10pt]
+\textcolor{linkedinblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:+46728384299}{+46 72 838 4299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\end{center}
+
+\section*{Professional Summary}
+
+C\# .NET Developer with 5+ years of professional experience building scalable enterprise applications using Microsoft technology stack. Expert in ASP.NET Core, Entity Framework, Azure cloud services, and microservices architecture. Proven track record delivering complex systems including resume generation platforms, office management systems, curation services, and e-commerce solutions. Strong background in Azure DevOps, CI/CD pipelines, and cloud cost optimization (45\% reduction, \$350K+ annual savings). Experience spans full-stack development, system integration with Microsoft 365 ecosystem (SharePoint, Teams, Dynamics 365), and cross-platform mobile development with Xamarin. Fluent in English and Mandarin, Swedish B2 level.
+
+\section*{Core Technical Skills}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+\item \textbf{.NET Technologies:} C\#, ASP.NET Core, .NET Core, Entity Framework Core, .NET microservices, Blazor WebAssembly, Xamarin.Forms
+\item \textbf{Microsoft Cloud:} Azure (AKS, App Services, Functions, DevOps, SQL Database, Storage, Key Vault), Azure cost optimization (FinOps)
+\item \textbf{Web Development:} ASP.NET Web API, RESTful APIs, SignalR, Razor Pages, MVC pattern, dependency injection
+\item \textbf{Frontend Integration:} React, Vue.js, TypeScript, JavaScript, HTML5/CSS3, responsive design
+\item \textbf{Databases:} SQL Server, Entity Framework ORM, Azure SQL, MySQL, PostgreSQL, Redis caching
+\item \textbf{Microsoft Ecosystem:} SharePoint API, Microsoft Graph API, Teams integration, Dynamics 365, Office 365
+\item \textbf{DevOps \& CI/CD:} Azure DevOps, GitHub Actions, Docker, Kubernetes, Terraform, automated deployment
+\item \textbf{Architecture:} Microservices, event-driven architecture, domain-driven design, SOLID principles
+\item \textbf{Testing:} xUnit, NUnit, integration testing, unit testing, test-driven development
+\item \textbf{Tools:} Visual Studio, VS Code, Git, Azure Portal, SQL Server Management Studio
+\end{itemize}
+
+\section*{Professional Experience}
+
+\subsection*{ECARX (Geely Automotive) | IT/Infrastructure Specialist}
+\textit{October 2024 - November 2025 | Gothenburg, Sweden}
+
+\textbf{Azure Platform Management \& .NET Infrastructure:}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+\item Managed Azure Kubernetes Service (AKS) infrastructure for .NET microservices deployment across 4 global offices
+\item Led Azure cost optimization initiative using FinOps best practices, reducing monthly costs from \$65,000 to \$35,750 (45\% reduction = \$350K+ annual savings)
+\item Implemented Azure DevOps CI/CD pipelines for automated .NET application deployment with zero-downtime releases
+\item Configured Prometheus and Grafana monitoring for Azure VMs, AKS clusters, and on-premise infrastructure
+\item Optimized Azure resource utilization: reduced PVC (Persistent Volume Claims) costs, implemented automated artifact cleanup
+\item Programmed Azure platform automation using PowerShell, Azure CLI, and C\# scripts for resource management
+\item Managed hybrid cloud architecture connecting Azure services with on-premise data center
+\item Deployed Azure Functions for serverless event processing and automated workflows
+\end{itemize}
+
+\subsection*{Synteda AB | .NET and Azure Integration Developer (Freelance)}
+\textit{August 2023 - September 2024 | Gothenburg, Sweden}
+
+\textbf{Project 1: Ingress Resume Generation System (In-house Platform)}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+\item Developed comprehensive resume generation system for consultants and employees using ASP.NET Core and C\#
+\item Built dynamic online form interface with data validation, real-time preview, and multi-step wizard using Razor Pages
+\item Implemented component-based resume generation engine using .NET Core with modular, reusable template system
+\item Designed SQL Server database schema for storing consultant profiles, skills, experiences, and resume templates
+\item Created RESTful APIs with ASP.NET Web API for frontend-backend communication and third-party integrations
+\item Implemented Entity Framework Core for ORM with code-first migrations and complex query optimization
+\item Similar architecture to modern design systems - modular components, dependency injection, clean architecture
+\end{itemize}
+
+\textbf{Project 2: Mibo.se Website \& Office Management System}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+\item \textbf{Phase 1 - Static Website:} Built initial website using HTML/JavaScript frontend with ASP.NET Core C\# backend
+\item \textbf{Phase 2 - Office System Transformation:} Upgraded to full enterprise office management system
+  \begin{itemize}[leftmargin=*, itemsep=1pt]
+  \item Employee meeting booking system integrated with Microsoft Teams using Microsoft Graph API
+  \item Automated invitation system for customer meetings with email notifications and calendar sync
+  \item Special offers management system with customer segmentation and targeted marketing campaigns
+  \item Real-time calendar synchronization across Teams, Outlook, mobile devices using Graph API webhooks
+  \item Push notifications for meeting confirmations, updates, and reminders across all platforms
+  \end{itemize}
+\item Tech Stack: ASP.NET Core, C\#, Entity Framework Core, SQL Server, Microsoft Graph API, SignalR for real-time updates
+\item Integrated with Microsoft 365 ecosystem for seamless user experience and single sign-on (SSO)
+\item Deployed to Azure App Services with Azure SQL Database and Azure Storage for file management
+\end{itemize}
+
+\subsection*{IT-Högskolan | .NET Cloud Developer (LIA 2)}
+\textit{January 2023 - May 2023 | Gothenburg, Sweden}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+\item Developed Azure cloud applications using .NET Core and C\# with Azure DevOps CI/CD pipelines
+\item Built and deployed .NET applications to Azure App Services, Azure Functions, and Azure Container Instances
+\item Implemented Infrastructure as Code using Terraform for automated .NET application environment provisioning
+\item Worked with Azure SQL Database, Azure Storage (Blob, Queue, Table), and Azure Key Vault for secrets management
+\item Created serverless functions using Azure Functions with C\# for event-driven workflows and background processing
+\item Migrated legacy applications to Azure cloud platform with hybrid on-premise/cloud architecture
+\item Implemented Azure Service Bus for asynchronous messaging between microservices
+\item Configured Azure Application Insights for application performance monitoring and diagnostics
+\end{itemize}
+
+\subsection*{Senior Material (Europe) AB | Platform Architect \& Full-Stack Developer}
+\textit{January 2022 - December 2022 | Eskilstuna, Sweden}
+
+\textbf{Generation 1 \& 2 Website Development with Microsoft Ecosystem Integration:}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+\item Built company website using Blazor WebAssembly for frontend and .NET Core backend with C\#
+\item Integrated with SharePoint Online for document management, version control, and team collaboration
+\item Connected with Microsoft Teams for internal communication workflows and channel notifications
+\item Implemented Microsoft Office integration for in-browser document editing and co-authoring
+\item Integrated Dynamics 365 for CRM, sales pipeline management, and business process automation
+\item Created unified working environment connecting all Microsoft ecosystem tools with single sign-on
+\item Developed custom APIs using ASP.NET Core for third-party integrations and data synchronization
+\item Implemented role-based access control (RBAC) using Azure Active Directory and OAuth 2.0
+\item Tech Stack: Blazor WebAssembly, .NET Core, C\#, SharePoint REST API, Microsoft Graph API, Dynamics 365 Web API
+\item Deployed to Azure with automated CI/CD pipeline using Azure DevOps
+\end{itemize}
+
+\subsection*{AddCell | .NET Developer (LIA 1 Internship)}
+\textit{September 2022 - November 2022 | Gothenburg, Sweden}
+
+\textbf{Academic Curation Service System (CTH Startup):}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+\item Developed automated academic paper curation service using .NET Core and SQL Server for CTH startup
+\item Built daily indexing system integrating with American academic databases for automated data extraction
+\item Implemented keyword-based paper filtering and categorization engine using C\# and LINQ
+\item Created automated data pipeline: Extract → Transform → Index → Curate → Notify
+\item Developed RESTful APIs using ASP.NET Core for data access, search, and curation management
+\item Deployed to Azure cloud platform with Azure Functions for scheduled daily jobs
+\item Integrated with Azure SQL Database for storing curated content with full-text search capabilities
+\item Built admin dashboard using Blazor for managing keywords, curation rules, and monitoring system health
+\item Implemented SQL Server Full-Text Search for advanced paper search and relevance ranking
+\item Created email notification system for researchers when relevant papers are curated
+\item Tech Stack: .NET Core, C\#, ASP.NET Core, SQL Server, Azure App Services, Azure Functions, Blazor
+\end{itemize}
+
+\subsection*{Pembio AB | Full-Stack Developer}
+\textit{October 2020 - September 2021 | Lund, Sweden}
+
+\textbf{Online Mission Management System:}
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+\item Developed backend services using C\# and .NET Core with MySQL database for mission tracking platform
+\item Built RESTful APIs with ASP.NET Core for mission management, user authentication, and reporting
+\item Implemented Entity Framework Core for ORM with MySQL provider and database migrations
+\item Created microservices architecture with .NET Core for scalable, maintainable system design
+\item Integrated Vue.js frontend with .NET Core backend through RESTful APIs and SignalR for real-time updates
+\item Implemented authentication and authorization using JWT tokens and ASP.NET Core Identity
+\item Participated in Agile/Scrum development with continuous integration using Azure DevOps
+\item Deployed to cloud infrastructure with Docker containers and automated deployment pipelines
+\end{itemize}
+
+\subsection*{CollabMaker | Frontend Developer (Internship)}
+\textit{July 2020 - October 2020 | Gothenburg, Sweden}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+\item Built React.js frontend communicating with C\# ASP.NET Core backend APIs
+\item Integrated with .NET Core backend services through RESTful APIs and real-time SignalR connections
+\item Worked with MySQL database accessed through .NET Entity Framework Core
+\item Participated in full-stack development across React frontend and .NET Core backend
+\item Implemented responsive UI components consuming .NET Web APIs for career matching platform
+\end{itemize}
+
+\section*{.NET Projects \& Portfolio}
+
+\subsection*{Graduate Crypto Wallet}
+\textit{2023 - Present} | \textbf{Xamarin.Forms, C\#, .NET Core, Azure, Blockchain APIs}
+\begin{itemize}[leftmargin=*, itemsep=1pt]
+\item Built cross-platform cryptocurrency wallet using Xamarin.Forms for iOS and Android with C\# codebase
+\item Developed .NET Core backend APIs for transaction processing and blockchain integration
+\item Implemented secure storage using .NET cryptography libraries and Azure Key Vault
+\item Integrated with multiple blockchain APIs using HttpClient and async/await patterns
+\item Deployed backend services to Azure App Services with automated CI/CD
+\item Available on GitHub: github.com/bluehawana
+\end{itemize}
+
+\subsection*{Travel Anywhere}
+\textit{2024 - Present} | \textbf{ASP.NET Core, C\#, Entity Framework, SQL Server, Azure}
+\begin{itemize}[leftmargin=*, itemsep=1pt]
+\item Developed travel booking platform with ASP.NET Core Web API backend
+\item Built RESTful APIs for travel search, booking management, and payment processing
+\item Implemented Entity Framework Core with SQL Server for data persistence
+\item Deployed to Azure App Services with Azure SQL Database
+\item Integrated with third-party travel APIs and payment gateways
+\end{itemize}
+
+\section*{Education}
+
+\textbf{IT-Högskolan} | Bachelor's in .NET Cloud Development | 2021-2023 | Gothenburg\\
+\textit{Focus: C\# .NET Core, ASP.NET Core, Azure cloud services, Xamarin mobile development, microservices architecture}
+
+\textbf{Mölndal Campus} | Bachelor's in Java Integration | 2019-2021 | Mölndal\\
+\textit{Focus: Enterprise integration patterns, microservices, RESTful APIs, system architecture}
+
+\textbf{University of Gothenburg} | Master's in International Business \& Trade | 2016-2019 | Gothenburg
+
+\section*{Certifications}
+
+\begin{itemize}[leftmargin=*, itemsep=2pt]
+\item Microsoft Certified: Azure Fundamentals (2022)
+\item AWS Certified Solutions Architect - Associate (2022)
+\item AWS Certified Data Analytics - Specialty (2022)
+\end{itemize}
+
+\section*{Additional Information}
+
+\textbf{Languages:} English (Fluent), Swedish (B2), Chinese (Native)
+
+\textbf{Work Authorization:} Swedish Permanent Residence
+
+\textbf{Availability:} Immediate
+
+\textbf{Key Strengths:} Microsoft ecosystem integration, Azure cloud optimization, enterprise system development, full-stack capabilities
+
+\end{document}
