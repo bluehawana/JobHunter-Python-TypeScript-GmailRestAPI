@@ -398,17 +398,36 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
     # PRIORITY: Check for explicit company names first
     full_text = ' '.join(lines).lower()
     
-    # Check for "by [Company]" or "Published by [Company]" pattern
-    by_pattern = re.search(r'(?:published\s+)?by\s+([A-Z][A-Za-z\s&]+(?:AB|Europe|Technology|Group|Ltd|Inc|GmbH)?)', job_description, re.IGNORECASE)
-    if by_pattern:
-        potential_company = by_pattern.group(1).strip()
-        # Clean up - remove trailing words that aren't part of company name
-        potential_company = re.sub(r'\s+(Role|Location|Remote|Assignment|Seniority).*$', '', potential_company, flags=re.IGNORECASE)
-        if len(potential_company) > 3 and len(potential_company) < 60:
-            company = potential_company
-            print(f"📍 Found company via 'by [Company]' pattern: {company}")
+    # SMART COMPANY DETECTION: Look for company suffixes (AB, Ltd, Inc, GmbH, etc.)
+    company_suffix_patterns = [
+        r'([A-Z][A-Za-z\s&\-]+)\s+(AB|Ltd|Limited|Inc|Incorporated|GmbH|AG|SA|AS|Oy|ApS|BV|NV|SRL|Srl|SpA|S\.p\.A\.|Co\.|Corp|Corporation|Group|Europe|Technology|Solutions|Systems|Services|Consulting)',
+        r'([A-Z][A-Za-z\s&\-]+)\s+(Europe\s+AB|Technology\s+AB|Sweden\s+AB|Nordic\s+AB)',
+    ]
     
-    # Priority company list
+    for pattern in company_suffix_patterns:
+        matches = re.findall(pattern, job_description, re.IGNORECASE)
+        if matches:
+            # Take the first match
+            company_parts = matches[0] if isinstance(matches[0], tuple) else (matches[0],)
+            potential_company = ' '.join(company_parts).strip()
+            # Clean up - remove job-related words
+            if not any(word in potential_company.lower() for word in ['role', 'position', 'job', 'vacancy', 'opening']):
+                company = potential_company
+                print(f"📍 Found company via suffix pattern: {company}")
+                break
+    
+    # Check for "by [Company]" or "Published by [Company]" pattern
+    if company == 'Company':
+        by_pattern = re.search(r'(?:published\s+)?by\s+([A-Z][A-Za-z\s&]+(?:AB|Europe|Technology|Group|Ltd|Inc|GmbH)?)', job_description, re.IGNORECASE)
+        if by_pattern:
+            potential_company = by_pattern.group(1).strip()
+            # Clean up - remove trailing words that aren't part of company name
+            potential_company = re.sub(r'\s+(Role|Location|Remote|Assignment|Seniority).*$', '', potential_company, flags=re.IGNORECASE)
+            if len(potential_company) > 3 and len(potential_company) < 60:
+                company = potential_company
+                print(f"📍 Found company via 'by [Company]' pattern: {company}")
+    
+    # Priority company list (fallback for known companies)
     priority_companies = [
         ('infimotion', 'InfiMotion Technology Europe AB'),
         ('kamstrup', 'Kamstrup'),
@@ -418,6 +437,9 @@ def extract_company_and_title_from_text(job_description: str) -> tuple:
         ('stockholms stad', 'Stockholms Stad'),
         ('malmö stad', 'Malmö Stad'),
         ('aros kapital', 'Aros Kapital'),
+        ('volvo', 'Volvo Cars'),
+        ('ericsson', 'Ericsson'),
+        ('spotify', 'Spotify'),
     ]
     
     if company == 'Company':  # Only check if not already found
