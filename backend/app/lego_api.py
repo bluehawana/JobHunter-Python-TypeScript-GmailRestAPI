@@ -2163,19 +2163,7 @@ def generate_lego_application():
         company = analysis.get('company', 'Company')
         title = analysis.get('title', 'Position')
 
-        # SPLIT COMBINED COMPANY-TITLE STRING: Handle "Kamstrup - Customer Support Engineer" format
-        if company and ' - ' in company:
-            parts = company.split(' - ', 1)  # Split only on first dash
-            company = parts[0].strip()
-            if title == 'Position' or not title:  # Only override title if it's not already set
-                title = parts[1].strip()
-            print(f"📍 Split combined string: Company='{company}', Title='{title}'")
-        elif title and ' - ' in title:
-            parts = title.split(' - ', 1)  # Split only on first dash
-            if company == 'Company' or not company:  # Only override company if it's not already set
-                company = parts[0].strip()
-            title = parts[1].strip()
-            print(f"📍 Split combined string: Company='{company}', Title='{title}'")
+        print(f"📋 Final values after URL extraction: Company='{company}', Title='{title}', Role='{role_type}'")
 
         # SAFEGUARD: Ensure role_type is consistent with role_category
         # This prevents mismatches where role_category is 'devops_cloud' but role_type is 'IT Business Analyst'
