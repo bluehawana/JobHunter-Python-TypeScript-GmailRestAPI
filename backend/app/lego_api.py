@@ -947,83 +947,30 @@ def analyze_job_description(job_description: str, job_url: str = None) -> dict:
     
     job_lower = job_description.lower()
     
-    # Initialize company and title with defaults
-    company = 'Company'
-    title = 'Position'
+    # PRIORITY 1: Extract company and title from explicit "Company name:" / "Job title:" format
+    # This is the PRIMARY method - user provides this explicitly
+    company, title = extract_company_and_title_from_text(job_description)
+    print(f"📍 Extracted from text: {company} - {title}")
     
-    # PRIORITY: Check for well-known companies FIRST before any other extraction
-    # This prevents misextraction from job description text
-    priority_companies = [
-        ('microsoft', 'Microsoft'),
-        ('google', 'Google'),
-        ('amazon', 'Amazon'),
-        ('meta', 'Meta'),
-        ('apple', 'Apple'),
-        ('nvidia', 'NVIDIA'),
-        ('intel', 'Intel'),
-        ('amd', 'AMD'),
-        ('ibm', 'IBM'),
-        ('oracle', 'Oracle'),
-        ('salesforce', 'Salesforce'),
-        ('adobe', 'Adobe'),
-        ('netflix', 'Netflix'),
-        ('uber', 'Uber'),
-        ('airbnb', 'Airbnb'),
-        ('tesla', 'Tesla'),
-        ('volvo', 'Volvo Cars'),
-        ('ericsson', 'Ericsson'),
-        ('spotify', 'Spotify'),
-        ('klarna', 'Klarna'),
-        ('h&m', 'H&M'),
-        ('ikea', 'IKEA'),
-        ('scania', 'Scania'),
-        ('saab', 'Saab'),
-        ('electrolux', 'Electrolux'),
-        ('skf', 'SKF'),
-        ('abb', 'ABB'),
-        ('atlas copco', 'Atlas Copco'),
-        ('sandvik', 'Sandvik'),
-    ]
-    
-    for search_term, proper_name in priority_companies:
-        if search_term in job_lower:
-            company = proper_name
-            print(f"📍 Priority company detected: {company}")
-            break
-    
-    # Try to extract company and title from job URL if provided
-    if job_url:
+    # PRIORITY 2: Try to extract from job URL if provided (only if text extraction failed)
+    if job_url and (company == 'Company' or title == 'Position'):
         try:
             print(f"🔍 Attempting to extract job info from URL: {job_url}")
-            # Use the NEW JobUrlExtractor service for accurate extraction
             from app.services.job_url_extractor import JobUrlExtractor
             extractor = JobUrlExtractor()
             extraction_result = extractor.extract_job_details(job_url)
             
             if extraction_result.get('success') and extraction_result.get('job_details'):
                 job_details = extraction_result['job_details']
-                # Only override company if we didn't find a priority company
                 if company == 'Company':
                     company = job_details.get('company', 'Company')
-                title = job_details.get('title', 'Position')
+                if title == 'Position':
+                    title = job_details.get('title', 'Position')
                 print(f"✅ URL extraction successful: {title} at {company}")
             else:
                 print(f"⚠️ URL extraction failed: {extraction_result.get('error', 'Unknown error')}")
-                # Fallback to text-based extraction
-                extracted_company, title = extract_company_and_title_from_text(job_description)
-                # Only use extracted company if we didn't find a priority company
-                if company == 'Company':
-                    company = extracted_company
         except Exception as e:
             print(f"❌ Error extracting from job URL: {e}")
-            # Fallback to text-based extraction
-            extracted_company, title = extract_company_and_title_from_text(job_description)
-            # Only use extracted company if we didn't find a priority company
-            if company == 'Company':
-                company = extracted_company
-    elif company == 'Company':
-        # No URL provided and no priority company found, use text extraction
-        company, title = extract_company_and_title_from_text(job_description)
     
     # Try AI analysis first (MiniMax M2) - DISABLED due to insufficient balance
     ai_result = None
