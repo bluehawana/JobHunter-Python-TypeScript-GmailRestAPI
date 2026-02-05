@@ -446,6 +446,9 @@ Return ONLY a JSON object:
             title_parts = url_parts[:till_index]
             company_parts = url_parts[till_index+1:]
             
+            # Remove numeric job IDs from title parts (e.g., "6602293")
+            title_parts = [part for part in title_parts if not part.isdigit()]
+            
             title_swedish = ' '.join(title_parts)
             company = ' '.join(company_parts).replace('-', ' ').title()
             title_english = self._translate_swedish_title(title_swedish)
