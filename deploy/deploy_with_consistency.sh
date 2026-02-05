@@ -25,7 +25,7 @@ echo ""
 # Step 2: Pull on server and restart atomically (single SSH session)
 echo "Step 2: Pull code and atomic restart on server..."
 echo "--------------------------------------------------"
-ssh -t $SERVER -p $PORT << 'ENDSSH'
+ssh $SERVER -p $PORT << 'ENDSSH'
 # Pull latest code
 echo "📥 Pulling latest code from git..."
 cd /var/www/lego-job-generator
@@ -73,7 +73,7 @@ echo ""
 # Step 3: Verify deployment
 echo "Step 3: Verifying deployment..."
 echo "-------------------------------"
-ssh -t $SERVER -p $PORT << 'ENDSSH'
+ssh $SERVER -p $PORT << 'ENDSSH'
 sudo systemctl status lego-backend --no-pager | head -15
 ENDSSH
 echo ""
