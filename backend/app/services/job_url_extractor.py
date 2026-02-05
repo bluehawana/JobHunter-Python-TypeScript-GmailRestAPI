@@ -241,8 +241,8 @@ class JobUrlExtractor:
                 
                 # Determine if Swedish or English
                 is_swedish = any(word in page_text.lower()[:1000] for word in ['till', 'hos', 'på', 'utvecklare', 'ingenjör', 'söker vi'])
-            
-            prompt = f"""Extract job information from this webpage. This is CRITICAL - you must identify the ACTUAL hiring company, NOT the recruitment agency.
+                
+                prompt = f"""Extract job information from this webpage. This is CRITICAL - you must identify the ACTUAL hiring company, NOT the recruitment agency.
 
 URL: {url}
 RAW TITLE FROM PAGE: {raw_title}
