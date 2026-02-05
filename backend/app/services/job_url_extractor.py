@@ -11,6 +11,11 @@ import logging
 from typing import Dict, List, Optional
 from urllib.parse import urlparse, urljoin
 import json
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -219,8 +224,11 @@ class JobUrlExtractor:
             base_url = os.environ.get('ANTHROPIC_BASE_URL', 'https://api.z.ai/api/anthropic')
             
             if not api_key:
-                logger.warning("No API key, falling back to regex")
+                logger.warning("⚠️ No ANTHROPIC_API_KEY found in environment, falling back to regex")
                 return self._parse_swedish_title_regex(raw_title, url)
+            
+            logger.info(f"🔑 API Key found: {api_key[:20]}...")
+            logger.info(f"🌐 Base URL: {base_url}")
             
             # Determine if Swedish or English
             is_swedish = any(word in page_text.lower()[:1000] for word in ['till', 'hos', 'på', 'utvecklare', 'ingenjör', 'söker vi'])
@@ -281,7 +289,11 @@ Return ONLY valid JSON in this exact format:
             }
             
             logger.info(f"🤖 Calling AI to extract from: {url}")
+            logger.info(f"📤 Request URL: {url_api}")
+            
             response = req.post(url_api, headers=headers, json=payload, timeout=20)
+            
+            logger.info(f"📥 Response status: {response.status_code}")
             
             if response.status_code == 200:
                 result = response.json()
@@ -296,15 +308,18 @@ Return ONLY valid JSON in this exact format:
                         return parsed
                     else:
                         logger.warning(f"⚠️ No JSON found in AI response: {text}")
+                else:
+                    logger.warning(f"⚠️ No content in AI response: {result}")
             else:
-                logger.warning(f"⚠️ AI API failed with status {response.status_code}: {response.text}")
+                logger.warning(f"⚠️ AI API failed with status {response.status_code}")
+                logger.warning(f"📝 Response body: {response.text[:500]}")
             
             # Fallback to regex
-            logger.info("Falling back to regex parsing")
+            logger.info("⚙️ Falling back to regex parsing")
             return self._parse_swedish_title_regex(raw_title, url)
             
         except Exception as e:
-            logger.warning(f"AI page extraction failed: {e}, using regex fallback")
+            logger.warning(f"❌ AI page extraction failed: {e}, using regex fallback")
             import traceback
             logger.warning(traceback.format_exc())
             return self._parse_swedish_title_regex(raw_title, url)
