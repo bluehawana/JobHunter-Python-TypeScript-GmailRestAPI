@@ -1,0 +1,21 @@
+[Unit]
+Description=Lego Job Generator API
+After=network.target
+
+[Service]
+Type=simple
+User=harvad
+WorkingDirectory=/var/www/lego-job-generator/backend/app
+Environment="PATH=/var/www/lego-job-generator/backend/venv/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/var/www/lego-job-generator/backend/venv/bin/python3 -u /var/www/lego-job-generator/backend/app/run_lego.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/var/www/lego-job-generator/backend/app/lego_api.log
+StandardError=append:/var/www/lego-job-generator/backend/app/lego_api.log
+
+# Health check - restart if not responding
+StartLimitInterval=200
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
