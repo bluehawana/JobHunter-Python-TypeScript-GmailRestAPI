@@ -2302,26 +2302,36 @@ def analyze_job():
         data = request.json
         job_description = data.get('jobDescription', '')
         job_url = data.get('jobUrl', '')
+        company_name = data.get('companyName', '').strip()
+        job_title = data.get('jobTitle', '').strip()
         
-        if not job_description and not job_url:
-            return jsonify({'error': 'Job description or URL required'}), 400
+        if not job_description:
+            return jsonify({'error': 'Job description is required'}), 400
         
-        # If URL provided, fetch job description
-        if job_url and not job_description:
-            job_description = fetch_job_from_url(job_url)
-            if not job_description:
-                return jsonify({
-                    'error': 'Could not fetch job description from URL. Indeed and LinkedIn often block automated access. Please try copying and pasting the job description text directly into the text area instead.',
-                    'suggestion': 'Copy the job description from the website and paste it in the text area'
-                }), 400
+        if not company_name or not job_title:
+            return jsonify({'error': 'Company name and job title are required'}), 400
         
+        # Analyze the job description
         analysis = analyze_job_description(job_description, job_url)
+        
+        # Override with user-provided company and title (most reliable)
+        analysis['company'] = company_name
+        analysis['title'] = job_title
+        analysis['extractionStatus'] = {
+            'success': True,
+            'issues': [],
+            'requiresManualInput': False,
+            'message': 'Company and job title provided by user',
+            'source': 'user_input'
+        }
+        
+        print(f"📍 User provided: {company_name} - {job_title}")
         
         return jsonify({
             'success': True,
             'analysis': analysis,
-            'jobDescription': job_description,  # Return fetched description
-            'extractionStatus': analysis.get('extractionStatus', {})  # Include extraction status for frontend
+            'jobDescription': job_description,
+            'extractionStatus': analysis.get('extractionStatus', {})
         })
         
     except Exception as e:

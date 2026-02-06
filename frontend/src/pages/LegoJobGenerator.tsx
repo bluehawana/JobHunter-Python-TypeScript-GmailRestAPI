@@ -20,6 +20,8 @@ interface GeneratedDocs {
 const LegoJobGenerator: React.FC = () => {
   const [jobInput, setJobInput] = useState('');
   const [jobUrl, setJobUrl] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<JobAnalysis | null>(null);
   const [generatedDocs, setGeneratedDocs] = useState<GeneratedDocs | null>(null);
@@ -33,7 +35,9 @@ const LegoJobGenerator: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           jobDescription: jobInput,
-          jobUrl: jobUrl
+          jobUrl: jobUrl,
+          companyName: companyName.trim(),
+          jobTitle: jobTitle.trim()
         })
       });
 
@@ -138,6 +142,8 @@ const LegoJobGenerator: React.FC = () => {
   const resetToHome = () => {
     setJobInput('');
     setJobUrl('');
+    setCompanyName('');
+    setJobTitle('');
     setAnalysis(null);
     setGeneratedDocs(null);
     setStep('input');
@@ -174,20 +180,47 @@ const LegoJobGenerator: React.FC = () => {
             />
           </div>
 
+          <div className="input-row">
+            <div className="input-group half-width">
+              <label>Company Name *</label>
+              <input
+                type="text"
+                placeholder="e.g., NVIDIA, Microsoft, Volvo"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                className="text-input"
+                required
+              />
+            </div>
+
+            <div className="input-group half-width">
+              <label>Job Title *</label>
+              <input
+                type="text"
+                placeholder="e.g., Cloud Solutions Architect"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                className="text-input"
+                required
+              />
+            </div>
+          </div>
+
           <div className="input-group">
-            <label>Or paste the full job description</label>
+            <label>Job Description *</label>
             <textarea
               placeholder="Paste the complete job description here..."
               value={jobInput}
               onChange={(e) => setJobInput(e.target.value)}
               rows={15}
               className="job-input"
+              required
             />
           </div>
 
           <button
             onClick={analyzeJob}
-            disabled={loading || (!jobInput && !jobUrl)}
+            disabled={loading || !jobInput || !companyName || !jobTitle}
             className="primary-button"
           >
             {loading ? '🔄 Analyzing...' : '🔍 Analyze Job'}
