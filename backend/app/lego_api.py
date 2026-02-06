@@ -3257,13 +3257,3 @@ def list_ai_prompts():
             }
         ]
     })
-
-
-@lego_api.route('/api/health', methods=['GET'])
-def health_check():
-    """Health check endpoint for monitoring"""
-    return jsonify({
-        'status': 'healthy',
-        'service': 'lego-api',
-        'timestamp': datetime.now().isoformat()
-    })
