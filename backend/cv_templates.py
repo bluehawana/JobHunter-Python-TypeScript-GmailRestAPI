@@ -23,6 +23,23 @@ class CVTemplateManager:
     # Tip: More specific roles should have lower priority numbers
     ROLE_CATEGORIES = {
         # === SPECIALIZED ROLES (Priority 1) - Check these first ===
+        'azure_solution_architect': {
+            'keywords': [
+                'azure architect', 'solution architect', 'azure solution architect', 'cloud architect',
+                'enterprise architect', 'azure integration', 'azure services',
+                'azure devops', 'aks', 'azure kubernetes', 'bicep', 'arm template',
+                'azure functions', 'logic apps', 'service bus', 'event grid',
+                'azure ad', 'azure security', 'azure monitor', 'application insights',
+                'sharepoint', 'dynamics 365', 'power bi', 'power platform',
+                'microsoft 365', 'microsoft graph', 'azure migration',
+                'finops', 'cost optimization', 'azure cost management',
+                'financial services', 'banking', 'automotive finance',
+                'compliance', 'psd2', 'gdpr', 'zero trust'
+            ],
+            'cv_template': 'templates/cv_templates/azure_solution_architect_template.tex',
+            'cl_template': 'templates/cl_templates/azure_solution_architect_cl_template.tex',
+            'priority': 1
+        },
         'it_business_analyst': {
             'keywords': ['business analyst', 'it analyst', 'it business analyst', 'business requirements', 'stakeholder', 'business process', 'gap analysis', 'power bi', 'visio', 'workshop', 'requirements gathering', 'business case', 'process improvement', 'digitalization', 'bridge between'],
             'cv_template': 'backend/latex_sources/cv_hongzhi_li_modern.tex',
