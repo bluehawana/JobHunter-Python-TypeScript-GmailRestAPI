@@ -4,14 +4,14 @@ Flask wrapper to run the lego_api blueprint
 """
 from flask import Flask
 from flask_cors import CORS
-from lego_api import lego_api_bp
+from lego_api import lego_api
 import os
 
 app = Flask(__name__)
 CORS(app)
 
 # Register the lego_api blueprint
-app.register_blueprint(lego_api_bp)
+app.register_blueprint(lego_api)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8000))
