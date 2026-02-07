@@ -129,7 +129,38 @@ class CVTemplateManager:
             'priority': 2
         },
 
-        # === FULLSTACK (Priority 2) - Explicit fullstack keywords win ===
+        # === LANGUAGE-SPECIFIC BACKEND (Priority 2) - Check programming language first ===
+        'java_backend_developer': {
+            'keywords': [
+                'java', 'spring boot', 'spring framework', 'spring', 'jvm', 'maven', 'gradle',
+                'hibernate', 'jpa', 'java ee', 'jakarta ee', 'java developer', 'java engineer',
+                'backend java', 'java backend', 'java microservices', 'java api'
+            ],
+            'cv_template': 'templates/cv_templates/java_developer_template.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
+            'priority': 2
+        },
+        'dotnet_backend_developer': {
+            'keywords': [
+                '.net', 'dotnet', 'c#', 'csharp', 'asp.net', 'asp.net core', '.net core',
+                'entity framework', 'ef core', 'blazor', 'razor', 'mvc', 'web api',
+                '.net developer', 'c# developer', 'backend .net', '.net backend'
+            ],
+            'cv_template': 'templates/cv_templates/dotnet_developer_template.tex',
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
+            'priority': 2
+        },
+        'python_backend_developer': {
+            'keywords': [
+                'python', 'django', 'flask', 'fastapi', 'python developer', 'python engineer',
+                'backend python', 'python backend', 'python api', 'python microservices'
+            ],
+            'cv_template': 'templates/cv_templates/fullstack_developer_template.tex',  # Fallback for now
+            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
+            'priority': 2
+        },
+
+        # === FULLSTACK (Priority 3) - Explicit fullstack keywords ===
         'fullstack_developer': {
             'keywords': [
                 'fullstack', 'full-stack', 'full stack', 'frontend and backend', 'front-end and back-end',
@@ -143,10 +174,10 @@ class CVTemplateManager:
             ],
             'cv_template': 'templates/cv_templates/fullstack_developer_template.tex',
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
-            'priority': 2
+            'priority': 3
         },
 
-        # === BACKEND-FOCUSED (Priority 3) ===
+        # === GENERIC BACKEND (Priority 4) - Fallback when no specific language detected ===
         'backend_developer': {
             'keywords': [
                 'backend developer', 'back-end developer', 'api developer', 'software engineer', 'software developer',
@@ -159,9 +190,9 @@ class CVTemplateManager:
                 'generative ai solutions', 'ai solutions', 'llm-based applications',
                 'vector search', 'semantic search', 'applied use of', 'use cases powered by'
             ],
-            'cv_template': 'templates/cv_templates/fullstack_developer_template.tex',  # Use fullstack as fallback
+            'cv_template': 'templates/cv_templates/java_developer_template.tex',  # Default to Java (most common)
             'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
-            'priority': 3
+            'priority': 4
         },
 
         # === DEVOPS/INFRASTRUCTURE (Priority 4) ===
