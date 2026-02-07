@@ -2297,7 +2297,7 @@ def health_check():
 
 @lego_api.route('/api/analyze-job', methods=['POST'])
 def analyze_job():
-    """Analyze job description and return analysis"""
+    """Analyze job description and return analysis with ATS optimization"""
     try:
         data = request.json
         job_description = data.get('jobDescription', '')
@@ -2311,10 +2311,20 @@ def analyze_job():
         if not company_name or not job_title:
             return jsonify({'error': 'Company name and job title are required'}), 400
         
-        # Analyze the job description
+        # STEP 1: Get ATS optimization recommendations from AI
+        ats_recommendations = None
+        if ai_analyzer.is_available():
+            print("🤖 Getting ATS optimization recommendations from AI...")
+            ats_recommendations = ai_analyzer.analyze_job_for_ats_optimization(job_description)
+            if ats_recommendations:
+                print(f"✅ AI recommends template: {ats_recommendations['recommended_template']}")
+                print(f"📊 ATS score potential: {ats_recommendations['ats_score_potential']}%")
+                print(f"🔑 Critical keywords: {', '.join(ats_recommendations['critical_keywords'][:5])}")
+        
+        # STEP 2: Analyze the job description (role detection)
         analysis = analyze_job_description(job_description, job_url)
         
-        # Override with user-provided company and title (most reliable)
+        # STEP 3: Override with user-provided company and title
         analysis['company'] = company_name
         analysis['title'] = job_title
         analysis['extractionStatus'] = {
@@ -2325,13 +2335,23 @@ def analyze_job():
             'source': 'user_input'
         }
         
+        # STEP 4: Add ATS optimization recommendations to analysis
+        if ats_recommendations:
+            analysis['ats_optimization'] = ats_recommendations
+            # Override role type if AI recommends a different template
+            if ats_recommendations['recommended_template'] != analysis.get('roleType'):
+                print(f"📝 Overriding role from {analysis.get('roleType')} to {ats_recommendations['recommended_template']} based on AI recommendation")
+                analysis['roleType'] = ats_recommendations['recommended_template']
+        
         print(f"📍 User provided: {company_name} - {job_title}")
+        print(f"🎯 Final role type: {analysis.get('roleType')}")
         
         return jsonify({
             'success': True,
             'analysis': analysis,
             'jobDescription': job_description,
-            'extractionStatus': analysis.get('extractionStatus', {})
+            'extractionStatus': analysis.get('extractionStatus', {}),
+            'atsOptimization': ats_recommendations  # Include ATS recommendations in response
         })
         
     except Exception as e:
