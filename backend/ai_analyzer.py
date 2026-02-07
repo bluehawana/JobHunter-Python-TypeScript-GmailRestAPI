@@ -114,6 +114,113 @@ class AIAnalyzer:
             logger.warning("AI Analyzer not available - API key not configured")
         return available
     
+    def analyze_job_for_ats_optimization(self, job_description: str) -> Optional[Dict]:
+        """
+        Analyze job description and provide ATS optimization recommendations
+        
+        Returns:
+            Dict with:
+            - recommended_template: Best template to use
+            - programming_language: Primary language (java, dotnet, python, etc.)
+            - critical_keywords: Must-have keywords for ATS
+            - skills_to_emphasize: Skills to highlight prominently
+            - experience_focus: Which work experiences to emphasize
+            - customization_tips: Specific tips for this job
+            - ats_score_potential: Estimated ATS match potential (0-100)
+        """
+        if not self.is_available():
+            logger.warning("AI analysis not available for ATS optimization")
+            return None
+        
+        try:
+            prompt = f"""You are an ATS (Applicant Tracking System) optimization expert. Analyze this job description and provide specific recommendations to maximize ATS screening success.
+
+JOB DESCRIPTION:
+{job_description[:4000]}
+
+Provide your analysis in this EXACT JSON format:
+{{
+    "recommended_template": "java_backend_developer|dotnet_backend_developer|python_backend_developer|fullstack_developer|devops_cloud|azure_solution_architect|android_developer|project_manager",
+    "programming_language": "java|dotnet|python|javascript|kotlin|multiple",
+    "critical_keywords": ["keyword1", "keyword2", "keyword3"],
+    "skills_to_emphasize": ["skill1", "skill2", "skill3"],
+    "experience_focus": ["company1: reason", "company2: reason"],
+    "customization_tips": ["tip1", "tip2", "tip3"],
+    "ats_score_potential": 85,
+    "reasoning": "Brief explanation of recommendations"
+}}
+
+ANALYSIS RULES:
+1. **Programming Language Detection**: Identify the PRIMARY language (Java, .NET/C#, Python, etc.)
+2. **Critical Keywords**: Extract 5-10 keywords that MUST appear in the CV for ATS
+3. **Skills to Emphasize**: List specific technical skills to highlight prominently
+4. **Experience Focus**: Which past companies/roles to emphasize and why
+5. **Customization Tips**: Specific changes to make for this job
+6. **ATS Score**: Estimate match potential (0-100) based on candidate's background
+
+IMPORTANT:
+- If job mentions "Java", "Spring Boot", "Maven" -> recommend "java_backend_developer"
+- If job mentions ".NET", "C#", "ASP.NET" -> recommend "dotnet_backend_developer"
+- If job mentions "Azure", "Microsoft 365", "SharePoint" -> recommend "azure_solution_architect"
+- If job mentions "Android", "Kotlin", "mobile" -> recommend "android_developer"
+- Critical keywords should be exact phrases from the job description
+- Focus on technical skills, not soft skills
+- Be specific about which work experiences to emphasize
+
+Return ONLY the JSON, no other text."""
+
+            import requests
+            
+            api_key = os.environ.get('ANTHROPIC_API_KEY')
+            base_url = os.environ.get('ANTHROPIC_BASE_URL', 'https://api.minimax.io/anthropic')
+            
+            if not api_key:
+                logger.error("ANTHROPIC_API_KEY not found")
+                return None
+            
+            url = f"{base_url}/v1/messages"
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {api_key}',
+                'anthropic-version': '2023-06-01'
+            }
+            
+            payload = {
+                "model": "glm-4.7",
+                "max_tokens": 4096,
+                "messages": [{"role": "user", "content": prompt}]
+            }
+            
+            http_response = requests.post(url, headers=headers, json=payload, timeout=60)
+            
+            if http_response.status_code == 200:
+                result_data = http_response.json()
+                
+                # Extract text from response
+                ai_response_text = ""
+                if 'content' in result_data:
+                    for block in result_data['content']:
+                        if block.get('type') == 'text':
+                            ai_response_text += block.get('text', '')
+                
+                # Parse JSON from response
+                import re
+                json_match = re.search(r'\{.*\}', ai_response_text, re.DOTALL)
+                if json_match:
+                    ats_recommendations = json.loads(json_match.group())
+                    logger.info(f"✅ ATS optimization analysis completed: {ats_recommendations['recommended_template']}")
+                    return ats_recommendations
+                else:
+                    logger.error("Failed to parse JSON from AI response")
+                    return None
+            else:
+                logger.error(f"❌ ATS optimization request failed: {http_response.status_code}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"ATS optimization analysis failed: {e}", exc_info=True)
+            return None
+
     def analyze_job_description(self, job_description: str) -> Optional[Dict]:
         """
         Analyze job description using Minimax M2
