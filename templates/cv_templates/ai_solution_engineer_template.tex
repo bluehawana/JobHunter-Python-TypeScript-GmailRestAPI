@@ -28,8 +28,8 @@
 
 % Name and contact details
 \begin{center}
-{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[8pt]
-{\Large \textit{JOB_TITLE_PLACEHOLDER}}\\[8pt]
+{\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
+{\Large \textit{JOB_TITLE_PLACEHOLDER}}\\[10pt]
 \textcolor{linkedinblue}{
   \href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} |
   \href{tel:+46760067977}{+46 76 006 7977} |
@@ -41,17 +41,21 @@
 
 % Profile Summary
 \section*{Profile Summary}
-Senior AI Engineer and Solution Architect with 6+ years of experience delivering production-grade ML and AI systems end-to-end --- from understanding real business needs to engineering, deploying, operating, and scaling solutions. Hands-on expertise in on-premises local LLM deployment on dedicated Mac Studio servers (dual-server failover, round-robin load balancing) using open-source models (llama3.3:70b, qwen3-coder:30b, gemma4:31b via Ollama) with 100\% data sovereignty. Deep understanding of enterprise AI tradeoffs (on-prem privacy, zero token cost, and sub-second latency vs cloud LLM scale) and architecting hybrid cloud/on-prem solutions. Built enterprise Knowledge Graph RAG systems, Confluence IT Support Chatbots, DevBot PR reviewers, and led the team to \textbf{2nd place out of 12 competing teams at Volvo Group HackDay 2026} with ClaimGenerationBot. Passionate about accelerating AI adoption from prototype to production.
+Senior AI Engineer and Full-Stack Solution Engineer with 6+ years of experience delivering production-grade ML and AI products end-to-end --- from understanding real business needs to industrialising, operating, and continuously improving solutions at scale. Currently at Volvo Group (Software Configurator team, March 2025--Present), where I have independently designed and deployed five AI systems on internal Mac Studio infrastructure using open-source LLMs (llama3.3:70b, qwen3-coder:30b, gemma4:31b via Ollama) with full data sovereignty --- no data leaving the network. Led team to \textbf{2nd place out of 12 competing teams at Volvo Group HackDay 2026} and delivered two group-wide knowledge-sharing sessions (74 and 71 registered participants). Strong hands-on expertise in Python, C\#/.NET, Azure, AWS, Docker, Kubernetes, CI/CD, MLOps, RAG pipelines, and microservices architecture.
 
 % Technical Skills
 \section*{Technical Skills}
 \begin{itemize}[noitemsep]
-  \item \textbf{AI \& LLM Engineering:} On-Premises LLM Hosting (2$\times$ Mac Studio servers, Ollama), Knowledge Graph RAG (Neo4j, NetworkX, vector search), LLM Orchestration (Ollama, Groq, Gemini API, Azure OpenAI), Embeddings (nomic-embed-text), Multi-modal AI Vision OCR (qwen3-vl), Agentic Workflows, MLOps, Model Serving \& Load Balancing, Confidence Scoring
-  \item \textbf{Programming \& Frameworks:} Python (FastAPI, Flask, asyncio, aiohttp, Pytest, LangChain, LlamaIndex), C\#/.NET 10 (ASP.NET Core, SignalR, EF Core), TypeScript, React 18, Next.js, Angular, Kotlin (Android Auto), Java (Spring Boot), SQL
-  \item \textbf{On-Prem \& Cloud Architecture:} On-Premises AI Infrastructure, Azure (AKS, Azure DevOps, Azure OpenAI, Entra ID, Key Vault, APIM), AWS (EC2, Lambda, S3, RDS --- Solutions Architect \& Data Analytics certified), GCP (Gemini API, Cloud Run)
-  \item \textbf{CI/CD \& DevOps:} Azure DevOps Pipelines, GitHub Actions, GitLab CI, Jenkins; Blue/Green \& Rolling Deployments, Automated Testing Gates, MLOps Pipelines
-  \item \textbf{Containerisation \& Orchestration:} Docker, Kubernetes, Helm, Argo CD, On-Premises K8s Cluster Management
-  \item \textbf{Infrastructure as Code \& Security:} Terraform, Azure Bicep, Ansible; Entra ID (Azure AD), OAuth2/JWT, Data Governance, Zero Trust Security in Regulated Environments
+  \item \textbf{AI \& LLM Engineering:} RAG pipelines, vector search, Knowledge Graph RAG, prompt engineering, LLM orchestration (Ollama, Groq, Gemini API, Azure OpenAI), embeddings (nomic-embed-text), AI Vision OCR (qwen3-vl), agentic workflows, MLOps, model serving, confidence scoring, on-premises LLM hosting
+  \item \textbf{Programming:} Python (FastAPI, Flask, asyncio, aiohttp, Pytest), C\#/.NET 10 (ASP.NET Core, SignalR, EF Core), TypeScript, React 18, Next.js, Angular, Kotlin (Android Auto), Java (Spring Boot), SQL
+  \item \textbf{CI/CD \& DevOps:} Azure DevOps Pipelines, GitHub Actions, GitLab CI, Jenkins; deployment strategies (blue/green, rolling), git branching practices, automated testing gates, model deployment pipelines
+  \item \textbf{Cloud:} Azure (AKS, ARO, Azure DevOps, Azure OpenAI, Entra ID, Key Vault, APIM, App Services, Bicep/ARM), AWS (EC2, Lambda, S3, RDS --- Solutions Architect \& Data Analytics certified), GCP (Gemini API, Cloud Run)
+  \item \textbf{Containerisation \& Orchestration:} Docker, Kubernetes, Helm, Argo CD, on-premises K8s cluster management
+  \item \textbf{Infrastructure as Code:} Terraform, Azure Bicep, ARM templates, Ansible
+  \item \textbf{Monitoring \& Observability:} Prometheus, Grafana, Application Insights, ELK Stack, structured logging, alerting pipelines
+  \item \textbf{Microservices \& APIs:} RESTful APIs, event-driven architecture (Kafka, RabbitMQ, Azure Service Bus), DDD, CQRS, OpenAPI/Swagger, API versioning
+  \item \textbf{Databases:} SQL Server, PostgreSQL, Azure Cosmos DB, MongoDB, SQLite, Redis, EF Core, Dapper
+  \item \textbf{Security:} Entra ID (Azure AD), OAuth2/JWT, Azure Key Vault, secure coding practices, data governance in regulated environments
 \end{itemize}
 
 % Professional Experience
@@ -60,14 +64,12 @@ Senior AI Engineer and Solution Architect with 6+ years of experience delivering
 \subsection*{Volvo Group --- Software Configurator Team (CPA-SWnD), Gothenburg}
 \textit{Full-Stack Developer \& AI Solution Engineer, Mar 2025 -- Present}
 \begin{itemize}[noitemsep]
-  \item Architected and deployed production-grade local AI infrastructure across 2$\times$ Apple Mac Studio servers (dual-server failover, round-robin load balancing), serving local open-source LLMs with 100\% data sovereignty --- no data leaving the internal network.
-  \item Evaluated architectural tradeoffs between local AI hosting (privacy, zero token costs, predictable latency) vs cloud AI APIs (scale, model capability), designing hybrid architectures tailored to enterprise security constraints.
-  \item \textbf{LLM Wiki \& Knowledge Graph RAG}: Built enterprise Knowledge Graph RAG system combining graph representations with vector embeddings (nomic-embed-text) over internal documentation and wiki knowledge bases for deep, structured semantic retrieval.
-  \item \textbf{Confluence / IT Support Chatbot} (.NET 10, SignalR, RAG, llama3.3:70b, qwen3-vl): Multi-modal RAG chatbot indexed over Confluence \& IT support KB; AI Vision OCR for screenshot troubleshooting; confidence scoring; automated specialist escalation; SQLite/EF Core conversation state.
-  \item \textbf{DevBot --- AI Developer Assistant} (Python, aiohttp, MS Teams Bot Framework, Azure DevOps, qwen3-coder:30b, gemma4:31b): Microsoft Teams bot for automated PR code review with Junior/Senior review modes, path-based review rules, and inline PR thread posting.
+  \item Independently designed and deployed five production-grade AI systems on Volvo Group's internal Mac Studio infrastructure (dual-server failover, round-robin load balancing), covering full ML product lifecycle: business need $\to$ architecture $\to$ deployment $\to$ monitoring $\to$ iteration.
+  \item \textbf{Support Chatbot} (.NET 10, SignalR, RAG, llama3.3:70b, nomic-embed-text, qwen3-vl): RAG pipeline with vector search over IT support knowledge base & Confluence docs; AI Vision OCR for screenshot analysis; per-response confidence scoring; automatic specialist escalation; conversation persistence (SQLite/EF Core). All inference on-premises.
+  \item \textbf{DevBot --- AI Developer Assistant} (Python, aiohttp, MS Teams Bot Framework, Azure DevOps, qwen3-coder:30b, gemma4:31b): Microsoft Teams bot for automated PR code review. Junior mode explains changes and tips; senior mode surfaces critical diff items. Incremental reviews posted to Teams and Azure DevOps PR threads.
   \item \textbf{OfficeBot} (LLM, PDF generation): Enables non-technical staff to generate professional PDFs, cover letters, and posters via natural language.
-  \item \textbf{ClaimGenerationBot --- 2nd Place, Volvo Group HackDay 2026} (Python/FastAPI, .NET, RAG, LLM, JSON knowledge base): Led team to 2nd place finish across competition. Agentic system for Volvo Trucks: plate number input $\to$ retrieves truck profile \& service history $\to$ generates full service contract draft. \textbf{Reduced contract generation time from $\sim$40 minutes to near-instant.}
-  \item \textbf{CoDriver --- Voice AI Co-Pilot for Commercial Vehicles} (Kotlin, Android Auto, FastAPI, Ollama, Picovoice): Hands-free voice assistant for drivers with custom wake words, complex navigation, weather, and media controls.
+  \item \textbf{ClaimGenerationBot --- 2nd Place, Volvo Group HackDay 2026} (Python/FastAPI, .NET, RAG, LLM, JSON knowledge base): Led team to 2nd place finish across competition. Agentic system for Volvo Trucks: plate number input $\to$ retrieves truck profile \& service history $\to$ generates full service contract draft. \textbf{Reduced contract generation from $\sim$40 minutes to near-instant.}
+  \item \textbf{CoDriver --- Voice AI Co-Pilot for Commercial Vehicles} (Kotlin, Android Auto, FastAPI, Ollama, Picovoice, Google Maps API, Spotify SDK): Hands-free voice assistant for drivers. Customisable wake words (``Hello Volvo''), complex navigation, weather, Spotify/podcast control.
   \item Delivered two group-wide knowledge-sharing sessions on Generative AI and LLM engineering: \textbf{74 registered participants} (Session 1) and \textbf{71 registered} (Session 2).
 \end{itemize}
 
