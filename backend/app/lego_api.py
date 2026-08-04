@@ -1791,9 +1791,8 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
                 template_content = template_content[:header_match.start()] + new_header + template_content[header_match.end():]
                 print(f"[CL] Replaced header company: '{old_company}' → '{company}'")
         
-        # Replace company name in body text (e.g., "at Volvo Financial Services")
-        # Use a broad pattern to catch references in the letter body
-        old_companies = ['Volvo Financial Services', 'Volvo Group', 'Target Company', 'Company Name']
+        # Replace generic company placeholders in body text (preserve actual past work history like 'Volvo Group')
+        old_companies = ['Volvo Financial Services', 'Target Company', 'Company Name']
         for old_co in old_companies:
             if old_co in template_content and old_co != company:
                 template_content = template_content.replace(old_co, company)
