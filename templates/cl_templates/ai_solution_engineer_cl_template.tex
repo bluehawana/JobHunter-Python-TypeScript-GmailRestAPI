@@ -1,0 +1,60 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Define colors
+\definecolor{darkblue}{RGB}{0,51,102}
+
+% Section formatting
+\titleformat{\section}{\large\bfseries\raggedright\color{black}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}[runin]{\bfseries}{}{0em}{}[:]
+
+% Remove paragraph indentation
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\pagestyle{empty}
+
+\begin{letter}{
+  \color{darkblue}
+  COMPANY_NAME_PLACEHOLDER\\
+  Gothenburg, Sweden
+}
+
+\vspace{30pt}
+
+\opening{Dear Hiring Manager,}
+
+\vspace{8pt}
+
+I am writing to express my strong interest in the JOB_TITLE_PLACEHOLDER position at COMPANY_NAME_PLACEHOLDER. I am currently working on the Software Configurator team at Volvo Group in Gothenburg --- where I independently design and deploy production AI systems using open-source LLMs with full data sovereignty. I can contribute to your team from day one.
+
+What draws me to COMPANY_NAME_PLACEHOLDER specifically is your mandate to accelerate AI adoption and build high-impact solutions at scale. On my current team, I have designed and shipped four production AI systems --- a Support Chatbot, DevBot, OfficeBot, and the ClaimGenerationBot that won \textbf{2nd place out of 12 competing teams and individuals at Volvo Group HackDay 2026, where only 1st and 2nd place were awarded}. That pace reflects how I work: I move fast, I build things that actually run in production, and I take full ownership from architecture to deployment to monitoring.
+
+Your job description asks for someone who can own the full ML product lifecycle --- understanding real business needs, engineering solutions, and continuously improving them at scale. That is precisely what I have been doing, and the CoDriver project is a clear example of this. CoDriver is an Android-based voice AI co-pilot for commercial vehicles, built on internal servers with open-source LLMs. Running a purpose-built LLM pipeline with customisable wake words, RAG-grounded responses, and full integration with navigation, media, and real-time data, it points directly at how intelligent voice features can become a genuine product differentiator.
+
+The personality you are looking for --- someone who dreams big, takes ownership, thrives in cross-functional international teams, and pushes AI from prototype to production --- is how I approach every project. I also invest in bringing colleagues along: I have delivered two group-wide knowledge-sharing sessions on Generative AI, with over 70 colleagues registering for each, because I believe the biggest multiplier for any AI engineer is the team around them.
+
+I would welcome the opportunity to discuss how my experience and passion for AI innovation align with what COMPANY_NAME_PLACEHOLDER is building next.
+
+\vspace{10pt}
+
+\closing{Sincerely,\\\vspace{15pt}Harvad (Hongzhi) Li}
+
+\vspace{20pt}
+{\color{darkblue}\rule{\linewidth}{0.6pt}}
+\vspace{4pt}
+
+{\color{darkblue}
+  Gothenburg, Sweden\\
+  \href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | +46 76 006 7977\\
+  LinkedIn: \href{https://www.linkedin.com/in/hzl/}{linkedin.com/in/hzl} |
+  GitHub: \href{https://github.com/bluehawana}{github.com/bluehawana}
+}
+
+\end{letter}
+\end{document}

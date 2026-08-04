@@ -99,19 +99,22 @@ class CVTemplateManager:
             'priority': 1
         },
         'ai_product_engineer': {
-            # Keywords for BUILDING AI systems (model training, RAG, MLOps)
+            # Keywords for BUILDING AI systems (model training, RAG, MLOps, AI Engineer)
             'keywords': [
-                'ai engineer', 'ml engineer', 'machine learning engineer',
+                'ai engineer', 'senior ai engineer', 'ai solution engineer', 'ai solutions engineer',
+                'ai developer', 'ml engineer', 'machine learning engineer', 'ai product engineer',
+                'ai use cases', 'ai solutions', 'adopt ai', 'adoption of ai', 'practical ai',
+                'generative ai', 'genai', 'llm', 'large language model',
                 'model training', 'training models', 'fine-tuning', 'fine-tuning models',
                 'rag', 'retrieval-augmented generation', 'vector database', 'vector databases',
                 'embeddings', 'mlops', 'ml ops', 'model serving', 'model deployment',
                 'deep learning', 'neural network', 'pytorch', 'tensorflow',
-                'hugging face', 'langchain', 'llama', 'stable diffusion',
+                'hugging face', 'langchain', 'llama', 'ollama', 'stable diffusion',
                 'computer vision', 'nlp', 'natural language processing',
                 'data science', 'feature engineering', 'model evaluation'
             ],
-            'cv_template': 'templates/cv_templates/ai_product_engineer_template.tex',
-            'cl_template': 'backend/latex_sources/cover_letter_hongzhi_li_template.tex',
+            'cv_template': 'templates/cv_templates/ai_solution_engineer_template.tex',
+            'cl_template': 'templates/cl_templates/ai_solution_engineer_cl_template.tex',
             'priority': 1
         },
 
@@ -330,12 +333,14 @@ class CVTemplateManager:
             if score <= 0:
                 continue
                 
-            # Handle AI misclassification prevention
+            # Handle AI misclassification prevention - allow AI Engineer when explicit AI terms are present or score >= 15%
             if role_key == 'ai_product_engineer':
                 ai_percentage = role_percentages.get('ai_product_engineer', 0)
-                if ai_percentage < 50:
+                jd_lower = job_description.lower() if 'job_description' in locals() else ''
+                explicit_ai_job = any(term in jd_lower for term in ['ai engineer', 'ai solution', 'machine learning engineer', 'ml engineer', 'generative ai', 'llm'])
+                if ai_percentage < 15 and not explicit_ai_job:
                     logger.warning(
-                        f"AI Product Engineer percentage ({ai_percentage:.1f}%) is below 50% threshold. "
+                        f"AI Product Engineer percentage ({ai_percentage:.1f}%) is below threshold. "
                         f"Skipping AI Product Engineer role."
                     )
                     continue
@@ -377,12 +382,14 @@ class CVTemplateManager:
             if score <= 0:
                 continue
                 
-            # Handle AI misclassification prevention
+            # Handle AI misclassification prevention - allow AI Engineer when explicit AI terms are present or score >= 15%
             if role_key == 'ai_product_engineer':
                 ai_percentage = role_percentages.get('ai_product_engineer', 0)
-                if ai_percentage < 50:
+                jd_lower = job_description.lower() if 'job_description' in locals() else ''
+                explicit_ai_job = any(term in jd_lower for term in ['ai engineer', 'ai solution', 'machine learning engineer', 'ml engineer', 'generative ai', 'llm'])
+                if ai_percentage < 15 and not explicit_ai_job:
                     logger.warning(
-                        f"AI Product Engineer percentage ({ai_percentage:.1f}%) is below 50% threshold. "
+                        f"AI Product Engineer percentage ({ai_percentage:.1f}%) is below threshold. "
                         f"Skipping AI Product Engineer role."
                     )
                     continue
