@@ -1457,14 +1457,34 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
         # Escape special LaTeX characters in title
         clean_title = clean_title.replace('&', '\\&').replace('%', '\\%').replace('$', '\\$')
         
-        # Only replace the job title in the header ({\Large ...} line after name)
-        pattern = r'\{\\Large\s+[^\}]+\}'
-        match = re.search(pattern, template_content)
+        # Replace the job title in the header ({\Large ...} line after name)
+        # Handle nested LaTeX commands like {\Large \textit{...}} by matching balanced braces
+        # Pattern 1: {\Large \textit{...}} (with nested command)
+        pattern_nested = r'\{\\Large\s+\\textit\{[^}]+\}\}'
+        match = re.search(pattern_nested, template_content)
         if match:
-            replacement = f'{{\\Large {clean_title}}}'
+            replacement = f'{{\\Large \\textit{{{clean_title}}}}}'
             template_content = template_content.replace(match.group(0), replacement, 1)
+            print(f"✓ Replaced CV title (nested \\textit): '{match.group(0)}' → '{replacement}'")
+        else:
+            # Pattern 2: {\Large ...} (simple, no nested commands)
+            pattern_simple = r'\{\\Large\s+[^\\}][^}]*\}'
+            match = re.search(pattern_simple, template_content)
+            if match:
+                replacement = f'{{\\Large {clean_title}}}'
+                template_content = template_content.replace(match.group(0), replacement, 1)
+                print(f"✓ Replaced CV title (simple): '{match.group(0)}' → '{replacement}'")
+            else:
+                print(f"⚠️ Could not find \\Large title pattern in CV template")
         
-        print(f"✓ Using original CV template for {role_category} without content modification")
+        # Also replace company name placeholders if they exist in the CV template
+        if company and company != 'Company':
+            template_content = template_content.replace('COMPANY_NAME_PLACEHOLDER', company)
+            template_content = template_content.replace('[COMPANY NAME]', company)
+            template_content = template_content.replace('[Company Name]', company)
+            template_content = template_content.replace('{company_name}', company)
+        
+        print(f"✓ CV template for {role_category}: title='{clean_title}', company='{company}'")
         return template_content
     
     # Fallback to LEGO bricks generation if no template
@@ -1756,7 +1776,28 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
         template_content = template_content.replace('[COMPANY NAME]', company)
         template_content = template_content.replace('[Company Name]', company)
         template_content = template_content.replace('{company_name}', company)
-        # Do NOT replace bare "COMPANY_NAME" as it might match parts of other placeholders
+        template_content = template_content.replace('Target Company', company)
+        
+        # Also replace hardcoded company names in CL header structure:
+        # Pattern: \textbf{OldCompanyName}  (the company line in CL header)
+        header_company_pattern = r'\\textbf\{([^}]+)\}(\s*\\\\)'
+        header_match = re.search(header_company_pattern, template_content)
+        if header_match:
+            old_company = header_match.group(1)
+            # Only replace if it looks like a company name (not a section header)
+            # Check if it's near the start of the document (within first 1000 chars)
+            if header_match.start() < 1000 and old_company != company:
+                new_header = f'\\\\textbf{{{company}}}' + header_match.group(2)
+                template_content = template_content[:header_match.start()] + new_header + template_content[header_match.end():]
+                print(f"[CL] Replaced header company: '{old_company}' → '{company}'")
+        
+        # Replace company name in body text (e.g., "at Volvo Financial Services")
+        # Use a broad pattern to catch references in the letter body
+        old_companies = ['Volvo Financial Services', 'Volvo Group', 'Target Company', 'Company Name']
+        for old_co in old_companies:
+            if old_co in template_content and old_co != company:
+                template_content = template_content.replace(old_co, company)
+                print(f"[CL] Replaced body company ref: '{old_co}' → '{company}'")
 
     # Replace position/job title placeholders - longest first
     if title and title != 'Position':
@@ -1766,7 +1807,16 @@ def customize_cover_letter(template_content: str, company: str, title: str) -> s
         template_content = template_content.replace('[JOB TITLE]', title)
         template_content = template_content.replace('[Position]', title)
         template_content = template_content.replace('{job_title}', title)
-        # Do NOT replace bare "JOB_TITLE" as it might match parts of other placeholders
+        template_content = template_content.replace('Target Position', title)
+        
+        # Replace hardcoded title in "Re: PositionTitle Position" line
+        re_line_pattern = r'\\textbf\{Re:\s+([^}]+)\}'
+        re_match = re.search(re_line_pattern, template_content)
+        if re_match:
+            old_title = re_match.group(1)
+            if old_title != f'{title} Position' and old_title != title:
+                template_content = template_content[:re_match.start()] + f'\\\\textbf{{Re: {title} Position}}' + template_content[re_match.end():]
+                print(f"[CL] Replaced Re: line: '{old_title}' → '{title} Position'")
 
     # Replace any remaining placeholder patterns
     template_content = template_content.replace('[SPECIFIC REASON - customize per company]', 'your reputation for excellence and commitment to quality')
