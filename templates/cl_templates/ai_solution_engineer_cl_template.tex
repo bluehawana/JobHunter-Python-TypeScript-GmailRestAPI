@@ -13,21 +13,19 @@
 \titleformat{\section}{\large\bfseries\raggedright\color{black}}{}{0em}{}[\titlerule]
 \titleformat{\subsection}[runin]{\bfseries}{}{0em}{}[:]
 
-% Remove paragraph indentation
+% Remove paragraph indentation & set paragraph spacing
 \setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em}
 
 \begin{document}
 \pagestyle{empty}
 
-\begin{letter}{
-  \color{darkblue}
-  COMPANY_NAME_PLACEHOLDER\\
-  Gothenburg, Sweden
-}
+{\color{darkblue}\Large \textbf{COMPANY_NAME_PLACEHOLDER}}\\
+{\color{darkblue}\textit{Gothenburg, Sweden}}
 
-\vspace{30pt}
+\vspace{15pt}
 
-\opening{Dear Hiring Manager,}
+Dear Hiring Manager,
 
 \vspace{8pt}
 
@@ -41,13 +39,14 @@ The personality you are looking for --- someone who dreams big, takes ownership,
 
 I would welcome the opportunity to discuss how my experience and passion for AI innovation align with what COMPANY_NAME_PLACEHOLDER is building next.
 
-\vspace{10pt}
+\vspace{15pt}
 
-\closing{Sincerely,\\\vspace{15pt}Harvad (Hongzhi) Li}
+Sincerely,\\[15pt]
+\textbf{Harvad (Hongzhi) Li}
 
-\vspace{20pt}
+\vspace{25pt}
 {\color{darkblue}\rule{\linewidth}{0.6pt}}
-\vspace{4pt}
+\vspace{6pt}
 
 {\color{darkblue}
   Gothenburg, Sweden\\
@@ -56,5 +55,4 @@ I would welcome the opportunity to discuss how my experience and passion for AI 
   GitHub: \href{https://github.com/bluehawana}{github.com/bluehawana}
 }
 
-\end{letter}
 \end{document}
