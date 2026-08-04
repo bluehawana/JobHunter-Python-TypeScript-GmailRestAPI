@@ -2407,8 +2407,19 @@ def generate_lego_application():
         analysis = data.get('analysis', {})
         customization_notes = data.get('customizationNotes', '')
 
+        # PRIORITY 1: Get user-provided values from request (highest priority)
+        user_company_name = data.get('companyName', '').strip()
+        user_job_title = data.get('jobTitle', '').strip()
+        
+        print(f"🔍 Received request data:")
+        print(f"   User company name: '{user_company_name}'")
+        print(f"   User job title: '{user_job_title}'")
+        print(f"   Analysis company: '{analysis.get('company', 'N/A')}'")
+        print(f"   Analysis title: '{analysis.get('title', 'N/A')}'")
+
         # EXTRACT FROM URL IF PROVIDED: Use backend URL extraction for accurate parsing
-        if job_url and job_url.strip():
+        # But ONLY if user didn't provide explicit values
+        if job_url and job_url.strip() and (not user_company_name or not user_job_title):
             print(f"🔗 Extracting job details from URL: {job_url}")
             try:
                 from app.services.job_url_extractor import JobUrlExtractor
@@ -2422,10 +2433,10 @@ def generate_lego_application():
                     print(f"   Title: {job_details.get('title')}")
                     print(f"   Location: {job_details.get('location')}")
                     
-                    # Override analysis with extracted data (URL extraction is more accurate)
-                    if job_details.get('company'):
+                    # Override analysis with extracted data ONLY if user didn't provide values
+                    if job_details.get('company') and not user_company_name:
                         analysis['company'] = job_details['company']
-                    if job_details.get('title'):
+                    if job_details.get('title') and not user_job_title:
                         analysis['title'] = job_details['title']
                     if job_details.get('description') and not job_description:
                         job_description = job_details['description']
@@ -2437,8 +2448,10 @@ def generate_lego_application():
 
         role_type = analysis.get('roleType', 'DevOps Engineer')
         role_category = analysis.get('roleCategory', 'devops_cloud')
-        company = analysis.get('company', 'Company')
-        title = analysis.get('title', 'Position')
+        
+        # PRIORITY: Use user-provided values first, then analysis, then defaults
+        company = user_company_name or analysis.get('company', 'Company')
+        title = user_job_title or analysis.get('title', 'Position')
 
         print(f"📋 Final values after URL extraction: Company='{company}', Title='{title}', Role='{role_type}'")
 

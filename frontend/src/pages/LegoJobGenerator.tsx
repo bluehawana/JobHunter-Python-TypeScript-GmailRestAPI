@@ -75,7 +75,9 @@ const LegoJobGenerator: React.FC = () => {
         body: JSON.stringify({
           jobDescription: jobInput,
           jobUrl: jobUrl,
-          analysis: analysis
+          analysis: analysis,
+          companyName: companyName.trim(),
+          jobTitle: jobTitle.trim()
         })
       });
 
