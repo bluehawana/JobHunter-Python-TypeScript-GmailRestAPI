@@ -1,0 +1,225 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Define colors
+\definecolor{darkblue}{rgb}{0.0, 0.2, 0.6}
+
+% Section formatting
+\titleformat{\section}{\large\scshape\raggedright\color{darkblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}[runin]{\bfseries}{}{0em}{}[:]
+
+% Remove paragraph indentation
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\pagestyle{empty}
+
+% Name and contact details
+\begin{center}
+{\LARGE \textbf{Harvad Li}}\\[10pt]
+{\Large \textit{Senior AI Solution Engineer}}\\[10pt]
+\textcolor{darkblue}{
+  \href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} |
+  \href{tel:+46760067977}{+46 76 006 7977} |
+  \href{https://www.linkedin.com/in/hzl/}{LinkedIn} |
+  \href{https://github.com/bluehawana}{GitHub} |
+  \href{https://jobs.bluehawana.com}{jobs.bluehawana.com}
+}
+\end{center}
+
+% Profile Summary
+\section*{Profile Summary}
+Senior AI Solution Engineer and Full-Stack Developer with 6+ years of experience
+delivering production-grade ML and AI products end-to-end --- from understanding real
+business needs to industrialising, operating, and continuously improving solutions at
+scale. Currently at Volvo Group (Software Configurator team, March 2025--Present),
+where I have independently designed and deployed five AI systems on internal
+infrastructure using open-source LLMs (llama3.3:70b, qwen3-coder:30b, gemma4:31b via
+Ollama) with full data sovereignty --- no data leaving the Volvo network. Led the
+``Non-List'' team to \textbf{2nd place out of 12 competing teams and individuals at
+Volvo Group HackDay 2026 --- only 1st and 2nd place were awarded} and
+delivered two group-wide knowledge-sharing sessions (74 and 71 registered participants).
+Strong hands-on expertise in Python, C\#/.NET, Azure, AWS, Docker, Kubernetes, CI/CD,
+MLOps, RAG pipelines, and microservices architecture. Passionate about shaping
+sustainable transport through next-generation AI and data products.
+
+% Technical Skills
+\section*{Technical Skills}
+\begin{itemize}[noitemsep]
+  \item \textbf{AI \& LLM Engineering:} RAG pipelines, vector search, prompt engineering,
+        LLM orchestration (Ollama, Groq, Gemini API, Azure OpenAI), embeddings
+        (nomic-embed-text), AI Vision OCR (qwen3-vl), agentic workflows, MLOps,
+        model serving, confidence scoring, on-premises LLM hosting
+  \item \textbf{Programming:} Python (FastAPI, Flask, asyncio, aiohttp, Pytest),
+        C\#/.NET 10 (ASP.NET Core, SignalR, EF Core), TypeScript, React 18, Next.js,
+        Angular, Kotlin (Android Auto), Java (Spring Boot), SQL
+  \item \textbf{CI/CD \& DevOps:} Azure DevOps Pipelines, GitHub Actions, GitLab CI,
+        Jenkins; deployment strategies (blue/green, rolling), git branching practices,
+        automated testing gates, model deployment pipelines
+  \item \textbf{Cloud:} Azure (AKS, ARO, Azure DevOps, Azure OpenAI, Entra ID, Key Vault,
+        APIM, App Services, Bicep/ARM), AWS (EC2, Lambda, S3, RDS --- Solutions Architect
+        \& Data Analytics certified), GCP (Gemini API, Cloud Run)
+  \item \textbf{Containerisation \& Orchestration:} Docker, Kubernetes, Helm, Argo CD,
+        on-premises K8s cluster management
+  \item \textbf{Infrastructure as Code:} Terraform, Azure Bicep, ARM templates, Ansible
+  \item \textbf{Monitoring \& Observability:} Prometheus, Grafana, Application Insights,
+        ELK Stack, structured logging, alerting pipelines
+  \item \textbf{Microservices \& APIs:} RESTful APIs, event-driven architecture
+        (Kafka, RabbitMQ, Azure Service Bus), DDD, CQRS, OpenAPI/Swagger, API versioning
+  \item \textbf{Databases:} SQL Server, PostgreSQL, Azure Cosmos DB, MongoDB, SQLite,
+        Redis, EF Core, Dapper
+  \item \textbf{Security:} Entra ID (Azure AD), OAuth2/JWT, Azure Key Vault, secure
+        coding practices, data governance in regulated environments
+\end{itemize}
+
+% Professional Experience
+\section*{Professional Experience}
+
+\subsection*{Volvo Group --- Software Configurator Team (CPA-SWnD), Gothenburg}
+\textit{Full-Stack Developer \& AI Solution Engineer, Mar 2025 -- Present}
+\begin{itemize}[noitemsep]
+  \item Independently designed and deployed five production-grade AI systems on Volvo
+        Group's internal Mac Studio infrastructure (dual-server failover, round-robin
+        load balancing), covering the full ML product lifecycle: business need $\to$
+        architecture $\to$ deployment $\to$ monitoring $\to$ iteration.
+  \item \textbf{Support Chatbot} (.NET 10, SignalR, RAG, llama3.3:70b, nomic-embed-text,
+        qwen3-vl): RAG pipeline with vector search over IT support knowledge base; AI
+        Vision OCR for screenshot analysis; per-response confidence scoring; automatic
+        specialist escalation; conversation persistence (SQLite/EF Core); Volvo-branded
+        enterprise UI. All inference on-premises, no data leaving the network.
+  \item \textbf{DevBot --- AI Developer Assistant} (Python, aiohttp, MS Teams Bot
+        Framework, Azure DevOps, qwen3-coder:30b, gemma4:31b): Microsoft Teams bot for
+        automated PR code review. Junior mode explains changes and improvement tips;
+        senior mode surfaces critical diff items. Smart chunking, path-based review rules,
+        incremental reviews, results posted to both Teams and Azure DevOps PR thread.
+        Measurably reduces review cycle time and boosts team development velocity.
+  \item \textbf{OfficeBot} (LLM, PDF generation): Enables managers and non-technical
+        staff to generate professional PDFs, cover letters, and posters via natural
+        language --- no IT skills required.
+  \item \textbf{ClaimGenerationBot --- 2nd Place, Volvo Group HackDay 2026}
+        (Python/FastAPI, .NET, RAG, LLM, JSON knowledge base): Led the ``Non-List'' team
+        to 2nd place out of 12 competing teams and individuals --- \textbf{only 1st and
+        2nd place were awarded}, making this a top-2 finish across the entire competition.
+        Agentic system for Volvo Trucks: plate number input $\to$ retrieves truck profile,
+        service history, and parts data from a domain-specific kb.json (truck invoices,
+        fleet records, service manuals, ERP accessories data) $\to$ generates full service
+        contract draft including battery replacement booking $\to$ agent approves in one
+        final step only. \textbf{Reduced contract generation from $\sim$40 minutes to
+        near-instant.} Volvo Trucks department has made multiple follow-up contacts
+        requesting a production rollout.
+  \item \textbf{CoDriver --- Voice AI Co-Pilot for Commercial Vehicles} (Kotlin, Android
+        Auto, FastAPI, Ollama, Picovoice, Google Maps API, Spotify SDK): Hands-free voice
+        assistant for truck and bus drivers. Customisable wake words (``Hello Volvo'',
+        ``Hello CoDriver''), complex navigation (``Navigate to Prague, highway first, no
+        ferries''), weather, Spotify/podcast control. Architecture: on-device mic $\to$
+        4G/5G $\to$ FastAPI cloud $\to$ STT $\to$ RAG orchestrator $\to$ LLM $\to$
+        TTS $\to$ driver. Dual Mac Studio backend with automatic failover.
+  \item Delivered two group-wide knowledge-sharing sessions on Generative AI and LLM
+        engineering: \textbf{74 registered participants} (Session 1) and \textbf{71
+        registered} (Session 2). Mentored colleagues on RAG architecture, prompt
+        engineering, and on-premises LLM deployment.
+  \item Contributed React/TypeScript frontend features and C\#/.NET backend APIs within
+        agile sprints; set up GitHub Actions CI/CD pipelines for automated APK builds
+        and deployment validation.
+\end{itemize}
+
+\subsection*{ECARX Technology (Automotive Infotainment), Gothenburg}
+\textit{IT/Infrastructure Specialist \& Full-Stack Developer, Oct 2024 -- Nov 2025}
+\begin{itemize}[noitemsep]
+  \item Cloud infrastructure and application development supporting Volvo Cars, Polestar,
+        Lynk\&Co, and Geely.
+  \item Led Azure cost optimisation achieving \textbf{35\% reduction}
+        (56,000 SEK $\to$ 36,780 SEK/month) through resource right-sizing and hybrid
+        cloud architecture.
+  \item Managed zero-downtime migration from Azure AKS to on-premises Kubernetes cluster
+        (4 $\times$ Dell PowerEdge R7625 servers) using Helm and Argo CD.
+  \item Reduced deployment time by \textbf{60\%} via Azure DevOps and GitHub Actions
+        CI/CD automation; implemented Terraform IaC for all environments.
+  \item Deployed Prometheus + Grafana monitoring stack; reduced MTTR by \textbf{35\%}
+        through proactive alerting and structured observability.
+  \item Resolved a 26-server major incident within 5 hours, maintaining SLA compliance.
+\end{itemize}
+
+\subsection*{Synteda AB, Gothenburg}
+\textit{.NET and Azure Integration Developer (Freelance), Aug 2023 -- Sep 2024}
+\begin{itemize}[noitemsep]
+  \item Led full-stack transformation of Mibo.se from static site to MS-integrated office
+        system using ASP.NET Core, Angular, and Azure DevOps.
+  \item Designed RESTful APIs with Entra ID authentication, Azure Key Vault secrets
+        management, and Entity Framework Core; set up Terraform IaC for cloud-native
+        deployment.
+  \item Implemented CI/CD pipelines reducing deployment time by 50\%.
+\end{itemize}
+
+\subsection*{Senior Material (Europe) AB, Eskilstuna}
+\textit{Platform Architect \& Full-Stack Developer, Jan 2022 -- Dec 2022}
+\begin{itemize}[noitemsep]
+  \item Architected Spring Boot + React platform for lithium-ion battery manufacturing;
+        migrated monolith to containerised microservices, improving scalability by 40\%.
+  \item Implemented Redis caching strategies improving page load performance by 40\%.
+  \item Established GitHub Actions CI/CD pipeline and promoted TDD across the team.
+\end{itemize}
+
+\subsection*{AddCell (CTH Startup), Gothenburg}
+\textit{Cloud Developer (LIA 1), Sep 2022 -- Nov 2022}
+\begin{itemize}[noitemsep]
+  \item Migrated applications to AWS using serverless architecture (Lambda, CloudFormation,
+        CodePipeline); reduced time to market by 40\%.
+  \item Implemented GraphQL for efficient data fetching, reducing network overhead by 25\%.
+\end{itemize}
+
+\subsection*{IT-Högskolan, Gothenburg}
+\textit{.NET Cloud Developer (LIA 2), Jan 2023 -- May 2023}
+\begin{itemize}[noitemsep]
+  \item Built and deployed applications on Azure App Services, Azure Functions, and AKS;
+        implemented CI/CD pipelines and Azure Key Vault integration.
+  \item Migrated on-premises SQL Server to Azure SQL Database with zero-downtime strategy.
+\end{itemize}
+
+% Personal Projects
+\section*{Personal Projects}
+
+\subsection*{JobHunter AI Platform --- \href{https://jobs.bluehawana.com}{jobs.bluehawana.com}}
+\textit{Python, FastAPI, React, Gemini API, LaTeX, Gmail REST API | 2025 -- Present}
+\begin{itemize}[noitemsep]
+  \item End-to-end automated job application pipeline: AI role detection, personalised
+        CV + cover letter generation (LaTeX PDF), ATS keyword scoring, auto-email dispatch.
+  \item 15+ role-specific LaTeX templates; AI template selection achieving 95\% accuracy.
+\end{itemize}
+
+\subsection*{Invoice Management System --- \href{https://invoices.bluehawana.com}{invoices.bluehawana.com}}
+\textit{FastAPI, Next.js, Stripe API, Cloudflare R2, OCR | 2025 -- Present}
+\begin{itemize}[noitemsep]
+  \item Automated invoice collection and reconciliation from Stripe, Wolt, Uber Eats,
+        and Foodora; OCR for handwritten records; deployed on Cloudflare Pages + VPS.
+\end{itemize}
+
+% Education and Certifications
+\section*{Education and Certifications}
+
+\textbf{IT-Högskolan}\\
+\textit{Bachelor's Degree in .NET Cloud Development} | 2021--2023, Gothenburg\\[4pt]
+\textbf{University of Gothenburg}\\
+\textit{Master's Degree in International Business and Trade} | 2017--2019\\[4pt]
+\textbf{Tianjin University of Technology}\\
+\textit{Bachelor's Degree in Software Engineering} | 2011--2015
+
+\section*{Certifications}
+\begin{itemize}[noitemsep]
+  \item AWS Certified Solutions Architect -- Associate (Aug 2022)
+  \item AWS Certified Data Analytics -- Specialty (Nov 2022)
+  \item Microsoft Certified: Azure Fundamentals AZ-900 (Jun 2022)
+  \item CNCF Scholarship Recipient --- CKAD Training \& Exam Voucher
+\end{itemize}
+
+\section*{Additional Information}
+\textbf{Languages:} English (Fluent) | Swedish (B2/Professional) | Chinese (Native)\\
+\textbf{Work Authorization:} Swedish Permanent Residence | \textbf{Availability:} Immediate\\
+\textbf{Community:} AWS User Group Gothenburg | CNCF Gothenburg | Kubernetes Community Gothenburg
+
+\end{document}

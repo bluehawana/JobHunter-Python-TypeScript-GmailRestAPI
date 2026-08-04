@@ -1,0 +1,88 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Define colors
+\definecolor{darkblue}{RGB}{0,51,102}
+
+% Section formatting
+\titleformat{\section}{\large\bfseries\raggedright\color{black}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}[runin]{\bfseries}{}{0em}{}[:]
+
+% Remove paragraph indentation
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\pagestyle{empty}
+
+\begin{letter}{
+  \color{darkblue}
+  Volvo Group Digital Technology \& Operations (DTO)\\
+  Data Science Team\\
+  Gothenburg, Sweden
+}
+
+\vspace{30pt}
+
+\opening{Dear Hiring Manager,}
+
+\vspace{8pt}
+
+I am applying for the Senior AI Solution Engineer role within Volvo Group DTO
+(Requisition ID 32997). I am already part of the Volvo Group, working on the Software
+Configurator team in Gothenburg since March 2025 --- which means I know the
+infrastructure, the security constraints, and the domain. I can contribute to your
+team from day one.
+
+What draws me to DTO specifically is the mandate to industrialise AI at scale. In just
+three months on my current team, I have designed and shipped four production AI
+systems --- a Support Chatbot, DevBot, OfficeBot, and the ClaimGenerationBot that won
+\textbf{2nd place out of 12 competing teams and individuals at Volvo Group HackDay
+2026, where only 1st and 2nd place were awarded}. That pace reflects how I work: I
+move fast, I build things that actually run in production, and I take full ownership
+from architecture to deployment to monitoring.
+
+Your job description asks for someone who can own the full ML product lifecycle ---
+understanding real business needs, engineering solutions, and continuously improving
+them at scale. That is precisely what I have been doing, and the CoDriver project is
+the clearest example of where this overlaps with Volvo Group's competitive future.
+CoDriver is an Android-based voice AI co-pilot for commercial vehicle drivers, built
+on our internal Mac Studio servers with the newest available open-source LLMs. Unlike
+Google Assistant, which is constrained by fixed model versions and general-purpose
+training, CoDriver runs a purpose-built LLM pipeline with customisable wake words,
+RAG-grounded responses, and full integration with navigation, media, and real-time
+data. It is, in practical terms, Gemini-level intelligence tailored specifically for
+the Volvo driving context --- and it points directly at how intelligent voice features
+can become a genuine product differentiator in the commercial vehicle market.
+
+The personality you are looking for --- someone who dreams big, takes ownership, thrives
+in cross-functional international teams, and pushes AI from prototype to production ---
+is how I approach every project. I also invest in bringing colleagues along: I have
+delivered two group-wide knowledge-sharing sessions on Generative AI, with over 70
+colleagues registering for each, because I believe the biggest multiplier for any AI
+engineer is the team around them.
+
+I would welcome the opportunity to discuss how my work aligns with what your Data
+Science team is building next.
+
+\vspace{10pt}
+
+\closing{Sincerely,\\\vspace{15pt}Harvad (Hongzhi) Li}
+
+\vspace{20pt}
+{\color{darkblue}\rule{\linewidth}{0.6pt}}
+\vspace{4pt}
+
+{\color{darkblue}
+  Gothenburg, Sweden\\
+  \href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | +46 76 006 7977\\
+  LinkedIn: \href{https://www.linkedin.com/in/hzl/}{linkedin.com/in/hzl} |
+  GitHub: \href{https://github.com/bluehawana}{github.com/bluehawana}
+}
+
+\end{letter}
+\end{document}
