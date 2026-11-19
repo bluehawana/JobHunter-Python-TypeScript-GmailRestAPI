@@ -1,5 +1,37 @@
 # Working Diary — JobHunter
 
+## 2026-11-19 (second session) — DevOps/Cloud CV and CampX application
+
+### What we built
+- `generate_devops_cloud.py` and `AI_Job_Application/DevOps_Cloud/` — a general DevOps / Cloud / Platform Architecture CV (two pages) for a recruiter who asked for an infrastructure-first profile. Same facts as the Coretura CV and www.bluehawana.com, reordered: monitoring, website watchdog, hybrid load balancer, CI/CD, secrets and AI platform architecture at Volvo Group; ECARX in full (Azure AKS to bare-metal Kubernetes migration, 7.78-minute Android 15 AOSP clean build, 35% cost cut, monitoring, incident).
+- `AI_Job_Application/CampX/` — CV for an open application to CampX by Volvo Group as AI Innovation Engineer (two pages), built from the Coretura bricks with Smart Vehicle and the HackDay result first. A one-page letter and a covering email were also written; see "Kept out of the repo".
+
+### Decisions
+- **CampX is an open application.** The Volvo Group careers site had no posting for "CampX" or for "innovation" in Gothenburg. The fit is the Venture Builder track and the "intelligent vehicle" and "services and solutions" focus areas.
+- **Project driver, not only own ideas.** After feedback that CampX needs someone who drives projects, the letter and CV profile show that the Support Chatbot, DevBot and ClaimGenerationBot each started as another team's need.
+- **Real job titles stay.** Only the header line of each CV changes per application.
+- **Conflicting numbers left out.** The "faster than Azure" claim for the Android build appears as 48%, 259% and 3.5x in older files, so the new CVs only state the 7.78-minute record.
+
+### Facts corrected
+- **Phone number is +46 72 838 4299.** Updated in the DevOps and CampX files; the Coretura files and older CVs still show the old number.
+- **Tianjin University of Technology removed from education.** Replaced by Campus Mölndal, Java Integration, 2019–2021, in the Coretura, CampX and DevOps CVs. Thirteen older CVs, templates and scripts, and the website, still list Tianjin.
+- AWS Certified Developer – Associate (2022) added to the DevOps CV because the website lists it.
+
+### Issues and how we fixed them
+1. **WebFetch returned a condensed summary of the resume page.** Downloaded the page with `curl` and stripped the HTML locally to get the full text.
+2. **Page count again.** Both new CVs first compiled to three pages; trimmed skills and the smaller roles to get back to two.
+3. **HEIC photo could not be read directly.** Converted with `sips` to JPEG in the scratchpad.
+
+### Kept out of the repo
+- The CampX letter, the covering email and `generate_campx.py` (which contains the letter text). The repo is public, and these name colleagues and describe an internal conversation that is still open.
+- PDFs are ignored by `.gitignore`, so only `.tex` sources are committed.
+
+### Open points
+- Availability in the CampX letter is 1 January 2027, carried over from Coretura; not confirmed.
+- Not verified: the bare-metal migration details (networking, CSI storage, ingress) and the persistent-volume and artifact cleanup, which come from older notes in this repo.
+- The website still lists Tianjin and puts Java Integration under IT-Högskolan.
+- The Coretura CV already submitted still has the Tianjin line and the old phone number.
+
 ## 2026-11-19
 
 ### What we built

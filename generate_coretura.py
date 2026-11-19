@@ -158,8 +158,8 @@ BRICKS["projects"] = r'''
 BRICKS["education"] = r'''
 \section*{Education, Certifications and Languages}
 \textbf{IT-H\"ogskolan}, Gothenburg --- Bachelor's Degree in .NET Cloud Development, 2021--2023\\
-\textbf{University of Gothenburg} --- Master's Degree in International Business and Trade, 2017--2019\\
-\textbf{Tianjin University of Technology} --- Bachelor's Degree in Software Engineering, 2011--2015\\[3pt]
+\textbf{Campus M\"olndal} --- Java Integration, 2019--2021\\
+\textbf{University of Gothenburg} --- Master's Degree in International Business and Trade, 2017--2019\\[3pt]
 AWS Certified Solutions Architect -- Associate (2022) \textbar{} AWS Certified Data Analytics -- Specialty (2022) \textbar{} Microsoft Azure Fundamentals AZ-900 (2022) \textbar{} CNCF Scholarship Recipient (CKAD)'''
 
 BRICKS["additional"] = r'''\\[3pt]
