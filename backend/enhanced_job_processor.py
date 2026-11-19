@@ -199,7 +199,7 @@ class EnhancedJobProcessor:
 \\begin{{center}}
 {{\\LARGE \\textbf{{Hongzhi Li}}}}\\\\[10pt]
 {{\\Large \\textit{{{job_title}}}}}\\\\[10pt]
-\\textcolor{{linkedinblue}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:0728384299}}{{0728384299}} | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
+\\textcolor{{linkedinblue}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:0728384299}}{{0728384299}} | \\href{{https://www.linkedin.com/in/harvad/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
 \\end{{center}}
 
 % Personal Profile
@@ -478,7 +478,7 @@ class EnhancedJobProcessor:
 \\vspace{{5pt}}
 {{\\large \\textcolor{{linkedinblue}}{{Fullstack Developer}}}}\\\\
 \\vspace{{10pt}}
-\\textcolor{{linkedinblue}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:0728384299}}{{0728384299}} | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
+\\textcolor{{linkedinblue}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:0728384299}}{{0728384299}} | \\href{{https://www.linkedin.com/in/harvad/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
 \\end{{center}}
 
 \\vspace{{20pt}}

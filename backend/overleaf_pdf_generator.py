@@ -140,9 +140,9 @@ class OverleafPDFGenerator:
 \begin{center}
 {\LARGE \textbf{Hongzhi Li}}\\[10pt]
 {\Large \textit{ROLE_TITLE_PLACEHOLDER}}\\[10pt]
-\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/harvad/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
 \\[6pt]
-Phone: +46 728 384 299 | Email: hongzhili01@gmail.com | Location: Gothenburg, Sweden | LinkedIn: linkedin.com/in/hzl | GitHub: github.com/bluehawana
+Phone: +46 728 384 299 | Email: hongzhili01@gmail.com | Location: Gothenburg, Sweden | LinkedIn: linkedin.com/in/harvad | GitHub: github.com/bluehawana
 \end{center}
 
 % Personal Profile

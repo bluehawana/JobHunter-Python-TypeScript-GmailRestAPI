@@ -27,7 +27,7 @@ BRICKS["header"] = r'''\begin{center}
   Gothenburg, Sweden
 }\\[3pt]
 \textcolor{darkblue}{
-  \href{https://www.linkedin.com/in/hzl/}{linkedin.com/in/hzl} \textbar{}
+  \href{https://www.linkedin.com/in/harvad/}{linkedin.com/in/harvad} \textbar{}
   \href{https://github.com/bluehawana}{github.com/bluehawana} \textbar{}
   \href{https://www.bluehawana.com}{www.bluehawana.com}
 }

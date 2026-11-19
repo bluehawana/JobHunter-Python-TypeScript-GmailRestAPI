@@ -39,7 +39,7 @@ class ClaudeFinalSystem:
                 "name": "Hongzhi Li",
                 "email": "hongzhili01@gmail.com",
                 "phone": "0728384299",
-                "linkedin": "https://www.linkedin.com/in/hzl/",
+                "linkedin": "https://www.linkedin.com/in/harvad/",
                 "github": "https://github.com/bluehawana",
                 "website": "https://www.bluehawana.com",
                 "address": "Ebbe Lieberathsgatan 27, 412 65 Göteborg"
@@ -552,7 +552,7 @@ Start with "Dear Hiring Manager," and end with "Sincerely, Hongzhi Li".
 \\begin{{center}}
 {{\\LARGE \\textbf{{{basic_info['name']}}}}}\\\\[10pt]
 {{\\Large \\textit{{{job_title}}}}}\\\\[10pt]
-\\textcolor{{darkblue}}{{\\href{{mailto:{basic_info['email']}}}{{{basic_info['email']}}} | \\href{{tel:{basic_info['phone']}}}{{{basic_info['phone']}}} | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
+\\textcolor{{darkblue}}{{\\href{{mailto:{basic_info['email']}}}{{{basic_info['email']}}} | \\href{{tel:{basic_info['phone']}}}{{{basic_info['phone']}}} | \\href{{https://www.linkedin.com/in/harvad/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
 \\end{{center}}
 
 % Personal Profile

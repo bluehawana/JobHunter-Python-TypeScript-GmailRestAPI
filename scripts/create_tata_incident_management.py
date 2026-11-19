@@ -145,7 +145,7 @@ def build_tata_cv_latex():
 \begin{center}
 {\LARGE \textbf{Harvad Lee}}\\[10pt]
 {\Large \textit{Incident Management Specialist | DevOps/SRE Engineer}}\\[10pt]
-\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:+46728384299}{+46 72 838 4299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:+46728384299}{+46 72 838 4299} | \href{https://www.linkedin.com/in/harvad/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
 \end{center}
 
 \section*{Profile Summary}

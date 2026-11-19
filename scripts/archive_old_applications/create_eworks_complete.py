@@ -164,7 +164,7 @@ def build_cv_with_finance_kotlin(ecarx_bullets, synteda_bullets):
 \begin{center}
 {\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
 {\Large \textit{Java Backend Engineer}}\\[10pt]
-\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/harvad/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
 \end{center}
 
 \section*{Profile Summary}

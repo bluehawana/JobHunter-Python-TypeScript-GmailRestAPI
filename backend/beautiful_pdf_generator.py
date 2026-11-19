@@ -141,7 +141,7 @@ def create_beautiful_multi_page_pdf(job: dict, latex_content: str = "") -> bytes
         contact_info = '''
         <a href="mailto:hongzhili01@gmail.com" color="#003366">hongzhili01@gmail.com</a> | 
         <a href="tel:0728384299" color="#003366">0728384299</a> | 
-        <a href="https://www.linkedin.com/in/hzl/" color="#003366">LinkedIn</a> | 
+        <a href="https://www.linkedin.com/in/harvad/" color="#003366">LinkedIn</a> | 
         <a href="https://github.com/bluehawana" color="#003366">GitHub</a>
         '''
         story.append(Paragraph(contact_info, contact_style))

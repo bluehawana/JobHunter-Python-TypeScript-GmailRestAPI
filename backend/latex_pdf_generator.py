@@ -55,7 +55,7 @@ def create_latex_pdf(job: Dict[str, Any], latex_template: str = "") -> bytes:
 \begin{center}
 {\LARGE \textbf{Hongzhi Li}}\\[10pt]
 {\Large \textit{ROLE_TITLE_PLACEHOLDER}}\\[10pt]
-\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/harvad/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
 \end{center}
 
 % Personal Profile

@@ -264,7 +264,7 @@ class ProfessionalLaTeXService:
 \\begin{{center}}
 {{\\LARGE \\textbf{{Hongzhi Li}}}}\\\\[10pt]
 {{\\Large \\textit{{Senior Fullstack Developer}}}}\\\\[10pt]
-\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | 0728384299 | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}
+\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | 0728384299 | \\href{{https://www.linkedin.com/in/harvad/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}
 \\end{{center}}
 
 \\vspace{{15pt}}

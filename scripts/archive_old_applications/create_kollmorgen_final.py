@@ -72,7 +72,7 @@ def build_complete_cv_latex(polisher):
 \begin{center}
 {\LARGE \textbf{Harvad (Hongzhi) Li}}\\[10pt]
 {\Large \textit{Software Engineer - Visualization \& UI/UX}}\\[10pt]
-\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/hzl/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
+\textcolor{darkblue}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} | \href{tel:0728384299}{0728384299} | \href{https://www.linkedin.com/in/harvad/}{LinkedIn} | \href{https://github.com/bluehawana}{GitHub}}
 \end{center}
 
 \section*{Profile Summary}

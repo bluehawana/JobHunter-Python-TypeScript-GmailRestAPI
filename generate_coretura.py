@@ -58,7 +58,7 @@ BRICKS["header"] = r'''\begin{center}
   Gothenburg, Sweden
 }\\[3pt]
 \textcolor{darkblue}{
-  \href{https://www.linkedin.com/in/hzl/}{linkedin.com/in/hzl} \textbar{}
+  \href{https://www.linkedin.com/in/harvad/}{linkedin.com/in/harvad} \textbar{}
   \href{https://github.com/bluehawana}{github.com/bluehawana} \textbar{}
   \href{https://huggingface.co/bluehawana}{huggingface.co/bluehawana} \textbar{}
   \href{https://www.bluehawana.com}{www.bluehawana.com}
@@ -270,7 +270,7 @@ Sincerely,\\[10pt]
 
 {\color{darkblue}\small
 Gothenburg, Sweden \textbar{} \href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} \textbar{} +46 76 006 7977\\
-LinkedIn: \href{https://www.linkedin.com/in/hzl/}{linkedin.com/in/hzl} \textbar{} GitHub: \href{https://github.com/bluehawana}{github.com/bluehawana}
+LinkedIn: \href{https://www.linkedin.com/in/harvad/}{linkedin.com/in/harvad} \textbar{} GitHub: \href{https://github.com/bluehawana}{github.com/bluehawana}
 }
 
 \end{document}

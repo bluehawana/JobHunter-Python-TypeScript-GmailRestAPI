@@ -142,3 +142,5 @@ job_applications/
 
 # Allow CV templates folder (version controlled)
 !templates/cv_templates/
+# Browser session exports
+cookies.txt

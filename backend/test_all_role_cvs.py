@@ -99,7 +99,7 @@ def generate_latex_cv(role_type: str, output_filename: str):
 \\begin{{center}}
 {{\\LARGE \\textbf{{Harvad (Hongzhi) Li}}}}\\\\[10pt]
 {{\\Large \\textit{{{job['title']}}}}}\\\\[10pt]
-\\textcolor{{titlecolor}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:+46728384299}}{{+46 72 838 4299}} | \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
+\\textcolor{{titlecolor}}{{\\href{{mailto:hongzhili01@gmail.com}}{{hongzhili01@gmail.com}} | \\href{{tel:+46728384299}}{{+46 72 838 4299}} | \\href{{https://www.linkedin.com/in/harvad/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
 \\end{{center}}
 
 \\vspace{{8pt}}

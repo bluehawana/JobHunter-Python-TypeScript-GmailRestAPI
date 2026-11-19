@@ -1567,7 +1567,7 @@ def build_lego_cv(role_type: str, company: str, title: str, role_category: str =
 \begin{center}
 {\LARGE \textbf{Harvad (Hongzhi) Li}}\\[8pt]
 {\Large \textbf{""" + role_type + r"""}}\\[10pt]
-\textcolor{titlecolor}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} — \href{tel:+46728384299}{+46 72 838 4299} — \href{https://www.linkedin.com/in/hzl/}{LinkedIn} — \href{https://github.com/bluehawana}{GitHub}}
+\textcolor{titlecolor}{\href{mailto:hongzhili01@gmail.com}{hongzhili01@gmail.com} — \href{tel:+46728384299}{+46 72 838 4299} — \href{https://www.linkedin.com/in/harvad/}{LinkedIn} — \href{https://github.com/bluehawana}{GitHub}}
 \end{center}
 
 \vspace{8pt}

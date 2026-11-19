@@ -695,7 +695,7 @@ class DailyJobAutomation:
         Location: Gothenburg, Sweden
         Email: hongzhili01@gmail.com
         Phone: 0728384299
-        LinkedIn: https://www.linkedin.com/in/hzl/
+        LinkedIn: https://www.linkedin.com/in/harvad/
         GitHub: https://github.com/bluehawana
         
         Current Role: IT/Infrastructure Specialist at ECARX (Oct 2024 - Present)

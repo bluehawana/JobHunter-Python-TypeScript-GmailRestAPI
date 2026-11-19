@@ -171,7 +171,7 @@ def create_cv_latex():
 {\Huge\bfseries Harvad Lee}\\[6pt]
 {\Large Senior Cloud Engineer | AWS Specialist | DevOps Expert}\\[10pt]
 hongzhili01@gmail.com | +46 72 838 4299 | Gothenburg, Sweden\\
-linkedin.com/in/hzl | github.com/bluehawana
+linkedin.com/in/harvad | github.com/bluehawana
 \end{center}
 
 \vspace{8pt}

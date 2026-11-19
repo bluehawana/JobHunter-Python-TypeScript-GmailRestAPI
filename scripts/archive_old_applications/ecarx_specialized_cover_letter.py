@@ -155,7 +155,7 @@ def create_latex_cover_letter(content):
 {{\\Large \\textbf{{Hongzhi Li}}}}\\\\[5pt]
 {{\\color{{darkblue}} Ebbe Lieberathsgatan 27, 412 65 Göteborg, Sweden}}\\\\
 {{\\color{{darkblue}} hongzhili01@gmail.com | +46 728 384 299}}\\\\
-{{\\color{{darkblue}} \\href{{https://www.linkedin.com/in/hzl/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
+{{\\color{{darkblue}} \\href{{https://www.linkedin.com/in/harvad/}}{{LinkedIn}} | \\href{{https://github.com/bluehawana}}{{GitHub}}}}
 \\end{{center}}
 
 \\vspace{{20pt}}

@@ -763,7 +763,7 @@ class ImprovedWorkingAutomation:
             contact_info = '''
             <a href="mailto:hongzhili01@gmail.com" color="blue">hongzhili01@gmail.com</a> | 
             <a href="tel:0728384299" color="blue">0728384299</a> | 
-            <a href="https://www.linkedin.com/in/hzl/" color="blue">LinkedIn</a> | 
+            <a href="https://www.linkedin.com/in/harvad/" color="blue">LinkedIn</a> | 
             <a href="https://github.com/bluehawana" color="blue">GitHub</a>
             '''
             story.append(Paragraph(contact_info, styles['Normal']))

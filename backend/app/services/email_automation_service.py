@@ -167,7 +167,7 @@ class EmailAutomationService:
             Hongzhi Li<br>
             📧 hongzhili01@gmail.com<br>
             📱 0728384299<br>
-            🔗 <a href="https://www.linkedin.com/in/hzl/">LinkedIn</a> | 
+            🔗 <a href="https://www.linkedin.com/in/harvad/">LinkedIn</a> | 
             <a href="https://github.com/bluehawana">GitHub</a> | 
             <a href="https://www.bluehawana.com">Website</a>
         </p>
